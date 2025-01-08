@@ -28,7 +28,7 @@
       </form>
     </div>
     <div class="login-right">
-      <img src="../../assets/img/login-img.png" alt="Login Background Image"> <!-- Replace with your image path -->
+      <img src="../../assets/img/login.png" alt="Login Background Image"> <!-- Replace with your image path -->
     </div>
   </div>
 </body>
