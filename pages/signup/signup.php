@@ -7,8 +7,7 @@
   <link rel="stylesheet" href="../../assets/css/signup.css">
 </head>
 <body>
-  <!-- Include the navbar -->
-
+ 
   <div class="container">
     <div class="signup-left">
       <img src="../../assets/img/hero-img.png" alt="Background Image"> <!-- Replace with your image path -->

@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agent Registration</title>
-  <link rel="stylesheet" href="../../assets/css/agentregister.css"> <!-- Reusing the same CSS -->
+  <link rel="stylesheet" href="../../../assets/css/agentregister.css"> <!-- Reusing the same CSS -->
 </head>
 <body>
   <?php include 'includes/navbar.php'; ?>
 
   <div class="container">
     <div class="signup-left">
-      <img src="../../assets/img/agent-img.png" alt="Agent Registration Image"> <!-- Replace with your agent image -->
+      <img src="../../../assets/img/agent-img.png" alt="Agent Registration Image"> <!-- Replace with your agent image -->
     </div>
     <div class="signup-right">
       <form action="process_agent_register.php" method="POST" class="signup-form" autocomplete="off">

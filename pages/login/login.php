@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="../../assets/css/login.css">
 </head>
 <body>
-  <!-- Include the navbar -->
+ 
 
   <div class="container">
     <div class="login-left">

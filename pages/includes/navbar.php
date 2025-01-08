@@ -15,7 +15,7 @@
         <li class="dropdown">
           <a href="#"><span>Agent</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>
-          <li><a href="/fyp_kusma/pages/agent/agentregister.php">Be Our Agent</a></li>
+          <li><a href="/fyp_kusma/pages/agent/agentregister/agentregister.php">Be Our Agent</a></li>
 
           </ul>
         </li>
