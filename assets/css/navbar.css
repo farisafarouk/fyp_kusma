@@ -1,0 +1,25 @@
+.logo img {
+  height: 60px; /* Adjust as per design */
+  margin-right: 50px;
+}
+
+.sitename {
+  font-family: 'Roboto', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #000080; /* Match the color from the index page */
+  margin: 0;
+}
+
+.navmenu a {
+  color: #000080;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.btn-getstarted {
+  background-color: #0066ff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
