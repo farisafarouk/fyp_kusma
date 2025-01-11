@@ -6,7 +6,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Query to check if the email exists in the database
+    // Check if the user is trying to log in as admin
+    if ($email === 'admin@kusma.com' && $password === 'password') {
+        // Set session variables for admin
+        $_SESSION['user_id'] = 0; // You can set a specific ID for admin if needed
+        $_SESSION['role'] = 'admin';
+        header("Location: ../admin/admindashboard.php");
+        exit();
+    }
+
+    // Query to check if the email exists in the database for other users
     $sql = "SELECT * FROM users WHERE email = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $email);

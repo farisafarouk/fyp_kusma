@@ -42,7 +42,7 @@
           <label for="terms">I agree to the <a href="#">Terms and Conditions</a></label>
         </div>
         <button type="submit" class="signup-btn">Register</button>
-        <p class="login-link">Already an agent? <a href="../login/login.php">Log in</a></p>
+        <p class="login-link">Already an agent? <a href="login/login.php">Log in</a></p>
         <p class="redirect-home"><a href="../../index.php">Go to Home</a></p>
       </form>
     </div>
