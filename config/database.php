@@ -13,6 +13,6 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Optional: Display a success message (remove in production)
-echo "Database connection successful!";
+// Optional: Log successful connection for debugging (remove in production)
+// error_log("Database connection successful.");
 ?>
