@@ -36,6 +36,8 @@
     mobileNavToggleBtn.addEventListener('click', mobileNavToogle);
   }
 
+
+  
   /**
    * Hide mobile nav on same-page/hash links
    */
@@ -100,6 +102,45 @@
   const glightbox = GLightbox({
     selector: '.glightbox'
   });
+
+
+
+
+  document.querySelector('.php-email-form').addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent the default form submission
+
+    const formData = new FormData(this); // Create a FormData object from the form
+
+    fetch('forms/contact.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        const sentMessageDiv = document.querySelector('.sent-message');
+        const errorMessageDiv = document.querySelector('.error-message');
+
+        if (data.status === 'success') {
+            sentMessageDiv.textContent = data.message; // Set the success message
+            sentMessageDiv.style.display = 'block'; // Show the success message
+            sentMessageDiv.style.color = 'green'; // Ensure the message is green
+            errorMessageDiv.style.display = 'none'; // Hide the error message
+        } else {
+            errorMessageDiv.textContent = data.message; // Set the error message
+            errorMessageDiv.style.display = 'block'; // Show the error message
+            sentMessageDiv.style.display = 'none'; // Hide the success message
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        const errorMessageDiv = document.querySelector('.error-message');
+        errorMessageDiv.textContent = 'An unexpected error occurred. Please try again later.';
+        errorMessageDiv.style.display = 'block'; // Show the error message
+    });
+});
+
+
+
 
   /**
    * Initiate Pure Counter

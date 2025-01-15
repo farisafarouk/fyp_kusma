@@ -8,7 +8,80 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-// Fetch pending agent registrations
+// Handle form submissions
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? '';
+
+    if ($action === 'add') {
+        $name = $_POST['name'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $phone = $_POST['phone'] ?? '';
+        $ic_passport = $_POST['ic_passport'] ?? '';
+        $password = password_hash($_POST['password'] ?? '', PASSWORD_DEFAULT);
+
+        // Insert into users table
+        $sql_user = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'agent')";
+        $stmt_user = $conn->prepare($sql_user);
+        $stmt_user->bind_param('sss', $name, $email, $password);
+
+        if ($stmt_user->execute()) {
+            $user_id = $stmt_user->insert_id;
+
+            // Insert into agents table
+            $sql_agent = "INSERT INTO agents (user_id, phone, ic_passport, approval_status) VALUES (?, ?, ?, 'pending')";
+            $stmt_agent = $conn->prepare($sql_agent);
+            $stmt_agent->bind_param('iss', $user_id, $phone, $ic_passport);
+
+            if ($stmt_agent->execute()) {
+                header("Location: agent_management.php");
+                exit();
+            } else {
+                die("Error adding agent: " . $stmt_agent->error);
+            }
+        } else {
+            die("Error adding user: " . $stmt_user->error);
+        }
+    } elseif ($action === 'approve' || $action === 'decline') {
+        $agent_id = $_POST['agent_id'] ?? '';
+        $approval_status = $action === 'approve' ? 'approved' : 'declined';
+
+        // Update approval status
+        $sql = "UPDATE agents SET approval_status = ? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('si', $approval_status, $agent_id);
+
+        if ($stmt->execute()) {
+            header("Location: agent_management.php");
+            exit();
+        } else {
+            die("Error updating agent approval status: " . $stmt->error);
+        }
+    } elseif ($action === 'delete') {
+        $agent_id = $_POST['agent_id'] ?? '';
+
+        // Delete agent from agents and users tables
+        $sql_agent = "DELETE FROM agents WHERE id = ?";
+        $stmt_agent = $conn->prepare($sql_agent);
+        $stmt_agent->bind_param('i', $agent_id);
+
+        if ($stmt_agent->execute()) {
+            $sql_user = "DELETE FROM users WHERE id = (SELECT user_id FROM agents WHERE id = ?)";
+            $stmt_user = $conn->prepare($sql_user);
+            $stmt_user->bind_param('i', $agent_id);
+
+            if ($stmt_user->execute()) {
+                header("Location: agent_management.php");
+                exit();
+            } else {
+                die("Error deleting user: " . $stmt_user->error);
+            }
+        } else {
+            die("Error deleting agent: " . $stmt_agent->error);
+        }
+    }
+}
+
+// Fetch pending agents
 $sql_pending = "SELECT a.id, u.name, u.email, a.phone, a.ic_passport 
                 FROM agents a 
                 INNER JOIN users u ON a.user_id = u.id 
@@ -21,55 +94,6 @@ $sql_approved = "SELECT a.id AS agent_id, u.id AS user_id, u.name, u.email, a.ph
                  INNER JOIN users u ON a.user_id = u.id 
                  WHERE a.approval_status = 'approved'";
 $result_approved = $conn->query($sql_approved);
-
-// Handle form submissions for approval, decline, edit, or delete
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['action'])) {
-        $action = $_POST['action'];
-
-        // Approve or decline agent
-        if ($action === 'approve' || $action === 'decline') {
-            $agent_id = $_POST['agent_id'];
-            $status = ($action === 'approve') ? 'approved' : 'declined';
-            $sql_update = "UPDATE agents SET approval_status = ? WHERE id = ?";
-            $stmt = $conn->prepare($sql_update);
-            $stmt->bind_param("si", $status, $agent_id);
-            $stmt->execute();
-        }
-
-        // Edit agent details
-        if ($action === 'edit') {
-            $agent_id = $_POST['agent_id'];
-            $name = $_POST['name'];
-            $email = $_POST['email'];
-            $phone = $_POST['phone'];
-            $ic_passport = $_POST['ic_passport'];
-
-            $sql_update_user = "UPDATE users SET name = ?, email = ? WHERE id = ?";
-            $stmt_user = $conn->prepare($sql_update_user);
-            $stmt_user->bind_param("ssi", $name, $email, $_POST['user_id']);
-            $stmt_user->execute();
-
-            $sql_update_agent = "UPDATE agents SET phone = ?, ic_passport = ? WHERE id = ?";
-            $stmt_agent = $conn->prepare($sql_update_agent);
-            $stmt_agent->bind_param("ssi", $phone, $ic_passport, $agent_id);
-            $stmt_agent->execute();
-        }
-
-        // Delete agent
-        if ($action === 'delete') {
-            $user_id = $_POST['user_id'];
-            $sql_delete_user = "DELETE FROM users WHERE id = ?";
-            $stmt_delete = $conn->prepare($sql_delete_user);
-            $stmt_delete->bind_param("i", $user_id);
-            $stmt_delete->execute();
-        }
-
-        // Redirect back to the page to refresh data
-        header("Location: agent_management.php");
-        exit();
-    }
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -78,8 +102,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agent Management</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../../../assets/css/admin_agentmanagement.css"> <!-- Admin CSS -->
-  <link rel="stylesheet" href="../../../assets/css/adminsidebar.css"> <!-- Admin CSS -->
+  <link rel="stylesheet" href="../../../assets/css/adminsidebar.css">
+  <link rel="stylesheet" href="../../../assets/css/admin_agentmanagement.css">
 </head>
 <body>
   <div class="dashboard-container">
@@ -88,10 +112,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <main class="dashboard-content">
       <!-- Pending Agents Section -->
       <section class="dashboard-section">
-        <h1>Pending Agent Registrations</h1>
+        <h1><i class="fas fa-user-clock"></i> Pending Agent Registrations</h1>
         <p>Approve or decline agent registration requests.</p>
-
-        <table class="agent-table">
+        <table class="contact-table">
           <thead>
             <tr>
               <th>Name</th>
@@ -109,10 +132,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <td><?php echo htmlspecialchars($row['phone']); ?></td>
                 <td><?php echo htmlspecialchars($row['ic_passport']); ?></td>
                 <td>
-                  <form method="POST">
+                  <form method="POST" style="display:inline;">
                     <input type="hidden" name="agent_id" value="<?php echo $row['id']; ?>">
-                    <button type="submit" name="action" value="approve" class="btn-approve">Approve</button>
-                    <button type="submit" name="action" value="decline" class="btn-decline">Decline</button>
+                    <button type="submit" name="action" value="approve" class="action-btn save">Approve</button>
+                    <button type="submit" name="action" value="decline" class="action-btn delete">Decline</button>
                   </form>
                 </td>
               </tr>
@@ -123,12 +146,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <!-- Approved Agents Section -->
       <section class="dashboard-section">
-        <h1>Approved Agents</h1>
-        <p>Edit or delete approved agents.</p>
+        <h1><i class="fas fa-user-check"></i> Approved Agents</h1>
+        <p>Edit, delete, or add new agents.</p>
+        <button class="action-btn add" onclick="openAddAgentModal()">+ Add Agent</button>
 
-        <table class="agent-table">
+        <table class="contact-table">
           <thead>
             <tr>
+              <th>ID</th>
               <th>Name</th>
               <th>Email</th>
               <th>Phone</th>
@@ -138,33 +163,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </thead>
           <tbody>
             <?php while ($row = $result_approved->fetch_assoc()): ?>
-              <tr>
-                <form method="POST">
-                  <td>
-                    <input type="text" name="name" value="<?php echo htmlspecialchars($row['name']); ?>" required>
-                  </td>
-                  <td>
-                    <input type="email" name="email" value="<?php echo htmlspecialchars($row['email']); ?>" required>
-                  </td>
-                  <td>
-                    <input type="text" name="phone" value="<?php echo htmlspecialchars($row['phone']); ?>" required>
-                  </td>
-                  <td>
-                    <input type="text" name="ic_passport" value="<?php echo htmlspecialchars($row['ic_passport']); ?>" required>
-                  </td>
-                  <td>
+              <tr id="row-<?php echo $row['agent_id']; ?>">
+                <td><?php echo htmlspecialchars($row['agent_id']); ?></td>
+                <td><?php echo htmlspecialchars($row['name']); ?></td>
+                <td><?php echo htmlspecialchars($row['email']); ?></td>
+                <td><?php echo htmlspecialchars($row['phone']); ?></td>
+                <td><?php echo htmlspecialchars($row['ic_passport']); ?></td>
+                <td>
+                  <button class="action-btn edit" onclick="enableEdit(<?php echo $row['agent_id']; ?>)">Edit</button>
+                  <form method="POST" style="display:inline;">
                     <input type="hidden" name="agent_id" value="<?php echo $row['agent_id']; ?>">
-                    <input type="hidden" name="user_id" value="<?php echo $row['user_id']; ?>">
-                    <button type="submit" name="action" value="edit" class="btn-edit">Save</button>
-                    <button type="submit" name="action" value="delete" class="btn-delete">Delete</button>
-                  </td>
-                </form>
+                    <button type="submit" name="action" value="delete" class="action-btn delete">Delete</button>
+                  </form>
+                </td>
               </tr>
             <?php endwhile; ?>
           </tbody>
         </table>
       </section>
     </main>
+
+    <!-- Add Agent Modal -->
+    <div id="addAgentModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeAddAgentModal()">&times;</span>
+        <h2>Add New Agent</h2>
+        <form method="POST" action="agent_management.php">
+          <input type="hidden" name="action" value="add">
+          <div class="input-group">
+            <label for="add-name">Name</label>
+            <input type="text" id="add-name" name="name" required>
+          </div>
+          <div class="input-group">
+            <label for="add-email">Email</label>
+            <input type="email" id="add-email" name="email" required>
+          </div>
+          <div class="input-group">
+            <label for="add-phone">Phone</label>
+            <input type="text" id="add-phone" name="phone" required>
+          </div>
+          <div class="input-group">
+            <label for="add-ic-passport">IC/Passport</label>
+            <input type="text" id="add-ic-passport" name="ic_passport" required>
+          </div>
+          <div class="input-group">
+            <label for="add-password">Password</label>
+            <input type="password" id="add-password" name="password" required>
+          </div>
+          <button type="submit" class="action-btn save">Add Agent</button>
+        </form>
+      </div>
+    </div>
   </div>
+
+  <script>
+    function openAddAgentModal() {
+      document.getElementById('addAgentModal').style.display = 'flex';
+    }
+
+    function closeAddAgentModal() {
+      document.getElementById('addAgentModal').style.display = 'none';
+    }
+  </script>
 </body>
 </html>
+

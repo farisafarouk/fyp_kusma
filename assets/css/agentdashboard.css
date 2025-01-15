@@ -7,10 +7,11 @@
 
 body {
   font-family: "Poppins", sans-serif;
-  background: linear-gradient(to right, #e6e6fa, #ffffff);
-  color: #333;
+  background: linear-gradient(to right, #e6e6fa, #ffffff); /* Lighter pastel gradient */
   display: flex;
+  color: #333;
 }
+
 
 /* Dashboard Container */
 .dashboard-container {
@@ -30,21 +31,29 @@ body {
   padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 40px;
+  background: #f9f9ff;
 }
 
-/* Section Styles */
+/* Dashboard Sections */
 .dashboard-section {
-  background: #f4f8fb;
+  background: #ffffff;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #ddd;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.dashboard-section h1,
-.dashboard-section h2 {
+.dashboard-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-section h1 {
   font-size: 24px;
   margin-bottom: 10px;
+  color: #333;
 }
 
 .dashboard-section p {
@@ -53,9 +62,10 @@ body {
   color: #666;
 }
 
+/* Buttons */
 .dashboard-btn {
   padding: 10px 20px;
-  background: linear-gradient(90deg, #6c63ff, #5a54d6);
+  background: linear-gradient(90deg, #6610f2, #6610f2);
   color: #fff;
   font-size: 16px;
   font-weight: bold;
@@ -66,70 +76,6 @@ body {
 }
 
 .dashboard-btn:hover {
-  background: linear-gradient(90deg, #5a54d6, #6c63ff);
+  background: linear-gradient(90deg, #6610f2, #9933ff);
   transform: scale(1.05);
 }
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .dashboard-container {
-      flex-direction: column;
-  }
-
-  .sidebar {
-      width: 100%;
-      text-align: center;
-  }
-
-  .dashboard-content {
-      width: 100%;
-      padding: 10px;
-  }
-}
-
-
-
-/* Profile Form */
-.profile-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.input-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.input-group label {
-  font-size: 16px;
-  margin-bottom: 5px;
-  color: #333;
-}
-
-.input-group input {
-  padding: 10px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  transition: border-color 0.3s ease;
-}
-
-.input-group input:focus {
-  border-color: #6610f2;
-  outline: none;
-}
-
-.success-message,
-.error-message {
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-
-/* Responsive Design for Profile Form */
-@media (max-width: 768px) {
-  .profile-form {
-      padding: 10px;
-  }
-}
-

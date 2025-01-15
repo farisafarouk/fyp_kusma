@@ -2,6 +2,7 @@
   <h2>KUSMA ADMIN</h2>
   <ul>
     <li><a href="/fyp_kusma/pages/admin/admindashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
+    <li><a href="/fyp_kusma/pages/admin/contact_messages/contact_messages.php"><i class="fas fa-envelope"></i> Contact Messages Forms</a></li>
     <li><a href="/fyp_kusma/pages/admin/customer_management/admin_customermanagement.php"><i class="fas fa-users"></i> Customer Management</a></li>
     <li><a href="/fyp_kusma/pages/admin/Agent_Management/agent_management.php"><i class="fas fa-user-tie"></i> Agent Management</a></li>
     <li><a href="/fyp_kusma/pages/admin/consultant/consultant_management.php"><i class="fas fa-user-friends"></i> Consultant Management</a></li>

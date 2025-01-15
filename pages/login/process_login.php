@@ -56,8 +56,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
 
                 case 'agent':
-                    // Redirect to agent dashboard
-                    header("Location: ../agent/agentdashboard.php");
+                    // Check approval status for agents
+                    $agent_sql = "SELECT approval_status FROM agents WHERE user_id = ?";
+                    $agent_stmt = $conn->prepare($agent_sql);
+                    $agent_stmt->bind_param("i", $user['id']);
+                    $agent_stmt->execute();
+                    $agent_result = $agent_stmt->get_result();
+
+                    if ($agent_result->num_rows === 1) {
+                        $agent = $agent_result->fetch_assoc();
+                        if ($agent['approval_status'] === 'approved') {
+                            // Redirect to agent dashboard
+                            header("Location: ../agent/agentdashboard.php");
+                        } else {
+                            $_SESSION['error'] = "Your registration as an agent is pending approval.";
+                            header("Location: login.php");
+                        }
+                    } else {
+                        $_SESSION['error'] = "Agent data not found.";
+                        header("Location: login.php");
+                    }
                     break;
 
                 case 'admin':
@@ -83,4 +101,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['error'] = "Invalid email or password.";
     header("Location: login.php");
 }
-?>

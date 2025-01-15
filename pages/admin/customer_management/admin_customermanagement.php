@@ -4,16 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Customer Management</title>
-  <link rel="stylesheet" href="../../../assets/css/admin_customermanagement.css"> <!-- Link to specific CSS -->
-  <link rel="stylesheet" href="../../../assets/css/adminsidebar.css"> <!-- Sidebar CSS -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="../../../assets/css/adminsidebar.css">
+  <link rel="stylesheet" href="../../../assets/css/admin_agentmanagement.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
   <div class="dashboard-container">
-    <!-- Include Sidebar -->
     <?php include '../adminsidebar.php'; ?>
 
-    <!-- Main Content -->
     <main class="dashboard-content">
       <section class="dashboard-section">
         <h1><i class="fas fa-users"></i> Customer Management</h1>
@@ -21,7 +19,7 @@
         <button class="action-btn add" onclick="openAddCustomerModal()">+ Add Customer</button>
 
         <!-- Customer Table -->
-        <table class="customer-table">
+        <table class="contact-table">
           <thead>
             <tr>
               <th>ID</th>
@@ -31,7 +29,7 @@
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="customer-table-body">
             <?php
             require '../../../config/database.php';
 
@@ -47,9 +45,9 @@
                             <td id='email-{$row['id']}'>{$row['email']}</td>
                             <td>{$row['role']}</td>
                             <td>
-                                <button class='action-btn edit' onclick='enableEdit({$row['id']})'><i class='fas fa-edit'></i> Edit</button>
-                                <button class='action-btn save' id='save-{$row['id']}' style='display:none;' onclick='saveChanges({$row['id']})'><i class='fas fa-save'></i> Save</button>
-                                <a href='process_customermanagement.php?action=delete&id={$row['id']}' class='action-btn delete' onclick='return confirm(\"Are you sure you want to delete this customer?\");'><i class='fas fa-trash-alt'></i> Delete</a>
+                              <button class='action-btn edit' onclick='enableEdit({$row['id']})'><i class='fas fa-edit'></i> Edit</button>
+                              <button class='action-btn save' id='save-{$row['id']}' style='display:none;' onclick='saveChanges({$row['id']})'><i class='fas fa-save'></i> Save</button>
+                              <button class='action-btn delete' onclick='deleteCustomer({$row['id']})'><i class='fas fa-trash-alt'></i> Delete</button>
                             </td>
                           </tr>";
                 }
@@ -62,39 +60,60 @@
       </section>
     </main>
 
-   <!-- Add Customer Modal -->
-<div id="addCustomerModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeAddCustomerModal()">&times;</span>
-    <h2>Add New Customer</h2>
-    <form id="addCustomerForm" action="process_customermanagement.php" method="POST">
-      <input type="hidden" name="action" value="add">
-      <div class="input-group">
-        <label for="add-name">Name</label>
-        <input type="text" id="add-name" name="name" placeholder="Enter customer name" required>
+    <!-- Add Customer Modal -->
+    <div id="addCustomerModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeAddCustomerModal()">&times;</span>
+        <h2>Add New Customer</h2>
+        <form id="addCustomerForm" action="process_customermanagement.php" method="POST">
+          <input type="hidden" name="action" value="add">
+          <div class="input-group">
+            <label for="add-name">Name</label>
+            <input type="text" id="add-name" name="name" placeholder="Enter customer name" required>
+          </div>
+          <div class="input-group">
+            <label for="add-email">Email</label>
+            <input type="email" id="add-email" name="email" placeholder="Enter customer email" required>
+          </div>
+          <div class="input-group">
+            <label for="add-password">Password</label>
+            <input type="password" id="add-password" name="password" placeholder="Enter customer password" required>
+          </div>
+          <button type="submit" class="action-btn save">Add Customer</button>
+        </form>
       </div>
-      <div class="input-group">
-        <label for="add-email">Email</label>
-        <input type="email" id="add-email" name="email" placeholder="Enter customer email" required>
-      </div>
-      <div class="input-group">
-        <label for="add-password">Password</label>
-        <input type="password" id="add-password" name="password" placeholder="Enter customer password" required>
-      </div>
-      <button type="submit" class="action-btn save">Add Customer</button>
-    </form>
+    </div>
   </div>
-</div>
 
   <script>
     // Open Add Customer Modal
     function openAddCustomerModal() {
-        document.getElementById('addCustomerModal').style.display = 'block';
+        document.getElementById('addCustomerModal').style.display = 'flex';
     }
 
     // Close Add Customer Modal
     function closeAddCustomerModal() {
         document.getElementById('addCustomerModal').style.display = 'none';
+    }
+
+    // Delete Customer with AJAX
+    function deleteCustomer(id) {
+        if (confirm('Are you sure you want to delete this customer?')) {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'process_customermanagement.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    const row = document.getElementById(`row-${id}`);
+                    if (row) {
+                        row.remove();
+                    }
+                } else {
+                    alert('Error deleting customer.');
+                }
+            };
+            xhr.send(`action=delete&id=${id}`);
+        }
     }
 
     // Enable editing for a specific row
@@ -108,19 +127,23 @@
         saveButton.style.display = 'inline-block';
     }
 
-    // Save changes to the database
+    // Save Changes with AJAX
     function saveChanges(id) {
         const name = document.getElementById(`edit-name-${id}`).value;
         const email = document.getElementById(`edit-email-${id}`).value;
 
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "process_customermanagement.php", true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.open('POST', 'process_customermanagement.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.onload = function () {
-            if (this.status === 200) {
-                location.reload();
+            if (xhr.status === 200) {
+                const nameCell = document.getElementById(`name-${id}`);
+                const emailCell = document.getElementById(`email-${id}`);
+                nameCell.textContent = name;
+                emailCell.textContent = email;
+                document.getElementById(`save-${id}`).style.display = 'none';
             } else {
-                alert("Failed to save changes.");
+                alert('Failed to save changes.');
             }
         };
         xhr.send(`action=edit&id=${id}&name=${name}&email=${email}`);
