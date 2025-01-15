@@ -19,80 +19,93 @@
     </div>
 </div>
 
-
-      <form action="pages/customer/business_details.php">
-        <div class="row mb-3">
-          <div class="col-md-6">
+<form action="process_personal_details.php" method="POST">
+    <!-- Title -->
+    <div class="row mb-3">
+        <div class="col-md-6">
             <label for="title" class="form-label">Title</label>
             <select class="form-select" id="title" name="title" required>
-              <option value="" selected disabled>Select Title</option>
-              <option value="Mr">Mr.</option>
-              <option value="Ms">Ms.</option>
-              <option value="Mrs">Mrs.</option>
+                <option value="" selected disabled>Select Title</option>
+                <option value="Mr">Mr.</option>
+                <option value="Ms">Ms.</option>
+                <option value="Mrs">Mrs.</option>
             </select>
-          </div>
         </div>
+    </div>
 
-        <div class="row mb-3">
-          <div class="col-md-6">
+    <!-- Name -->
+    <div class="row mb-3">
+        <div class="col-md-6">
             <label for="first-name" class="form-label">First Name</label>
             <input type="text" class="form-control" id="first-name" name="first-name" placeholder="Enter your first name" required>
-          </div>
-          <div class="col-md-6">
+        </div>
+        <div class="col-md-6">
             <label for="last-name" class="form-label">Last Name</label>
             <input type="text" class="form-control" id="last-name" name="last-name" placeholder="Enter your last name" required>
-          </div>
         </div>
+    </div>
 
-        <div class="mb-3">
-          <label for="gender" class="form-label">Gender</label>
-          <select class="form-select" id="gender" name="gender" required>
+    <!-- Gender -->
+    <div class="mb-3">
+        <label for="gender" class="form-label">Gender</label>
+        <select class="form-select" id="gender" name="gender" required>
             <option value="" selected disabled>Select Gender</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
-          </select>
-        </div>
+        </select>
+    </div>
 
-        <div class="mb-3">
-          <label for="email" class="form-label">E-mail</label>
-          <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
-        </div>
+    <!-- Bumiputera Status -->
+    <div class="mb-3">
+        <label for="bumiputera-status" class="form-label">Bumiputera Status</label>
+        <select class="form-select" id="bumiputera-status" name="bumiputera_status" required>
+            <option value="Bumiputera" selected>Bumiputera</option>
+            <option value="Non-Bumiputera">Non-Bumiputera</option>
+        </select>
+    </div>
 
-        <div class="mb-3">
-          <label for="phone" class="form-label">Phone Number</label>
-          <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" required>
-        </div>
+    <!-- Phone, Email, MyKad, Birthdate -->
+    <div class="mb-3">
+        <label for="phone" class="form-label">Phone Number</label>
+        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" required>
+    </div>
 
-        <div class="mb-3">
-          <label for="mykad" class="form-label">MyKad Number</label>
-          <input type="text" class="form-control" id="mykad" name="mykad" placeholder="Enter your MyKad number" required>
-        </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+    </div>
 
-        <div class="mb-3">
-          <label for="birthdate" class="form-label">Birthdate</label>
-          <input type="date" class="form-control" id="birthdate" name="birthdate" required>
-        </div>
+    <div class="mb-3">
+        <label for="mykad" class="form-label">MyKad Number</label>
+        <input type="text" class="form-control" id="mykad" name="mykad" placeholder="Enter your MyKad number" required>
+    </div>
 
-        <div class="mb-3">
-          <label for="address" class="form-label">Address</label>
-          <input type="text" class="form-control" id="address" name="address" placeholder="Enter your address" required>
-        </div>
+    <div class="mb-3">
+        <label for="birthdate" class="form-label">Birthdate</label>
+        <input type="date" class="form-control" id="birthdate" name="birthdate" required>
+    </div>
 
-        <div class="row mb-3">
-          <div class="col-md-6">
+    <!-- Address -->
+    <div class="mb-3">
+        <label for="address" class="form-label">Address</label>
+        <input type="text" class="form-control" id="address" name="address" placeholder="Enter your address" required>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
             <label for="city" class="form-label">City</label>
             <input type="text" class="form-control" id="city" name="city" placeholder="Enter your city" required>
-          </div>
-          <div class="col-md-6">
+        </div>
+        <div class="col-md-6">
             <label for="postcode" class="form-label">Postcode</label>
             <input type="text" class="form-control" id="postcode" name="postcode" placeholder="Enter your postcode" required>
-          </div>
         </div>
+    </div>
 
-        <div class="mb-3">
-          <label for="state" class="form-label">State</label>
-          <select class="form-select" id="state" name="state" required>
-            <option value="" selected disabled>Select your state</option>
+    <div class="mb-3">
+        <label for="state" class="form-label">State</label>
+        <select class="form-select" id="state" name="state" required>
+            <option value="" selected disabled>Select State</option>
             <option value="Johor">Johor</option>
             <option value="Kedah">Kedah</option>
             <option value="Kelantan">Kelantan</option>
@@ -108,19 +121,15 @@
             <option value="Kuala Lumpur">Kuala Lumpur</option>
             <option value="Labuan">Labuan</option>
             <option value="Putrajaya">Putrajaya</option>
-          </select>
-        </div>
-
-        <div class="form-check mb-3">
-          <input class="form-check-input" type="checkbox" id="oku" name="oku">
-          <label class="form-check-label" for="oku">I have an OKU card</label>
-        </div>
-
-        <button type="submit" class="btn btn-primary w-100">Next</button>
-      </form>
+        </select>
     </div>
-  </div>
-</body>
-</html>
-<script src="../../assets/js/scripts.js"></script>
 
+    <!-- OKU -->
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="oku" name="oku">
+        <label class="form-check-label" for="oku">I have an OKU card</label>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" class="btn btn-primary w-100">Next</button>
+</form>

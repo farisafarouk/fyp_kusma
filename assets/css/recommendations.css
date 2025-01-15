@@ -1,0 +1,167 @@
+:root {
+    --primary-color: #6c63ff;
+    --card-bg: #ffffff;
+    --text-color: #333333;
+    --detail-color: #6c757d;
+    --accent-color: #ff5722;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+.title {
+    color: darkslategrey;
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+.subtitle {
+    color: var(--detail-color);
+    font-size: 1rem;
+}
+
+/* Spinner */
+.loader,
+.loader::before,
+.loader::after {
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 10px;
+    animation: rotate 5s linear infinite;
+}
+
+.loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 50px; /* Adjusted size for balanced appearance */
+    height: 50px;
+    border-color: #5a4ff3;
+    margin-bottom: 15px; /* Adds spacing between spinner and text */
+}
+
+.loader::before,
+.loader::after {
+    position: absolute;
+    content: "";
+}
+
+.loader::before {
+    border-color: #35a2d2;
+    width: 110%;
+    height: 110%;
+    animation-delay: 0.5s;
+}
+
+.loader::after {
+    border-color: #9c40fc;
+    width: 120%;
+    height: 120%;
+    animation-delay: 0.1s;
+}
+
+@keyframes rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Loading Container */
+#loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Horizontally aligns spinner and text */
+    margin-top: 20%; /* Pushes the loading container down slightly */
+    text-align: center;
+}
+
+#loading p {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+
+
+/* Recommendation Card */
+.recommendation-card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.recommendation-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.agency-logo {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 10px;
+    background-color: #fff;
+    padding: 5px;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.description {
+    font-size: 0.9rem;
+    color: var(--detail-color);
+    margin-bottom: 15px;
+}
+
+.details {
+    font-size: 0.85rem;
+    color: var(--text-color);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.details span {
+    display: inline-block;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.btn-learn-more {
+    background-color: var(--accent-color);
+    color: #fff;
+    padding: 10px 20px;
+    font-weight: 500;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.btn-learn-more:hover {
+    background-color: #e64a19;
+}
