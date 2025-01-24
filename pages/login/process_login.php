@@ -6,16 +6,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Check if the user is trying to log in as admin
+    // Admin login
     if ($email === 'admin@kusma.com' && $password === 'password') {
-        // Set session variables for admin
-        $_SESSION['user_id'] = 0; // You can set a specific ID for admin if needed
+        $_SESSION['user_id'] = 0;
         $_SESSION['role'] = 'admin';
         header("Location: ../admin/admindashboard.php");
         exit();
     }
 
-    // Query to check if the email exists in the database for other users
+    // Check email in the database
     $sql = "SELECT * FROM users WHERE email = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $email);
@@ -25,16 +24,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result->num_rows === 1) {
         $user = $result->fetch_assoc();
 
-        // Check if the password matches
         if (password_verify($password, $user['password'])) {
-            // Set session variables
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['role'] = $user['role'];
 
-            // Redirect based on role
             switch ($user['role']) {
                 case 'customer':
-                    // Check form completion status for customers
                     switch ($user['form_status']) {
                         case 'personal':
                             header("Location: ../customer/personal_details.php");
@@ -56,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
 
                 case 'agent':
-                    // Check approval status for agents
                     $agent_sql = "SELECT approval_status FROM agents WHERE user_id = ?";
                     $agent_stmt = $conn->prepare($agent_sql);
                     $agent_stmt->bind_param("i", $user['id']);
@@ -66,7 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if ($agent_result->num_rows === 1) {
                         $agent = $agent_result->fetch_assoc();
                         if ($agent['approval_status'] === 'approved') {
-                            // Redirect to agent dashboard
                             header("Location: ../agent/agentdashboard.php");
                         } else {
                             $_SESSION['error'] = "Your registration as an agent is pending approval.";
@@ -79,25 +72,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
 
                 case 'admin':
-                    // Redirect to admin dashboard
                     header("Location: ../admin/admindashboard.php");
                     break;
 
                 case 'consultant':
-                    // Redirect to consultant dashboard
-                    header("Location: ../consultant/consultantdashboard.php");
+                    $consultant_sql = "SELECT approval_status FROM consultants WHERE user_id = ?";
+                    $consultant_stmt = $conn->prepare($consultant_sql);
+                    $consultant_stmt->bind_param("i", $user['id']);
+                    $consultant_stmt->execute();
+                    $consultant_result = $consultant_stmt->get_result();
+
+                    if ($consultant_result->num_rows === 1) {
+                        $consultant = $consultant_result->fetch_assoc();
+                        if ($consultant['approval_status'] === 'approved') {
+                            header("Location: ../consultant/consultantdashboard.php");
+                        } else {
+                            $_SESSION['error'] = "Your registration as a consultant is pending approval.";
+                            header("Location: login.php");
+                        }
+                    } else {
+                        $_SESSION['error'] = "Consultant data not found.";
+                        header("Location: login.php");
+                    }
                     break;
 
                 default:
                     $_SESSION['error'] = "Invalid role.";
                     header("Location: login.php");
-                    exit();
+                    break;
             }
             exit();
         }
     }
 
-    // If credentials are invalid
     $_SESSION['error'] = "Invalid email or password.";
     header("Location: login.php");
 }
