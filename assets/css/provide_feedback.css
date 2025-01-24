@@ -1,0 +1,36 @@
+body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(to right, #e6e6fa, #ffffff);
+    color: #333;
+}
+
+.container {
+    max-width: 700px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #6610f2;
+}
+
+.form-label {
+    font-weight: bold;
+}
+
+.btn-primary {
+    background: #6610f2;
+    border: none;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+.btn-primary:hover {
+    background: #520db4;
+    transform: scale(1.05);
+}
+
+textarea {
+    resize: none;
+}
