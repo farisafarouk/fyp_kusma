@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt_users->execute();
 
         // Get the inserted user ID
-        $user_id = $conn->insert_id;
+        $user_id = $stmt_users->insert_id;
 
         // Insert agent-specific data into the agents table with `pending` status
         $sql_agents = "INSERT INTO agents (user_id, phone, ic_passport, approval_status) VALUES (?, ?, ?, 'pending')";
@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

@@ -27,8 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt_user->execute()) {
             $user_id = $stmt_user->insert_id;
 
-            // Insert into agents table
-            $sql_agent = "INSERT INTO agents (user_id, phone, ic_passport, approval_status) VALUES (?, ?, ?, 'pending')";
+            // Insert into agents table with `approved` status for admin-added agents
+            $sql_agent = "INSERT INTO agents (user_id, phone, ic_passport, approval_status) VALUES (?, ?, ?, 'approved')";
             $stmt_agent = $conn->prepare($sql_agent);
             $stmt_agent->bind_param('iss', $user_id, $phone, $ic_passport);
 
@@ -54,27 +54,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: agent_management.php");
             exit();
         } else {
-            die("Error updating agent approval status: " . $stmt->error);
+            die("Error updating agent status: " . $stmt->error);
         }
     } elseif ($action === 'delete') {
         $agent_id = $_POST['agent_id'] ?? '';
 
-        // Delete agent from agents and users tables
-        $sql_agent = "DELETE FROM agents WHERE id = ?";
+        // Delete from agents and users tables
+        $sql_agent = "DELETE a, u FROM agents a
+                      INNER JOIN users u ON a.user_id = u.id
+                      WHERE a.id = ?";
         $stmt_agent = $conn->prepare($sql_agent);
         $stmt_agent->bind_param('i', $agent_id);
 
         if ($stmt_agent->execute()) {
-            $sql_user = "DELETE FROM users WHERE id = (SELECT user_id FROM agents WHERE id = ?)";
-            $stmt_user = $conn->prepare($sql_user);
-            $stmt_user->bind_param('i', $agent_id);
-
-            if ($stmt_user->execute()) {
-                header("Location: agent_management.php");
-                exit();
-            } else {
-                die("Error deleting user: " . $stmt_user->error);
-            }
+            header("Location: agent_management.php");
+            exit();
         } else {
             die("Error deleting agent: " . $stmt_agent->error);
         }
@@ -132,7 +126,7 @@ $result_approved = $conn->query($sql_approved);
                 <td><?php echo htmlspecialchars($row['phone']); ?></td>
                 <td><?php echo htmlspecialchars($row['ic_passport']); ?></td>
                 <td>
-                  <form method="POST" style="display:inline;">
+                  <form method="POST" action="agent_management.php" style="display:inline;">
                     <input type="hidden" name="agent_id" value="<?php echo $row['id']; ?>">
                     <button type="submit" name="action" value="approve" class="action-btn save">Approve</button>
                     <button type="submit" name="action" value="decline" class="action-btn delete">Decline</button>
@@ -163,14 +157,20 @@ $result_approved = $conn->query($sql_approved);
           </thead>
           <tbody>
             <?php while ($row = $result_approved->fetch_assoc()): ?>
-              <tr id="row-<?php echo $row['agent_id']; ?>">
+              <tr>
                 <td><?php echo htmlspecialchars($row['agent_id']); ?></td>
                 <td><?php echo htmlspecialchars($row['name']); ?></td>
                 <td><?php echo htmlspecialchars($row['email']); ?></td>
                 <td><?php echo htmlspecialchars($row['phone']); ?></td>
                 <td><?php echo htmlspecialchars($row['ic_passport']); ?></td>
                 <td>
-                  <button class="action-btn edit" onclick="enableEdit(<?php echo $row['agent_id']; ?>)">Edit</button>
+                  <button class="action-btn edit" onclick="openEditAgentModal(
+                      <?php echo $row['agent_id']; ?>,
+                      '<?php echo htmlspecialchars($row['name']); ?>',
+                      '<?php echo htmlspecialchars($row['email']); ?>',
+                      '<?php echo htmlspecialchars($row['phone']); ?>',
+                      '<?php echo htmlspecialchars($row['ic_passport']); ?>'
+                  )">Edit</button>
                   <form method="POST" style="display:inline;">
                     <input type="hidden" name="agent_id" value="<?php echo $row['agent_id']; ?>">
                     <button type="submit" name="action" value="delete" class="action-btn delete">Delete</button>
@@ -182,38 +182,6 @@ $result_approved = $conn->query($sql_approved);
         </table>
       </section>
     </main>
-
-    <!-- Add Agent Modal -->
-    <div id="addAgentModal" class="modal">
-      <div class="modal-content">
-        <span class="close-btn" onclick="closeAddAgentModal()">&times;</span>
-        <h2>Add New Agent</h2>
-        <form method="POST" action="agent_management.php">
-          <input type="hidden" name="action" value="add">
-          <div class="input-group">
-            <label for="add-name">Name</label>
-            <input type="text" id="add-name" name="name" required>
-          </div>
-          <div class="input-group">
-            <label for="add-email">Email</label>
-            <input type="email" id="add-email" name="email" required>
-          </div>
-          <div class="input-group">
-            <label for="add-phone">Phone</label>
-            <input type="text" id="add-phone" name="phone" required>
-          </div>
-          <div class="input-group">
-            <label for="add-ic-passport">IC/Passport</label>
-            <input type="text" id="add-ic-passport" name="ic_passport" required>
-          </div>
-          <div class="input-group">
-            <label for="add-password">Password</label>
-            <input type="password" id="add-password" name="password" required>
-          </div>
-          <button type="submit" class="action-btn save">Add Agent</button>
-        </form>
-      </div>
-    </div>
   </div>
 
   <script>
@@ -227,4 +195,3 @@ $result_approved = $conn->query($sql_approved);
   </script>
 </body>
 </html>
-

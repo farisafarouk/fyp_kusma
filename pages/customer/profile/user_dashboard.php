@@ -18,14 +18,8 @@ $user_id = $_SESSION['user_id'];
 // Fetch user profile data
 $sqlUser = "
     SELECT 
-        CONCAT(pd.first_name, ' ', pd.last_name) AS name, 
-        pd.birthdate, 
-        pd.gender, 
-        pd.bumiputera_status, 
-        pd.oku_status, 
-        bd.business_type 
+        CONCAT(IFNULL(pd.first_name, ''), ' ', IFNULL(pd.last_name, '')) AS name
     FROM personal_details pd
-    LEFT JOIN business_details bd ON pd.user_id = bd.user_id
     WHERE pd.user_id = ?
 ";
 $stmtUser = $conn->prepare($sqlUser);
@@ -35,134 +29,91 @@ $userProfile = $stmtUser->get_result()->fetch_assoc() ?? [];
 
 // Set user name or default to "Guest"
 $name = $userProfile['name'] ?? 'Guest';
-
-// Additional logic...
-?>
-
-
-
-// Fetch personalized recommendations
-$recommendations = [];
-if (!empty($userProfile)) {
-    $birth_date = new DateTime($userProfile['birthdate'] ?? '1900-01-01');
-    $current_date = new DateTime();
-    $age = $current_date->diff($birth_date)->y;
-
-    // Eligibility filters
-    $gender = $userProfile['gender'] ?? null;
-    $bumiputera_status = $userProfile['bumiputera_status'] ?? null;
-    $oku_status = $userProfile['oku_status'] ?? false;
-
-    // Fetch programs
-    $sqlPrograms = "
-        SELECT p.name AS program_name, p.description, p.resource_types, p.loan_amount_range, p.application_link, 
-               a.logo_url AS agency_logo 
-        FROM programs p 
-        JOIN agencies a ON p.agency_id = a.id
-    ";
-    $result = $conn->query($sqlPrograms);
-    if ($result) {
-        while ($program = $result->fetch_assoc()) {
-            $criteria = json_decode($program['eligibility_criteria'], true);
-
-            // Check criteria
-            if (
-                isset($criteria['age']) &&
-                ($age >= $criteria['age'][0] && $age <= $criteria['age'][1]) &&
-                (empty($criteria['gender']) || in_array($gender, $criteria['gender'])) &&
-                (empty($criteria['bumiputera_status']) || $criteria['bumiputera_status'] === $bumiputera_status) &&
-                (empty($criteria['oku_status']) || $criteria['oku_status'] === $oku_status)
-            ) {
-                $recommendations[] = $program;
-            }
-        }
-    }
-}
-
-// Example notifications
-$notifications = [
-    ['type' => 'success', 'message' => 'Your profile has been updated successfully.'],
-    ['type' => 'info', 'message' => 'New recommendations are available for you.'],
-];
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard - KUSMA</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <title>Customer Dashboard</title>
     <link rel="stylesheet" href="../../../assets/css/customer_dashboard.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../../../assets/css/customer_navbar.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"> <!-- Fonts -->
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light py-3 shadow-sm">
-        <div class="container">
-            <a class="navbar-brand" href="#">KUSMA Dashboard</a>
-            <button class="btn btn-outline-primary me-2"><i class="bi bi-person-circle"></i> Profile</button>
-            <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#notificationModal">
-                <i class="bi bi-bell"></i> Notifications
-            </button>
-        </div>
-    </nav>
+    <!-- Navbar -->
+    <?php include '../customer_navbar.php'; ?>
 
-    <div class="container my-5">
-        <!-- Welcome Message -->
-        <header class="text-center mb-5">
-            <h1>Welcome, <?= htmlspecialchars($name) ?>!</h1>
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>Welcome, <span id="customer-name"><?= htmlspecialchars($name) ?></span>!</h1>
+            <p>Your personalized dashboard to manage everything in one place.</p>
         </header>
 
-        <!-- Personalized Recommendations -->
-        <section>
-            <h2 class="mb-4">Personalized Recommendations</h2>
-            <div class="row">
-                <?php if (empty($recommendations)): ?>
-                    <p class="text-center">No recommendations available. Update your profile for better results.</p>
-                <?php else: ?>
-                    <?php foreach ($recommendations as $program): ?>
-                        <div class="col-md-6 col-lg-4 my-3">
-                            <div class="card shadow-sm">
-                                <div class="card-header bg-primary text-white">
-                                    <img src="/fyp_kusma/<?= htmlspecialchars($program['agency_logo']) ?>" alt="Agency Logo" class="agency-logo me-3">
-                                    <span><?= htmlspecialchars($program['program_name']) ?></span>
-                                </div>
-                                <div class="card-body">
-                                    <p><?= htmlspecialchars($program['description']) ?></p>
-                                    <ul>
-                                        <li><strong>Type:</strong> <?= htmlspecialchars($program['resource_types']) ?></li>
-                                        <li><strong>Loan Range:</strong> RM<?= htmlspecialchars($program['loan_amount_range']) ?></li>
-                                    </ul>
-                                    <a href="<?= htmlspecialchars($program['application_link']) ?>" class="btn btn-primary">Learn More</a>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </div>
-        </section>
-    </div>
-
-    <!-- Notification Modal -->
-    <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- Features Section -->
+        <div class="dashboard-sections">
+            <!-- Profile Management -->
+            <div class="dashboard-card">
+                <div class="card-icon">
+                    <i class="fas fa-user"></i>
                 </div>
-                <div class="modal-body">
-                    <ul class="list-group">
-                        <?php foreach ($notifications as $notification): ?>
-                            <li class="list-group-item"><?= htmlspecialchars($notification['message']) ?></li>
-                        <?php endforeach; ?>
-                    </ul>
+                <div class="card-content">
+                    <h2>Manage Profile</h2>
+                    <p>Update your personal details and preferences.</p>
+                    <a href="customer_profile.php" class="dashboard-btn">Go to Profile</a>
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="dashboard-card">
+                <div class="card-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <div class="card-content">
+                    <h2>Recommendations</h2>
+                    <p>Explore personalized loans, grants, and training programs.</p>
+                    <a href="customer_recommendations.php" class="dashboard-btn">View Recommendations</a>
+                </div>
+            </div>
+
+            <!-- Consultant Appointments -->
+            <div class="dashboard-card">
+                <div class="card-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="card-content">
+                    <h2>Consultant Appointments</h2>
+                    <p>Schedule, reschedule, or cancel your appointments.</p>
+                    <a href="customer_appointments.php" class="dashboard-btn">Manage Appointments</a>
+                </div>
+            </div>
+
+            <!-- Notifications -->
+            <div class="dashboard-card">
+                <div class="card-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="card-content">
+                    <h2>Notifications</h2>
+                    <p>Stay updated on appointments, recommendations, and more.</p>
+                    <a href="customer_notifications.php" class="dashboard-btn">View Notifications</a>
+                </div>
+            </div>
+
+            <!-- Logout -->
+            <div class="dashboard-card">
+                <div class="card-icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <div class="card-content">
+                    <h2>Logout</h2>
+                    <p>Log out securely to ensure your session is safe.</p>
+                    <a href="../../../login/logout.php" class="dashboard-btn logout-btn">Logout</a>
                 </div>
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
