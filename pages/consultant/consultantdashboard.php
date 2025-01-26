@@ -40,7 +40,7 @@
       <section class="dashboard-section">
         <h1><i class="fas fa-clock"></i> Availability Scheduling</h1>
         <p>Set and update your availability for consultations in real-time.</p>
-        <button class="dashboard-btn" onclick="location.href='availability.php';">Schedule Availability</button>
+        <button class="dashboard-btn" onclick="location.href='consultant_schedule.php';">Schedule Availability</button>
       </section>
 
       <!-- Reports and Analytics -->

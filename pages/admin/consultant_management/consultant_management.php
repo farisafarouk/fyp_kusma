@@ -17,6 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = $_POST['email'] ?? '';
         $phone = $_POST['phone'] ?? '';
         $ic_passport = $_POST['ic_passport'] ?? '';
+        $expertise = $_POST['expertise'] ?? '';
+        $rate_per_hour = $_POST['rate_per_hour'] ?? 0.00;
         $password = password_hash($_POST['password'] ?? '', PASSWORD_DEFAULT);
 
         // Insert into users table
@@ -27,10 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt_user->execute()) {
             $user_id = $stmt_user->insert_id;
 
-            // Insert into consultants table with `approved` status
-            $sql_consultant = "INSERT INTO consultants (user_id, phone, ic_passport, approval_status) VALUES (?, ?, ?, 'approved')";
+            // Insert into consultants table
+            $sql_consultant = "INSERT INTO consultants (user_id, expertise, rate_per_hour) VALUES (?, ?, ?)";
             $stmt_consultant = $conn->prepare($sql_consultant);
-            $stmt_consultant->bind_param('iss', $user_id, $phone, $ic_passport);
+            $stmt_consultant->bind_param('isd', $user_id, $expertise, $rate_per_hour);
 
             if ($stmt_consultant->execute()) {
                 header("Location: consultant_management.php");
@@ -45,16 +47,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $consultant_id = $_POST['consultant_id'] ?? '';
         $name = $_POST['name'] ?? '';
         $email = $_POST['email'] ?? '';
-        $phone = $_POST['phone'] ?? '';
-        $ic_passport = $_POST['ic_passport'] ?? '';
+        $expertise = $_POST['expertise'] ?? '';
+        $rate_per_hour = $_POST['rate_per_hour'] ?? 0.00;
         $password = $_POST['password'] ?? null;
 
         // Update users and consultants tables
         $sql_update = "UPDATE users u
                        INNER JOIN consultants c ON u.id = c.user_id
-                       SET u.name = ?, u.email = ?, c.phone = ?, c.ic_passport = ?";
-        $params = [$name, $email, $phone, $ic_passport, $consultant_id];
-        $types = 'sssii';
+                       SET u.name = ?, u.email = ?, c.expertise = ?, c.rate_per_hour = ?";
+        $params = [$name, $email, $expertise, $rate_per_hour, $consultant_id];
+        $types = 'sssd';
 
         // Update password only if provided
         if (!empty($password)) {
@@ -93,12 +95,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch approved consultants
-$sql_approved = "SELECT c.id AS consultant_id, u.id AS user_id, u.name, u.email, c.phone, c.ic_passport 
-                 FROM consultants c 
-                 INNER JOIN users u ON c.user_id = u.id 
-                 WHERE c.approval_status = 'approved'";
-$result_approved = $conn->query($sql_approved);
+// Fetch consultants
+$sql_consultants = "SELECT c.id AS consultant_id, u.id AS user_id, u.name, u.email, c.expertise, c.rate_per_hour, c.rating, c.feedback_count
+                     FROM consultants c
+                     INNER JOIN users u ON c.user_id = u.id";
+$result_consultants = $conn->query($sql_consultants);
 ?>
 
 <!DOCTYPE html>
@@ -116,9 +117,9 @@ $result_approved = $conn->query($sql_approved);
     <?php include '../adminsidebar.php'; ?>
 
     <main class="dashboard-content">
-      <!-- Approved Consultants Section -->
+      <!-- Consultants Section -->
       <section class="dashboard-section">
-        <h1><i class="fas fa-user-check"></i> Approved Consultants</h1>
+        <h1><i class="fas fa-user-tie"></i> Manage Consultants</h1>
         <p>Edit, delete, or add new consultants.</p>
         <button class="action-btn add" onclick="openAddConsultantModal()">+ Add Consultant</button>
 
@@ -128,26 +129,28 @@ $result_approved = $conn->query($sql_approved);
               <th>ID</th>
               <th>Name</th>
               <th>Email</th>
-              <th>Phone</th>
-              <th>IC/Passport</th>
+              <th>Expertise</th>
+              <th>Rate/Hour</th>
+              <th>Rating</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            <?php while ($row = $result_approved->fetch_assoc()): ?>
+            <?php while ($row = $result_consultants->fetch_assoc()): ?>
               <tr id="row-<?php echo $row['consultant_id']; ?>">
                 <td><?php echo htmlspecialchars($row['consultant_id']); ?></td>
                 <td><?php echo htmlspecialchars($row['name']); ?></td>
                 <td><?php echo htmlspecialchars($row['email']); ?></td>
-                <td><?php echo htmlspecialchars($row['phone']); ?></td>
-                <td><?php echo htmlspecialchars($row['ic_passport']); ?></td>
+                <td><?php echo htmlspecialchars($row['expertise']); ?></td>
+                <td><?php echo htmlspecialchars($row['rate_per_hour']); ?></td>
+                <td><?php echo htmlspecialchars($row['rating'] ?? 'N/A'); ?></td>
                 <td>
                   <button class="action-btn edit" onclick="openEditConsultantModal(
                       <?php echo $row['consultant_id']; ?>,
                       '<?php echo htmlspecialchars($row['name']); ?>',
                       '<?php echo htmlspecialchars($row['email']); ?>',
-                      '<?php echo htmlspecialchars($row['phone']); ?>',
-                      '<?php echo htmlspecialchars($row['ic_passport']); ?>'
+                      '<?php echo htmlspecialchars($row['expertise']); ?>',
+                      '<?php echo htmlspecialchars($row['rate_per_hour']); ?>'
                   )">Edit</button>
                   <form method="POST" style="display:inline;">
                     <input type="hidden" name="consultant_id" value="<?php echo $row['consultant_id']; ?>">
@@ -177,12 +180,12 @@ $result_approved = $conn->query($sql_approved);
             <input type="email" id="add-email" name="email" required>
           </div>
           <div class="input-group">
-            <label for="add-phone">Phone</label>
-            <input type="text" id="add-phone" name="phone" required>
+            <label for="add-expertise">Expertise</label>
+            <input type="text" id="add-expertise" name="expertise" required>
           </div>
           <div class="input-group">
-            <label for="add-ic-passport">IC/Passport</label>
-            <input type="text" id="add-ic-passport" name="ic_passport" required>
+            <label for="add-rate">Rate/Hour</label>
+            <input type="number" id="add-rate" name="rate_per_hour" step="0.01" required>
           </div>
           <div class="input-group">
             <label for="add-password">Password</label>
@@ -210,12 +213,12 @@ $result_approved = $conn->query($sql_approved);
             <input type="email" id="edit-email" name="email" required>
           </div>
           <div class="input-group">
-            <label for="edit-phone">Phone</label>
-            <input type="text" id="edit-phone" name="phone" required>
+            <label for="edit-expertise">Expertise</label>
+            <input type="text" id="edit-expertise" name="expertise" required>
           </div>
           <div class="input-group">
-            <label for="edit-ic-passport">IC/Passport</label>
-            <input type="text" id="edit-ic-passport" name="ic_passport" required>
+            <label for="edit-rate">Rate/Hour</label>
+            <input type="number" id="edit-rate" name="rate_per_hour" step="0.01" required>
           </div>
           <div class="input-group">
             <label for="edit-password">Password (Leave blank to keep existing)</label>
@@ -236,12 +239,12 @@ $result_approved = $conn->query($sql_approved);
       document.getElementById('addConsultantModal').style.display = 'none';
     }
 
-    function openEditConsultantModal(id, name, email, phone, ic_passport) {
+    function openEditConsultantModal(id, name, email, expertise, rate_per_hour) {
       document.getElementById('edit-consultant-id').value = id;
       document.getElementById('edit-name').value = name;
       document.getElementById('edit-email').value = email;
-      document.getElementById('edit-phone').value = phone;
-      document.getElementById('edit-ic-passport').value = ic_passport;
+      document.getElementById('edit-expertise').value = expertise;
+      document.getElementById('edit-rate').value = rate_per_hour;
       document.getElementById('editConsultantModal').style.display = 'flex';
     }
 
