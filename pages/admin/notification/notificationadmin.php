@@ -1,24 +1,31 @@
 <?php
-session_start();
 require '../../../config/database.php';
 
-// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $recipient = $_POST['recipient'];
-    $title = $_POST['title'];
-    $message = $_POST['message'];
+    $recipientType = $_POST['recipient'] ?? '';
+    $email = $_POST['email'] ?? null; // Retrieve the specific email if provided
+    $title = $_POST['title'] ?? '';
+    $message = $_POST['message'] ?? '';
 
-    // Insert notification into the database
-    $sql = "INSERT INTO notifications (title, message, recipient, sent_at) VALUES (?, ?, ?, NOW())";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sss", $title, $message, $recipient);
+    // Validate input
+    if (!empty($title) && !empty($message)) {
+        $stmt = $conn->prepare("INSERT INTO notifications (title, message, recipient, recipient_email) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param('ssss', $title, $message, $recipientType, $email);
 
-    if ($stmt->execute()) {
-        $_SESSION['success'] = "Notification sent successfully!";
+        if ($stmt->execute()) {
+            echo "<script>alert('Notification sent successfully!'); window.location.href = 'notificationadmin.php';</script>";
+        } else {
+            echo "<script>alert('Failed to send notification.'); window.location.href = 'notificationadmin.php';</script>";
+        }
+        $stmt->close();
     } else {
-        $_SESSION['error'] = "Failed to send notification: " . $stmt->error;
+        echo "<script>alert('Please fill in all fields.'); window.location.href = 'notificationadmin.php';</script>";
     }
 }
+
+// Fetch notification history
+$sql = "SELECT id, title, message, recipient, recipient_email, sent_at FROM notifications ORDER BY sent_at DESC";
+$result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -40,29 +47,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <main class="dashboard-content">
       <section class="dashboard-section">
         <h1><i class="fas fa-bell"></i> Send Notifications</h1>
-        <p>Notify agents, consultants, or customers about updates, changes, or reminders.</p>
-
-        <?php
-        if (isset($_SESSION['success'])) {
-            echo "<p style='color: green; font-weight: bold;'>{$_SESSION['success']}</p>";
-            unset($_SESSION['success']);
-        }
-        if (isset($_SESSION['error'])) {
-            echo "<p style='color: red; font-weight: bold;'>{$_SESSION['error']}</p>";
-            unset($_SESSION['error']);
-        }
-        ?>
+        <p>Send notifications to a specific email or to groups of users.</p>
 
         <!-- Notification Form -->
         <form id="notificationForm" action="" method="POST">
           <div class="input-group">
             <label for="recipient">Select Recipient Type</label>
-            <select id="recipient" name="recipient" required>
+            <select id="recipient" name="recipient" onchange="toggleEmailInput()" required>
               <option value="all">All Users</option>
               <option value="agents">Agents</option>
               <option value="consultants">Consultants</option>
               <option value="customers">Customers</option>
+              <option value="email">Specific Email</option>
             </select>
+          </div>
+
+          <div class="input-group" id="email-input-group" style="display: none;">
+            <label for="email">Recipient Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter recipient's email">
           </div>
 
           <div class="input-group">
@@ -83,6 +85,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <section class="dashboard-section">
         <h1><i class="fas fa-history"></i> Notification History</h1>
         <p>View all previously sent notifications.</p>
+        
+        <!-- Filter -->
+        <div class="input-group">
+          <label for="filter">Filter by Title or Message</label>
+          <input type="text" id="filter" placeholder="Search notifications by title or message" onkeyup="filterNotifications()">
+        </div>
+
         <table class="contact-table">
           <thead>
             <tr>
@@ -90,33 +99,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <th>Title</th>
               <th>Message</th>
               <th>Recipient Type</th>
+              <th>Recipient Email</th>
               <th>Sent At</th>
             </tr>
           </thead>
-          <tbody>
-            <?php
-            // Fetch notifications from the database
-            $sql = "SELECT id, title, message, recipient, sent_at FROM notifications ORDER BY sent_at DESC";
-            $result = $conn->query($sql);
-
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    echo "<tr>
-                            <td>{$row['id']}</td>
-                            <td>{$row['title']}</td>
-                            <td>{$row['message']}</td>
-                            <td>{$row['recipient']}</td>
-                            <td>{$row['sent_at']}</td>
-                          </tr>";
-                }
-            } else {
-                echo "<tr><td colspan='5'>No notifications sent yet.</td></tr>";
-            }
-            ?>
+          <tbody id="notificationTable">
+            <?php while ($row = $result->fetch_assoc()): ?>
+              <tr>
+                <td><?php echo $row['id']; ?></td>
+                <td><?php echo htmlspecialchars($row['title']); ?></td>
+                <td><?php echo htmlspecialchars($row['message']); ?></td>
+                <td><?php echo htmlspecialchars($row['recipient']); ?></td>
+                <td><?php echo htmlspecialchars($row['recipient_email'] ?? 'N/A'); ?></td>
+                <td><?php echo htmlspecialchars($row['sent_at']); ?></td>
+              </tr>
+            <?php endwhile; ?>
           </tbody>
         </table>
       </section>
     </main>
   </div>
+
+  <script>
+    function toggleEmailInput() {
+      const recipientType = document.getElementById('recipient').value;
+      const emailInputGroup = document.getElementById('email-input-group');
+      emailInputGroup.style.display = recipientType === 'email' ? 'block' : 'none';
+    }
+
+    function filterNotifications() {
+      const filterValue = document.getElementById('filter').value.toLowerCase();
+      const rows = document.querySelectorAll('#notificationTable tr');
+      rows.forEach(row => {
+        const title = row.cells[1].textContent.toLowerCase();
+        const message = row.cells[2].textContent.toLowerCase();
+        if (title.includes(filterValue) || message.includes(filterValue)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+  </script>
 </body>
 </html>

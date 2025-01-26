@@ -142,18 +142,23 @@ $result_approved = $conn->query($sql_approved);
                 <td><?php echo htmlspecialchars($row['phone']); ?></td>
                 <td><?php echo htmlspecialchars($row['ic_passport']); ?></td>
                 <td>
-                  <button class="action-btn edit" onclick="openEditConsultantModal(
-                      <?php echo $row['consultant_id']; ?>,
-                      '<?php echo htmlspecialchars($row['name']); ?>',
-                      '<?php echo htmlspecialchars($row['email']); ?>',
-                      '<?php echo htmlspecialchars($row['phone']); ?>',
-                      '<?php echo htmlspecialchars($row['ic_passport']); ?>'
-                  )">Edit</button>
-                  <form method="POST" style="display:inline;">
-                    <input type="hidden" name="consultant_id" value="<?php echo $row['consultant_id']; ?>">
-                    <button type="submit" name="action" value="delete" class="action-btn delete">Delete</button>
-                  </form>
-                </td>
+  <button class="action-btn edit" onclick="openEditConsultantModal(
+      '<?php echo htmlspecialchars($row['consultant_id']); ?>',
+      '<?php echo htmlspecialchars($row['name']); ?>',
+      '<?php echo htmlspecialchars($row['email']); ?>',
+      '<?php echo htmlspecialchars($row['phone']); ?>',
+      '<?php echo htmlspecialchars($row['ic_passport']); ?>'
+  )">
+      <i class="fas fa-edit"></i> Edit
+  </button>
+  <form method="POST" style="display:inline;">
+      <input type="hidden" name="consultant_id" value="<?php echo $row['consultant_id']; ?>">
+      <button type="submit" name="action" value="delete" class="action-btn delete">
+          <i class="fas fa-trash-alt"></i> Delete
+      </button>
+  </form>
+</td>
+
               </tr>
             <?php endwhile; ?>
           </tbody>
