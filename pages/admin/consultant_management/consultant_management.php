@@ -2,6 +2,10 @@
 session_start();
 require_once '../../../config/database.php';
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // Ensure the user is an admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../../login/login.php");
@@ -16,12 +20,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $name = $_POST['name'] ?? '';
         $email = $_POST['email'] ?? '';
         $phone = $_POST['phone'] ?? '';
-        $ic_passport = $_POST['ic_passport'] ?? '';
         $expertise = $_POST['expertise'] ?? '';
         $rate_per_hour = $_POST['rate_per_hour'] ?? 0.00;
         $password = password_hash($_POST['password'] ?? '', PASSWORD_DEFAULT);
 
-        // Insert into users table
+        // Insert into `users` table
         $sql_user = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'consultant')";
         $stmt_user = $conn->prepare($sql_user);
         $stmt_user->bind_param('sss', $name, $email, $password);
@@ -29,10 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt_user->execute()) {
             $user_id = $stmt_user->insert_id;
 
-            // Insert into consultants table
-            $sql_consultant = "INSERT INTO consultants (user_id, expertise, rate_per_hour) VALUES (?, ?, ?)";
+            // Insert into `consultants` table
+            $sql_consultant = "INSERT INTO consultants (user_id, phone, expertise, rate_per_hour) VALUES (?, ?, ?, ?)";
             $stmt_consultant = $conn->prepare($sql_consultant);
-            $stmt_consultant->bind_param('isd', $user_id, $expertise, $rate_per_hour);
+            $stmt_consultant->bind_param('issd', $user_id, $phone, $expertise, $rate_per_hour);
 
             if ($stmt_consultant->execute()) {
                 header("Location: consultant_management.php");
@@ -47,16 +50,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $consultant_id = $_POST['consultant_id'] ?? '';
         $name = $_POST['name'] ?? '';
         $email = $_POST['email'] ?? '';
+        $phone = $_POST['phone'] ?? '';
         $expertise = $_POST['expertise'] ?? '';
         $rate_per_hour = $_POST['rate_per_hour'] ?? 0.00;
         $password = $_POST['password'] ?? null;
 
-        // Update users and consultants tables
+        // Update `users` and `consultants` tables
         $sql_update = "UPDATE users u
                        INNER JOIN consultants c ON u.id = c.user_id
-                       SET u.name = ?, u.email = ?, c.expertise = ?, c.rate_per_hour = ?";
-        $params = [$name, $email, $expertise, $rate_per_hour, $consultant_id];
-        $types = 'sssd';
+                       SET u.name = ?, u.email = ?, c.phone = ?, c.expertise = ?, c.rate_per_hour = ?";
+
+        $params = [$name, $email, $phone, $expertise, $rate_per_hour];
+        $types = 'sssds';
 
         // Update password only if provided
         if (!empty($password)) {
@@ -67,6 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $sql_update .= " WHERE c.id = ?";
+        $params[] = $consultant_id;
+        $types .= 'i';
+
         $stmt_update = $conn->prepare($sql_update);
         $stmt_update->bind_param($types, ...$params);
 
@@ -79,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($action === 'delete') {
         $consultant_id = $_POST['consultant_id'] ?? '';
 
-        // Delete from consultants and users tables
+        // Delete from `consultants` and `users` tables
         $sql_delete = "DELETE c, u FROM consultants c
                        INNER JOIN users u ON c.user_id = u.id
                        WHERE c.id = ?";
@@ -96,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Fetch consultants
-$sql_consultants = "SELECT c.id AS consultant_id, u.id AS user_id, u.name, u.email, c.expertise, c.rate_per_hour, c.rating, c.feedback_count
+$sql_consultants = "SELECT c.id AS consultant_id, u.id AS user_id, u.name, u.email, c.phone, c.expertise, c.rate_per_hour, c.rating, c.feedback_count
                      FROM consultants c
                      INNER JOIN users u ON c.user_id = u.id";
 $result_consultants = $conn->query($sql_consultants);
@@ -117,7 +125,6 @@ $result_consultants = $conn->query($sql_consultants);
     <?php include '../adminsidebar.php'; ?>
 
     <main class="dashboard-content">
-      <!-- Consultants Section -->
       <section class="dashboard-section">
         <h1><i class="fas fa-user-tie"></i> Manage Consultants</h1>
         <p>Edit, delete, or add new consultants.</p>
@@ -129,6 +136,7 @@ $result_consultants = $conn->query($sql_consultants);
               <th>ID</th>
               <th>Name</th>
               <th>Email</th>
+              <th>Phone</th>
               <th>Expertise</th>
               <th>Rate/Hour</th>
               <th>Rating</th>
@@ -141,6 +149,7 @@ $result_consultants = $conn->query($sql_consultants);
                 <td><?php echo htmlspecialchars($row['consultant_id']); ?></td>
                 <td><?php echo htmlspecialchars($row['name']); ?></td>
                 <td><?php echo htmlspecialchars($row['email']); ?></td>
+                <td><?php echo htmlspecialchars($row['phone']); ?></td>
                 <td><?php echo htmlspecialchars($row['expertise']); ?></td>
                 <td><?php echo htmlspecialchars($row['rate_per_hour']); ?></td>
                 <td><?php echo htmlspecialchars($row['rating'] ?? 'N/A'); ?></td>
@@ -149,6 +158,7 @@ $result_consultants = $conn->query($sql_consultants);
                       <?php echo $row['consultant_id']; ?>,
                       '<?php echo htmlspecialchars($row['name']); ?>',
                       '<?php echo htmlspecialchars($row['email']); ?>',
+                      '<?php echo htmlspecialchars($row['phone']); ?>',
                       '<?php echo htmlspecialchars($row['expertise']); ?>',
                       '<?php echo htmlspecialchars($row['rate_per_hour']); ?>'
                   )">Edit</button>
@@ -163,93 +173,102 @@ $result_consultants = $conn->query($sql_consultants);
         </table>
       </section>
     </main>
-
-    <!-- Add Consultant Modal -->
-    <div id="addConsultantModal" class="modal">
-      <div class="modal-content">
-        <span class="close-btn" onclick="closeAddConsultantModal()">&times;</span>
-        <h2>Add New Consultant</h2>
-        <form method="POST" action="consultant_management.php">
-          <input type="hidden" name="action" value="add">
-          <div class="input-group">
-            <label for="add-name">Name</label>
-            <input type="text" id="add-name" name="name" required>
-          </div>
-          <div class="input-group">
-            <label for="add-email">Email</label>
-            <input type="email" id="add-email" name="email" required>
-          </div>
-          <div class="input-group">
-            <label for="add-expertise">Expertise</label>
-            <input type="text" id="add-expertise" name="expertise" required>
-          </div>
-          <div class="input-group">
-            <label for="add-rate">Rate/Hour</label>
-            <input type="number" id="add-rate" name="rate_per_hour" step="0.01" required>
-          </div>
-          <div class="input-group">
-            <label for="add-password">Password</label>
-            <input type="password" id="add-password" name="password" required>
-          </div>
-          <button type="submit" class="action-btn save">Add Consultant</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Edit Consultant Modal -->
-    <div id="editConsultantModal" class="modal">
-      <div class="modal-content">
-        <span class="close-btn" onclick="closeEditConsultantModal()">&times;</span>
-        <h2>Edit Consultant</h2>
-        <form method="POST" action="consultant_management.php">
-          <input type="hidden" name="action" value="edit">
-          <input type="hidden" id="edit-consultant-id" name="consultant_id">
-          <div class="input-group">
-            <label for="edit-name">Name</label>
-            <input type="text" id="edit-name" name="name" required>
-          </div>
-          <div class="input-group">
-            <label for="edit-email">Email</label>
-            <input type="email" id="edit-email" name="email" required>
-          </div>
-          <div class="input-group">
-            <label for="edit-expertise">Expertise</label>
-            <input type="text" id="edit-expertise" name="expertise" required>
-          </div>
-          <div class="input-group">
-            <label for="edit-rate">Rate/Hour</label>
-            <input type="number" id="edit-rate" name="rate_per_hour" step="0.01" required>
-          </div>
-          <div class="input-group">
-            <label for="edit-password">Password (Leave blank to keep existing)</label>
-            <input type="password" id="edit-password" name="password">
-          </div>
-          <button type="submit" class="action-btn save">Update Consultant</button>
-        </form>
-      </div>
-    </div>
   </div>
+
+  <!-- Add Consultant Modal -->
+<div id="addConsultantModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeAddConsultantModal()">&times;</span>
+    <h2>Add Consultant</h2>
+    <form method="POST" action="consultant_management.php">
+      <input type="hidden" name="action" value="add">
+      <div class="input-group">
+        <label for="add-name">Name</label>
+        <input type="text" id="add-name" name="name" required>
+      </div>
+      <div class="input-group">
+        <label for="add-email">Email</label>
+        <input type="email" id="add-email" name="email" required>
+      </div>
+      <div class="input-group">
+        <label for="add-phone">Phone</label>
+        <input type="text" id="add-phone" name="phone" required>
+      </div>
+      <div class="input-group">
+        <label for="add-expertise">Expertise</label>
+        <input type="text" id="add-expertise" name="expertise" required>
+      </div>
+      <div class="input-group">
+        <label for="add-rate">Rate/Hour</label>
+        <input type="number" id="add-rate" name="rate_per_hour" step="0.01" required>
+      </div>
+      <div class="input-group">
+        <label for="add-password">Password</label>
+        <input type="password" id="add-password" name="password" required>
+      </div>
+      <button type="submit" class="action-btn save">Add Consultant</button>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Consultant Modal -->
+<div id="editConsultantModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeEditConsultantModal()">&times;</span>
+    <h2>Edit Consultant</h2>
+    <form method="POST" action="consultant_management.php">
+      <input type="hidden" name="action" value="edit">
+      <input type="hidden" id="edit-consultant-id" name="consultant_id">
+      <div class="input-group">
+        <label for="edit-name">Name</label>
+        <input type="text" id="edit-name" name="name" required>
+      </div>
+      <div class="input-group">
+        <label for="edit-email">Email</label>
+        <input type="email" id="edit-email" name="email" required>
+      </div>
+      <div class="input-group">
+        <label for="edit-phone">Phone</label>
+        <input type="text" id="edit-phone" name="phone" required>
+      </div>
+      <div class="input-group">
+        <label for="edit-expertise">Expertise</label>
+        <input type="text" id="edit-expertise" name="expertise" required>
+      </div>
+      <div class="input-group">
+        <label for="edit-rate">Rate/Hour</label>
+        <input type="number" id="edit-rate" name="rate_per_hour" step="0.01" required>
+      </div>
+      <div class="input-group">
+        <label for="edit-password">Password (optional)</label>
+        <input type="password" id="edit-password" name="password">
+      </div>
+      <button type="submit" class="action-btn save">Update Consultant</button>
+    </form>
+  </div>
+</div>
 
   <script>
     function openAddConsultantModal() {
-      document.getElementById('addConsultantModal').style.display = 'flex';
+      document.getElementById("addConsultantModal").style.display = "flex";
     }
 
     function closeAddConsultantModal() {
-      document.getElementById('addConsultantModal').style.display = 'none';
+      document.getElementById("addConsultantModal").style.display = "none";
     }
 
-    function openEditConsultantModal(id, name, email, expertise, rate_per_hour) {
-      document.getElementById('edit-consultant-id').value = id;
-      document.getElementById('edit-name').value = name;
-      document.getElementById('edit-email').value = email;
-      document.getElementById('edit-expertise').value = expertise;
-      document.getElementById('edit-rate').value = rate_per_hour;
-      document.getElementById('editConsultantModal').style.display = 'flex';
+    function openEditConsultantModal(id, name, email, phone, expertise, rate_per_hour) {
+      document.getElementById("edit-consultant-id").value = id;
+      document.getElementById("edit-name").value = name;
+      document.getElementById("edit-email").value = email;
+      document.getElementById("edit-phone").value = phone;
+      document.getElementById("edit-expertise").value = expertise;
+      document.getElementById("edit-rate").value = rate_per_hour;
+      document.getElementById("editConsultantModal").style.display = "flex";
     }
 
     function closeEditConsultantModal() {
-      document.getElementById('editConsultantModal').style.display = 'none';
+      document.getElementById("editConsultantModal").style.display = "none";
     }
   </script>
 </body>

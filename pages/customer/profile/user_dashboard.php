@@ -86,7 +86,7 @@ $name = $userProfile['name'] ?? 'Guest';
                 <div class="card-content">
                     <h2>Consultant Appointments</h2>
                     <p>Schedule, reschedule, or cancel your appointments.</p>
-                    <a href="customer_appointments.php" class="dashboard-btn">Manage Appointments</a>
+                    <a href="../booking/customer_appointments.php" class="dashboard-btn">Manage Appointments</a>
                 </div>
             </div>
 

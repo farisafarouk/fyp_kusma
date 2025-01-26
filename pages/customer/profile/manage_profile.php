@@ -9,101 +9,74 @@ error_reporting(E_ALL);
 
 // Ensure the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../../login/login.php");
-    exit();
+    die("User not logged in.");
 }
 
 $user_id = $_SESSION['user_id'];
 
-// Fetch user credentials
-$sqlUser = "SELECT name, email FROM users WHERE id = ?";
-$stmtUser = $conn->prepare($sqlUser);
-$stmtUser->bind_param("i", $user_id);
-$stmtUser->execute();
-$userCredentials = $stmtUser->get_result()->fetch_assoc() ?? [];
+// Fetch data
+$sql = "
+    SELECT u.name, u.email, pd.first_name, pd.last_name, pd.gender, pd.phone_number, 
+           pd.address, pd.city, pd.state, pd.postcode, bd.business_name, bd.business_type,
+           ed.education_type, ed.certification_level
+    FROM users u
+    LEFT JOIN personal_details pd ON u.id = pd.user_id
+    LEFT JOIN business_details bd ON u.id = bd.user_id
+    LEFT JOIN education_resources ed ON u.id = ed.user_id
+    WHERE u.id = ?
+";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$userData = $stmt->get_result()->fetch_assoc() ?? [];
 
-// Fetch user personal details
-$sqlPersonal = "SELECT * FROM personal_details WHERE user_id = ?";
-$stmtPersonal = $conn->prepare($sqlPersonal);
-$stmtPersonal->bind_param("i", $user_id);
-$stmtPersonal->execute();
-$personalDetails = $stmtPersonal->get_result()->fetch_assoc() ?? [];
-
-// Fetch user business details
-$sqlBusiness = "SELECT * FROM business_details WHERE user_id = ?";
-$stmtBusiness = $conn->prepare($sqlBusiness);
-$stmtBusiness->bind_param("i", $user_id);
-$stmtBusiness->execute();
-$businessDetails = $stmtBusiness->get_result()->fetch_assoc() ?? [];
-
-// Fetch user education details
-$sqlEducation = "SELECT * FROM education_resources WHERE user_id = ?";
-$stmtEducation = $conn->prepare($sqlEducation);
-$stmtEducation->bind_param("i", $user_id);
-$stmtEducation->execute();
-$educationDetails = $stmtEducation->get_result()->fetch_assoc() ?? [];
-
-// Handle form submissions
+// Handle updates (in-line PHP for simplicity)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Update user credentials
-    if (isset($_POST['update_credentials'])) {
-        $name = $_POST['name'];
+    $section = $_POST['section'] ?? null;
+
+    if ($section === 'credentials') {
         $email = $_POST['email'];
         $password = !empty($_POST['password']) ? password_hash($_POST['password'], PASSWORD_DEFAULT) : null;
 
-        if ($password) {
-            $sqlUpdateCredentials = "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?";
-            $stmtUpdate = $conn->prepare($sqlUpdateCredentials);
-            $stmtUpdate->bind_param("sssi", $name, $email, $password, $user_id);
-        } else {
-            $sqlUpdateCredentials = "UPDATE users SET name = ?, email = ? WHERE id = ?";
-            $stmtUpdate = $conn->prepare($sqlUpdateCredentials);
-            $stmtUpdate->bind_param("ssi", $name, $email, $user_id);
-        }
-        $stmtUpdate->execute();
-    }
-
-    // Update personal details
-    if (isset($_POST['update_personal'])) {
-        $firstName = $_POST['first_name'];
-        $lastName = $_POST['last_name'];
+        $sqlUpdate = $password
+            ? "UPDATE users SET email = ?, password = ? WHERE id = ?"
+            : "UPDATE users SET email = ? WHERE id = ?";
+        $stmt = $conn->prepare($sqlUpdate);
+        $password ? $stmt->bind_param("ssi", $email, $password, $user_id) : $stmt->bind_param("si", $email, $user_id);
+        $stmt->execute();
+    } elseif ($section === 'personal') {
+        $first_name = $_POST['first_name'];
+        $last_name = $_POST['last_name'];
         $gender = $_POST['gender'];
-        $phone = $_POST['phone_number'];
+        $phone_number = $_POST['phone_number'];
         $address = $_POST['address'];
 
-        $sqlUpdatePersonal = "UPDATE personal_details SET first_name = ?, last_name = ?, gender = ?, phone_number = ?, address = ? WHERE user_id = ?";
-        $stmtUpdatePersonal = $conn->prepare($sqlUpdatePersonal);
-        $stmtUpdatePersonal->bind_param("sssssi", $firstName, $lastName, $gender, $phone, $address, $user_id);
-        $stmtUpdatePersonal->execute();
+        $sqlUpdate = "UPDATE personal_details SET first_name = ?, last_name = ?, gender = ?, phone_number = ?, address = ? WHERE user_id = ?";
+        $stmt = $conn->prepare($sqlUpdate);
+        $stmt->bind_param("sssssi", $first_name, $last_name, $gender, $phone_number, $address, $user_id);
+        $stmt->execute();
+    } elseif ($section === 'business') {
+        $business_name = $_POST['business_name'];
+        $business_type = $_POST['business_type'];
+
+        $sqlUpdate = "UPDATE business_details SET business_name = ?, business_type = ? WHERE user_id = ?";
+        $stmt = $conn->prepare($sqlUpdate);
+        $stmt->bind_param("ssi", $business_name, $business_type, $user_id);
+        $stmt->execute();
+    } elseif ($section === 'education') {
+        $education_type = $_POST['education_type'];
+        $certification_level = $_POST['certification_level'];
+
+        $sqlUpdate = "UPDATE education_resources SET education_type = ?, certification_level = ? WHERE user_id = ?";
+        $stmt = $conn->prepare($sqlUpdate);
+        $stmt->bind_param("ssi", $education_type, $certification_level, $user_id);
+        $stmt->execute();
     }
-
-    // Update business details
-    if (isset($_POST['update_business'])) {
-        $businessName = $_POST['business_name'];
-        $businessType = $_POST['business_type'];
-        $industry = $_POST['industry'];
-
-        $sqlUpdateBusiness = "UPDATE business_details SET business_name = ?, business_type = ?, industry = ? WHERE user_id = ?";
-        $stmtUpdateBusiness = $conn->prepare($sqlUpdateBusiness);
-        $stmtUpdateBusiness->bind_param("sssi", $businessName, $businessType, $industry, $user_id);
-        $stmtUpdateBusiness->execute();
-    }
-
-    // Update education details
-    if (isset($_POST['update_education'])) {
-        $educationType = $_POST['education_type'];
-        $certificationLevel = $_POST['certification_level'];
-
-        $sqlUpdateEducation = "UPDATE education_resources SET education_type = ?, certification_level = ? WHERE user_id = ?";
-        $stmtUpdateEducation = $conn->prepare($sqlUpdateEducation);
-        $stmtUpdateEducation->bind_param("ssi", $educationType, $certificationLevel, $user_id);
-        $stmtUpdateEducation->execute();
-    }
-
     header("Location: manage_profile.php");
     exit();
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -111,85 +84,88 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../../assets/css/customer_manageprofile.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../../assets/css/manage_profile.css">
 </head>
 <body>
-    <div class="dashboard-container">
-        <div class="dashboard-content">
-            <h1 class="text-center mb-4">Manage Profile</h1>
+<div class="container">
+    <h1>Manage Profile</h1>
 
-            <!-- Credentials Form -->
-            <div class="dashboard-section">
-                <h2>Credentials</h2>
-                <form method="POST">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" value="<?= htmlspecialchars($userCredentials['name'] ?? '') ?>" required>
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" value="<?= htmlspecialchars($userCredentials['email'] ?? '') ?>" required>
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" placeholder="Enter new password">
-                    <button type="submit" name="update_credentials" class="btn btn-primary mt-3">Update Credentials</button>
-                </form>
-            </div>
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="credentials-tab" data-bs-toggle="tab" href="#credentials" role="tab" aria-controls="credentials" aria-selected="true">Credentials</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="personal-tab" data-bs-toggle="tab" href="#personal" role="tab" aria-controls="personal" aria-selected="false">Personal Details</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="business-tab" data-bs-toggle="tab" href="#business" role="tab" aria-controls="business" aria-selected="false">Business Details</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="education-tab" data-bs-toggle="tab" href="#education" role="tab" aria-controls="education" aria-selected="false">Education Details</a>
+        </li>
+    </ul>
 
-            <!-- Personal Details Form -->
-            <div class="dashboard-section">
-                <h2>Personal Details</h2>
-                <form method="POST">
-                    <label for="first_name">First Name:</label>
-                    <input type="text" id="first_name" name="first_name" value="<?= htmlspecialchars($personalDetails['first_name'] ?? '') ?>" required>
-                    <label for="last_name">Last Name:</label>
-                    <input type="text" id="last_name" name="last_name" value="<?= htmlspecialchars($personalDetails['last_name'] ?? '') ?>" required>
-                    <label for="gender">Gender:</label>
-                    <select id="gender" name="gender" required>
-                        <option value="Male" <?= ($personalDetails['gender'] ?? '') === 'Male' ? 'selected' : '' ?>>Male</option>
-                        <option value="Female" <?= ($personalDetails['gender'] ?? '') === 'Female' ? 'selected' : '' ?>>Female</option>
-                    </select>
-                    <label for="phone_number">Phone Number:</label>
-                    <input type="text" id="phone_number" name="phone_number" value="<?= htmlspecialchars($personalDetails['phone_number'] ?? '') ?>" required>
-                    <label for="address">Address:</label>
-                    <textarea id="address" name="address" required><?= htmlspecialchars($personalDetails['address'] ?? '') ?></textarea>
-                    <button type="submit" name="update_personal" class="btn btn-primary mt-3">Update Personal Details</button>
-                </form>
-            </div>
+    <!-- Tab Content -->
+    <div class="tab-content">
+        <!-- Credentials Tab -->
+        <div class="tab-pane fade show active" id="credentials" role="tabpanel" aria-labelledby="credentials-tab">
+            <h2>Update Credentials</h2>
+            <form>
+                <!-- Fields for name, email, and password -->
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter a new password">
+                <button type="submit">Update</button>
+            </form>
+        </div>
 
-            <!-- Business Details Form -->
-            <div class="dashboard-section">
-                <h2>Business Details</h2>
-                <form method="POST">
-                    <label for="business_name">Business Name:</label>
-                    <input type="text" id="business_name" name="business_name" value="<?= htmlspecialchars($businessDetails['business_name'] ?? '') ?>">
-                    <label for="business_type">Business Type:</label>
-                    <select id="business_type" name="business_type">
-                        <option value="Sole Proprietor" <?= ($businessDetails['business_type'] ?? '') === 'Sole Proprietor' ? 'selected' : '' ?>>Sole Proprietor</option>
-                        <option value="Partnership" <?= ($businessDetails['business_type'] ?? '') === 'Partnership' ? 'selected' : '' ?>>Partnership</option>
-                    </select>
-                    <label for="industry">Industry:</label>
-                    <input type="text" id="industry" name="industry" value="<?= htmlspecialchars($businessDetails['industry'] ?? '') ?>">
-                    <button type="submit" name="update_business" class="btn btn-primary mt-3">Update Business Details</button>
-                </form>
-            </div>
+        <!-- Personal Details Tab -->
+        <div class="tab-pane fade" id="personal" role="tabpanel" aria-labelledby="personal-tab">
+            <h2>Update Personal Details</h2>
+            <form>
+                <!-- Personal details fields -->
+                <label for="first-name">First Name</label>
+                <input type="text" id="first-name" name="first-name" placeholder="Enter your first name">
+                <label for="last-name">Last Name</label>
+                <input type="text" id="last-name" name="last-name" placeholder="Enter your last name">
+                <button type="submit">Update</button>
+            </form>
+        </div>
 
-            <!-- Education Details Form -->
-            <div class="dashboard-section">
-                <h2>Education Details</h2>
-                <form method="POST">
-                    <label for="education_type">Education Type:</label>
-                    <select id="education_type" name="education_type" required>
-                        <option value="Still Studying" <?= ($educationDetails['education_type'] ?? '') === 'Still Studying' ? 'selected' : '' ?>>Still Studying</option>
-                        <option value="Graduated" <?= ($educationDetails['education_type'] ?? '') === 'Graduated' ? 'selected' : '' ?>>Graduated</option>
-                    </select>
-                    <label for="certification_level">Certification Level:</label>
-                    <select id="certification_level" name="certification_level" required>
-                        <option value="SPM / SKM" <?= ($educationDetails['certification_level'] ?? '') === 'SPM / SKM' ? 'selected' : '' ?>>SPM / SKM</option>
-                        <option value="Diploma" <?= ($educationDetails['certification_level'] ?? '') === 'Diploma' ? 'selected' : '' ?>>Diploma</option>
-                        <option value="Degree" <?= ($educationDetails['certification_level'] ?? '') === 'Degree' ? 'selected' : '' ?>>Degree</option>
-                        <option value="Master / PhD" <?= ($educationDetails['certification_level'] ?? '') === 'Master / PhD' ? 'selected' : '' ?>>Master / PhD</option>
-                    </select>
-                    <button type="submit" name="update_education" class="btn btn-primary mt-3">Update Education Details</button>
-                </form>
-            </div>
+        <!-- Business Details Tab -->
+        <div class="tab-pane fade" id="business" role="tabpanel" aria-labelledby="business-tab">
+            <h2>Update Business Details</h2>
+            <form>
+                <!-- Business details fields -->
+                <label for="business-name">Business Name</label>
+                <input type="text" id="business-name" name="business-name" placeholder="Enter your business name">
+                <label for="business-type">Business Type</label>
+                <select id="business-type" name="business-type">
+                    <option value="sole">Sole Proprietor</option>
+                    <option value="partnership">Partnership</option>
+                </select>
+                <button type="submit">Update</button>
+            </form>
+        </div>
+
+        <!-- Education Details Tab -->
+        <div class="tab-pane fade" id="education" role="tabpanel" aria-labelledby="education-tab">
+            <h2>Update Education Details</h2>
+            <form>
+                <!-- Education details fields -->
+                <label for="education-type">Education Type</label>
+                <select id="education-type" name="education-type">
+                    <option value="studying">Still Studying</option>
+                    <option value="graduated">Graduated</option>
+                </select>
+                <button type="submit">Update</button>
+            </form>
         </div>
     </div>
-</body>
+</div>
+
 </html>

@@ -1,0 +1,112 @@
+/* General Styling */
+body {
+    font-family: "Poppins", sans-serif;
+    background-color: #f9f9fc;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.dashboard-content {
+    flex: 1;
+    padding: 20px;
+    background-color: #f4f8fb;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Heading */
+.dashboard-section h1 {
+    font-size: 28px;
+    color: #6610f2;
+    margin-bottom: 10px;
+}
+
+.dashboard-section p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Appointments Table */
+.appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.appointments-table th,
+.appointments-table td {
+    padding: 15px;
+    text-align: center;
+    font-size: 14px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.appointments-table th {
+    background-color: #6610f2;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.appointments-table tbody tr:nth-child(even) {
+    background-color: #f9f9ff;
+}
+
+.appointments-table tbody tr:hover {
+    background-color: #ececff;
+    cursor: pointer;
+}
+
+/* Action Buttons */
+.action-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-btn.save {
+    background-color: #28a745;
+    color: white;
+}
+
+.action-btn.reschedule {
+    background-color: #007bff;
+    color: white;
+}
+
+.action-btn:hover {
+    opacity: 0.9;
+}
+
+.action-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .appointments-table th,
+    .appointments-table td {
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    .action-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+}

@@ -1,0 +1,204 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(to right, #e6e6fa, #ffffff);
+    color: #333;
+}
+
+/* Dashboard Container */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto;
+    max-width: 1200px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* Main Content */
+.dashboard-content {
+    width: 100%;
+}
+
+.dashboard-content h1 {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Appointments Section */
+.appointments-section {
+    margin-bottom: 30px;
+    background: #f9f9ff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.appointments-section h2 {
+    font-size: 22px;
+    color: #6610f2;
+    margin-bottom: 10px;
+}
+
+/* Appointments Table */
+.appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.appointments-table th, .appointments-table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.appointments-table thead {
+    background: #6610f2;
+    color: #fff;
+}
+
+.appointments-table tbody tr:nth-child(even) {
+    background: #f9f9ff;
+}
+
+.appointments-table tbody tr:hover {
+    background: #ececff;
+    cursor: pointer;
+}
+
+/* Buttons */
+.action-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.action-btn.reschedule {
+    background: #007bff;
+}
+
+.action-btn.reschedule:hover {
+    background: #0056b3;
+}
+
+.action-btn.cancel {
+    background: #ff4d4d;
+}
+
+.action-btn.cancel:hover {
+    background: #c82333;
+}
+
+/* Modals */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 400px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-content h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    text-align: center;
+    color: #6610f2;
+}
+
+.modal-content .input-group {
+    margin-bottom: 15px;
+}
+
+.modal-content .input-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.modal-content .input-group input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.modal-buttons .save-btn {
+    background: #28a745;
+    color: white;
+}
+
+.modal-buttons .cancel-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.modal-buttons button:hover {
+    opacity: 0.9;
+}
+
+/* Book Appointment Button */
+.book-appointment button {
+    background: #28a745;
+    color: #fff;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+
+.book-appointment button:hover {
+    background: #218838;
+    transform: scale(1.05);
+}

@@ -19,14 +19,14 @@
       <section class="dashboard-section">
         <h1><i class="fas fa-user"></i> Profile Management</h1>
         <p>Manage your personal and professional details, including qualifications and consultation rates.</p>
-        <button class="dashboard-btn" onclick="location.href='profile_management.php';">Manage Profile</button>
+        <button class="dashboard-btn" onclick="location.href='consultant_profile.php';">Manage Profile</button>
       </section>
 
       <!-- Manage Appointments -->
       <section class="dashboard-section">
         <h1><i class="fas fa-calendar-check"></i> Manage Appointments</h1>
         <p>View, approve, reject, or reschedule appointments based on availability.</p>
-        <button class="dashboard-btn" onclick="location.href='appointments.php';">Manage Appointments</button>
+        <button class="dashboard-btn" onclick="location.href='consultant_appointments.php';">Manage Appointments</button>
       </section>
 
       <!-- View Feedback -->

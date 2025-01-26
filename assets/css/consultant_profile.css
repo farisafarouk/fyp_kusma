@@ -1,0 +1,59 @@
+body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(to right, #e6e6fa, #ffffff);
+    margin: 0;
+}
+
+.dashboard-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.dashboard-content {
+    flex: 1;
+    padding: 20px;
+    background: #fff;
+}
+
+.dashboard-section {
+    background: #f9f9ff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-section h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+form .form-label {
+    font-weight: bold;
+    color: #555;
+}
+
+form .form-control {
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+form .btn {
+    background-color: #6610f2;
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+form .btn:hover {
+    background-color: #5a54d6;
+}

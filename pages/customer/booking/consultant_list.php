@@ -1,59 +1,18 @@
 <?php
+session_start();
 require_once '../../../config/database.php';
 
-// Fetch consultants with schedules and profile pictures
-$query = "
-    SELECT 
-        u.id AS consultant_id,
-        u.name,
-        u.email,
-        u.profile_picture,
-        cd.expertise,
-        cd.rate,
-        cs.day,
-        cs.date,
-        cs.start_time,
-        cs.end_time,
-        cs.appointment_mode
-    FROM 
-        users u
-    INNER JOIN 
-        consultant_details cd ON u.id = cd.consultant_id
-    LEFT JOIN 
-        consultant_schedule cs ON u.id = cs.consultant_id
-    WHERE 
-        u.role = 'consultant'
-    ORDER BY 
-        u.name, cs.date, cs.start_time
-";
-
-$result = $conn->query($query);
-
-$consultants = [];
-while ($row = $result->fetch_assoc()) {
-    $consultantId = $row['consultant_id'];
-    if (!isset($consultants[$consultantId])) {
-        $consultants[$consultantId] = [
-            'id' => $row['consultant_id'],
-            'name' => $row['name'],
-            'email' => $row['email'],
-            'profile_picture' => $row['profile_picture'],
-            'expertise' => $row['expertise'],
-            'rate' => $row['rate'],
-            'schedules' => [],
-        ];
-    }
-
-    if (!empty($row['day'])) {
-        $consultants[$consultantId]['schedules'][] = [
-            'day' => $row['day'],
-            'date' => $row['date'],
-            'start_time' => $row['start_time'],
-            'end_time' => $row['end_time'],
-            'appointment_mode' => $row['appointment_mode'],
-        ];
-    }
+// Ensure the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../../../login/login.php");
+    exit();
 }
+
+// Fetch consultants
+$sql = "SELECT c.id AS consultant_id, u.name, c.expertise, c.rate_per_hour, c.rating, c.feedback_count 
+        FROM consultants c
+        INNER JOIN users u ON c.user_id = u.id";
+$result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -61,51 +20,53 @@ while ($row = $result->fetch_assoc()) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultants</title>
+    <title>Consultant List</title>
     <link rel="stylesheet" href="../../../assets/css/consultant_list.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Meet Our Consultants</h1>
-            <p>Find the right consultant for your business needs and book an appointment.</p>
-        </header>
-        <div class="consultant-grid">
-            <?php foreach ($consultants as $consultant): ?>
-                <div class="consultant-card">
-                    <div class="card-header">
-                        <img src="../../../uploads/profile_pictures/<?= htmlspecialchars($consultant['profile_picture']) ?>" alt="Profile Picture of <?= htmlspecialchars($consultant['name']) ?>">
-                    </div>
-                    <div class="card-body">
-                        <h2><?= htmlspecialchars($consultant['name']) ?></h2>
-                        <p class="expertise"><?= htmlspecialchars($consultant['expertise']) ?></p>
-                        <p class="rate">RM<?= number_format($consultant['rate'], 2) ?>/hr</p>
-                        <p class="email"><i class="fas fa-envelope"></i> <?= htmlspecialchars($consultant['email']) ?></p>
-                        <div class="schedule">
-                            <p><strong>Available Schedules:</strong></p>
-                            <?php if (!empty($consultant['schedules'])): ?>
-                                <ul>
-                                    <?php foreach ($consultant['schedules'] as $schedule): ?>
-                                        <li>
-                                            <?= htmlspecialchars($schedule['day']) ?>, 
-                                            <?= htmlspecialchars($schedule['date']) ?>: 
-                                            <?= htmlspecialchars($schedule['start_time']) ?> - 
-                                            <?= htmlspecialchars($schedule['end_time']) ?> 
-                                            (<?= htmlspecialchars($schedule['appointment_mode']) ?>)
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            <?php else: ?>
-                                <p>No available schedules.</p>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <a href="booking_page.php?consultant_id=<?= $consultant['id'] ?>" class="book-btn">Book Now</a>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
+    <!-- Header -->
+    <header class="consultant-list-header">
+        <h1>Book a Consultant</h1>
+        <p>Select a consultant to book your appointment.</p>
+    </header>
+
+    <!-- Consultant List -->
+    <div class="consultant-list-container">
+        <?php if ($result->num_rows > 0): ?>
+            <table class="consultant-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Expertise</th>
+                        <th>Rate/Hour</th>
+                        <th>Rating</th>
+                        <th>Feedback Count</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($row['name']); ?></td>
+                            <td><?= htmlspecialchars($row['expertise']); ?></td>
+                            <td><?= htmlspecialchars($row['rate_per_hour']); ?></td>
+                            <td><?= htmlspecialchars($row['rating'] ?? 'N/A'); ?></td>
+                            <td><?= htmlspecialchars($row['feedback_count']); ?></td>
+                            <td>
+                                <form method="GET" action="select_appointment.php">
+                                    <input type="hidden" name="consultant_id" value="<?= $row['consultant_id']; ?>">
+                                    <button type="submit" class="book-btn">Book Appointment</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        <?php else: ?>
+            <p>No consultants available at the moment. Please check back later.</p>
+        <?php endif; ?>
     </div>
 </body>
 </html>
