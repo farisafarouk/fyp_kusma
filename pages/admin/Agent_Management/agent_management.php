@@ -41,20 +41,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             die("Error adding user: " . $stmt_user->error);
         }
-    } elseif ($action === 'approve' || $action === 'decline') {
+    } elseif ($action === 'edit') {
         $agent_id = $_POST['agent_id'] ?? '';
-        $approval_status = $action === 'approve' ? 'approved' : 'declined';
+        $name = $_POST['name'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $phone = $_POST['phone'] ?? '';
+        $ic_passport = $_POST['ic_passport'] ?? '';
 
-        // Update approval status
-        $sql = "UPDATE agents SET approval_status = ? WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param('si', $approval_status, $agent_id);
+        if (!empty($agent_id)) {
+            $sql = "UPDATE users 
+                    INNER JOIN agents ON users.id = agents.user_id 
+                    SET users.name = ?, users.email = ?, agents.phone = ?, agents.ic_passport = ? 
+                    WHERE agents.id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param('ssssi', $name, $email, $phone, $ic_passport, $agent_id);
 
-        if ($stmt->execute()) {
-            header("Location: agent_management.php");
-            exit();
-        } else {
-            die("Error updating agent status: " . $stmt->error);
+            if ($stmt->execute()) {
+                header("Location: agent_management.php");
+                exit();
+            } else {
+                die("Error updating agent: " . $stmt->error);
+            }
         }
     } elseif ($action === 'delete') {
         $agent_id = $_POST['agent_id'] ?? '';
@@ -108,6 +115,9 @@ $result_approved = $conn->query($sql_approved);
       <section class="dashboard-section">
         <h1><i class="fas fa-user-clock"></i> Pending Agent Registrations</h1>
         <p>Approve or decline agent registration requests.</p>
+        <div class="filter-container">
+          <input type="text" id="filter-pending-agents" placeholder="Search Pending Agents" onkeyup="filterPendingAgents()">
+        </div>
         <table class="contact-table">
           <thead>
             <tr>
@@ -118,7 +128,7 @@ $result_approved = $conn->query($sql_approved);
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="pending-agents-table">
             <?php while ($row = $result_pending->fetch_assoc()): ?>
               <tr>
                 <td><?php echo htmlspecialchars($row['name']); ?></td>
@@ -142,8 +152,11 @@ $result_approved = $conn->query($sql_approved);
       <section class="dashboard-section">
         <h1><i class="fas fa-user-check"></i> Approved Agents</h1>
         <p>Edit, delete, or add new agents.</p>
+       
+        <div class="filter-container">
+          <input type="text" id="filter-approved-agents" placeholder="Search Approved Agents" onkeyup="filterApprovedAgents()">
+        </div>
         <button class="action-btn add" onclick="openAddAgentModal()">+ Add Agent</button>
-
         <table class="contact-table">
           <thead>
             <tr>
@@ -155,7 +168,7 @@ $result_approved = $conn->query($sql_approved);
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="approved-agents-table">
             <?php while ($row = $result_approved->fetch_assoc()): ?>
               <tr>
                 <td><?php echo htmlspecialchars($row['agent_id']); ?></td>
@@ -164,18 +177,23 @@ $result_approved = $conn->query($sql_approved);
                 <td><?php echo htmlspecialchars($row['phone']); ?></td>
                 <td><?php echo htmlspecialchars($row['ic_passport']); ?></td>
                 <td>
-                  <button class="action-btn edit" onclick="openEditAgentModal(
-                      <?php echo $row['agent_id']; ?>,
-                      '<?php echo htmlspecialchars($row['name']); ?>',
-                      '<?php echo htmlspecialchars($row['email']); ?>',
-                      '<?php echo htmlspecialchars($row['phone']); ?>',
-                      '<?php echo htmlspecialchars($row['ic_passport']); ?>'
-                  )">Edit</button>
-                  <form method="POST" style="display:inline;">
-                    <input type="hidden" name="agent_id" value="<?php echo $row['agent_id']; ?>">
-                    <button type="submit" name="action" value="delete" class="action-btn delete">Delete</button>
-                  </form>
-                </td>
+  <button class="action-btn edit" onclick="openEditAgentModal(
+      '<?php echo htmlspecialchars($row['agent_id']); ?>',
+      '<?php echo htmlspecialchars($row['name']); ?>',
+      '<?php echo htmlspecialchars($row['email']); ?>',
+      '<?php echo htmlspecialchars($row['phone']); ?>',
+      '<?php echo htmlspecialchars($row['ic_passport']); ?>'
+  )">
+      <i class="fas fa-edit"></i> Edit
+  </button>
+  <form method="POST" style="display:inline;">
+      <input type="hidden" name="agent_id" value="<?php echo $row['agent_id']; ?>">
+      <button type="submit" name="action" value="delete" class="action-btn delete">
+          <i class="fas fa-trash-alt"></i> Delete
+      </button>
+  </form>
+</td>
+
               </tr>
             <?php endwhile; ?>
           </tbody>
@@ -184,13 +202,119 @@ $result_approved = $conn->query($sql_approved);
     </main>
   </div>
 
+  <!-- Add Agent Modal -->
+  <div id="addAgentModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeAddAgentModal()">&times;</span>
+      <h2>Add New Agent</h2>
+      <form method="POST" action="agent_management.php">
+        <input type="hidden" name="action" value="add">
+        <div class="input-group">
+          <label for="add-name">Name</label>
+          <input type="text" id="add-name" name="name" required>
+        </div>
+        <div class="input-group">
+          <label for="add-email">Email</label>
+          <input type="email" id="add-email" name="email" required>
+        </div>
+        <div class="input-group">
+          <label for="add-phone">Phone</label>
+          <input type="text" id="add-phone" name="phone" required>
+        </div>
+        <div class="input-group">
+          <label for="add-ic">IC/Passport</label>
+          <input type="text" id="add-ic" name="ic_passport" required>
+        </div>
+        <div class="input-group">
+          <label for="add-password">Password</label>
+          <input type="password" id="add-password" name="password" required>
+        </div>
+        <button type="submit" class="action-btn save">Add Agent</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Agent Modal -->
+  <div id="editAgentModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeEditAgentModal()">&times;</span>
+      <h2>Edit Agent</h2>
+      <form method="POST" action="agent_management.php">
+        <input type="hidden" name="action" value="edit">
+        <input type="hidden" id="edit-agent-id" name="agent_id">
+        <div class="input-group">
+          <label for="edit-name">Name</label>
+          <input type="text" id="edit-name" name="name" required>
+        </div>
+        <div class="input-group">
+          <label for="edit-email">Email</label>
+          <input type="email" id="edit-email" name="email" required>
+        </div>
+        <div class="input-group">
+          <label for="edit-phone">Phone</label>
+          <input type="text" id="edit-phone" name="phone" required>
+        </div>
+        <div class="input-group">
+          <label for="edit-ic">IC/Passport</label>
+          <input type="text" id="edit-ic" name="ic_passport" required>
+        </div>
+        <button type="submit" class="action-btn save">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
   <script>
+    // Filter Pending Agents
+    function filterPendingAgents() {
+      const filterValue = document.getElementById('filter-pending-agents').value.toLowerCase();
+      const rows = document.querySelectorAll('#pending-agents-table tr');
+      rows.forEach(row => {
+        const name = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+        const email = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+        if (name.includes(filterValue) || email.includes(filterValue)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    // Filter Approved Agents
+    function filterApprovedAgents() {
+      const filterValue = document.getElementById('filter-approved-agents').value.toLowerCase();
+      const rows = document.querySelectorAll('#approved-agents-table tr');
+      rows.forEach(row => {
+        const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+        const email = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+        if (name.includes(filterValue) || email.includes(filterValue)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    // Open Add Agent Modal
     function openAddAgentModal() {
       document.getElementById('addAgentModal').style.display = 'flex';
     }
 
     function closeAddAgentModal() {
       document.getElementById('addAgentModal').style.display = 'none';
+    }
+
+    // Open Edit Agent Modal
+    function openEditAgentModal(agentId, name, email, phone, icPassport) {
+      document.getElementById('edit-agent-id').value = agentId;
+      document.getElementById('edit-name').value = name;
+      document.getElementById('edit-email').value = email;
+      document.getElementById('edit-phone').value = phone;
+      document.getElementById('edit-ic').value = icPassport;
+      document.getElementById('editAgentModal').style.display = 'flex';
+    }
+
+    function closeEditAgentModal() {
+      document.getElementById('editAgentModal').style.display = 'none';
     }
   </script>
 </body>

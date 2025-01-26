@@ -1,3 +1,4 @@
+/* General Reset */
 * {
     margin: 0;
     padding: 0;
@@ -6,7 +7,7 @@
 
 body {
     font-family: "Poppins", sans-serif;
-    background: linear-gradient(to right, #e6e6fa, #ffffff); /* Lighter pastel gradient */
+    background: linear-gradient(to right, #e6e6fa, #ffffff);
     display: flex;
     color: #333;
 }
@@ -52,12 +53,11 @@ body {
     color: #666;
 }
 
-/* Filter Container */
+/* Filter Input */
 .filter-container {
     margin-bottom: 15px;
     display: flex;
-    align-items: left;
-    justify-content: left;
+    align-items: center;
     gap: 10px;
 }
 
@@ -68,7 +68,7 @@ body {
     border-radius: 5px;
     font-size: 14px;
     outline: none;
-    transition: border 0.3s, box-shadow 0.3s;
+    transition: border 0.3s;
 }
 
 .filter-container input:focus {
@@ -76,7 +76,7 @@ body {
     box-shadow: 0 0 5px rgba(102, 16, 242, 0.5);
 }
 
-/* Contact Table */
+/* Table Styles */
 .contact-table {
     width: 100%;
     border-collapse: collapse;
@@ -112,14 +112,25 @@ body {
     font-weight: bold;
 }
 
+/* Editable Inputs */
+.edit-input {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
 /* Buttons */
 .action-btn {
-    padding: 8px 16px;
-    font-size: 14px;
+    padding: 6px 10px;
+    font-size: 12px;
     border-radius: 5px;
     cursor: pointer;
     border: none;
-    transition: 0.3s;
+    transition: transform 0.3s, background-color 0.3s;
+    width: 70px;
+    text-align: center;
 }
 
 .action-btn.add {
@@ -143,7 +154,15 @@ body {
 }
 
 .action-btn:hover {
+    transform: scale(1.05);
     opacity: 0.9;
+}
+
+/* Align Buttons in Rows */
+.action-btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
 }
 
 /* Modal */
@@ -187,14 +206,25 @@ body {
     margin-bottom: 5px;
 }
 
-.input-group input {
+.input-group input,
+.input-group select,
+.input-group textarea {
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
+    font-size: 14px;
+    outline: none;
 }
 
-.input-group input:focus {
+.input-group textarea {
+    resize: none;
+    height: 80px;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
     border-color: #6610f2;
     box-shadow: 0 0 5px rgba(102, 16, 242, 0.5);
 }
@@ -210,4 +240,16 @@ body {
 
 .close-btn:hover {
     color: #ff4d4d;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
