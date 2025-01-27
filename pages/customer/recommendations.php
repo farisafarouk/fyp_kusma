@@ -2,11 +2,6 @@
 session_start();
 require_once '../../config/database.php';
 
-// Enable error reporting for debugging
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 // Ensure the user is logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: pages/login/login.php");
@@ -101,18 +96,41 @@ if ($userProfile) {
     <link rel="stylesheet" href="../../assets/css/recommendations.css">
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">KUSMA</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile/user_dashboard.php">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile/manage_profile.php">Manage Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../login/login.php">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
     <div class="container mt-5">
         <header class="text-center mb-4">
             <h1 class="title">Tailored Resources Just for You</h1>
             <p class="subtitle">Explore curated opportunities designed to help you succeed.</p>
         </header>
 
-       <!-- Loading Spinner -->
-<div id="loading">
-    <div class="loader"></div>
-    <p>Finding the best resources for you...</p>
-</div>
-
+        <!-- Loading Spinner -->
+        <div id="loading">
+            <div class="loader"></div>
+            <p>Finding the best resources for you...</p>
+        </div>
 
         <!-- Recommendations Section -->
         <div id="recommendations" style="display: none;">

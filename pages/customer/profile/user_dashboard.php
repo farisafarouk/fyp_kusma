@@ -62,7 +62,7 @@ $name = $userProfile['name'] ?? 'Guest';
                 <div class="card-content">
                     <h2>Manage Profile</h2>
                     <p>Update your personal details and preferences.</p>
-                    <a href="customer_profile.php" class="dashboard-btn">Go to Profile</a>
+                    <a href="manage_profile.php" class="dashboard-btn">Go to Profile</a>
                 </div>
             </div>
 
@@ -74,7 +74,7 @@ $name = $userProfile['name'] ?? 'Guest';
                 <div class="card-content">
                     <h2>Recommendations</h2>
                     <p>Explore personalized loans, grants, and training programs.</p>
-                    <a href="customer_recommendations.php" class="dashboard-btn">View Recommendations</a>
+                    <a href="../recommendations.php" class="dashboard-btn">View Recommendations</a>
                 </div>
             </div>
 
