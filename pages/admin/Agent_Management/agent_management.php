@@ -79,6 +79,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             die("Error deleting agent: " . $stmt_agent->error);
         }
+    } elseif ($action === 'approve') {
+        $agent_id = $_POST['agent_id'] ?? '';
+
+        if (!empty($agent_id)) {
+            $sql = "UPDATE agents SET approval_status = 'approved' WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param('i', $agent_id);
+
+            if ($stmt->execute()) {
+                header("Location: agent_management.php");
+                exit();
+            } else {
+                die("Error approving agent: " . $stmt->error);
+            }
+        }
+    } elseif ($action === 'decline') {
+        $agent_id = $_POST['agent_id'] ?? '';
+
+        if (!empty($agent_id)) {
+            $sql = "UPDATE agents SET approval_status = 'declined' WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param('i', $agent_id);
+
+            if ($stmt->execute()) {
+                header("Location: agent_management.php");
+                exit();
+            } else {
+                die("Error declining agent: " . $stmt->error);
+            }
+        }
     }
 }
 
@@ -104,7 +134,7 @@ $result_approved = $conn->query($sql_approved);
   <title>Agent Management</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../../../assets/css/adminsidebar.css">
-  <link rel="stylesheet" href="../../../assets/css/admin_agentmanagement.css">
+  <link rel="stylesheet" href="../../../assets/css/admin_customermanagement.css">
 </head>
 <body>
   <div class="dashboard-container">
@@ -234,34 +264,39 @@ $result_approved = $conn->query($sql_approved);
     </div>
   </div>
 
-  <!-- Edit Agent Modal -->
-  <div id="editAgentModal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeEditAgentModal()">&times;</span>
-      <h2>Edit Agent</h2>
-      <form method="POST" action="agent_management.php">
-        <input type="hidden" name="action" value="edit">
-        <input type="hidden" id="edit-agent-id" name="agent_id">
-        <div class="input-group">
-          <label for="edit-name">Name</label>
-          <input type="text" id="edit-name" name="name" required>
-        </div>
-        <div class="input-group">
-          <label for="edit-email">Email</label>
-          <input type="email" id="edit-email" name="email" required>
-        </div>
-        <div class="input-group">
-          <label for="edit-phone">Phone</label>
-          <input type="text" id="edit-phone" name="phone" required>
-        </div>
-        <div class="input-group">
-          <label for="edit-ic">IC/Passport</label>
-          <input type="text" id="edit-ic" name="ic_passport" required>
-        </div>
-        <button type="submit" class="action-btn save">Save Changes</button>
-      </form>
-    </div>
+ <!-- Edit Agent Modal -->
+<div id="editAgentModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeEditAgentModal()">&times;</span>
+    <h2>Edit Agent</h2>
+    <form method="POST" action="agent_management.php">
+      <input type="hidden" name="action" value="edit">
+      <input type="hidden" id="edit-agent-id" name="agent_id">
+      <div class="input-group">
+        <label for="edit-name">Name</label>
+        <input type="text" id="edit-name" name="name" required>
+      </div>
+      <div class="input-group">
+        <label for="edit-email">Email</label>
+        <input type="email" id="edit-email" name="email" required>
+      </div>
+      <div class="input-group">
+        <label for="edit-phone">Phone</label>
+        <input type="text" id="edit-phone" name="phone" required>
+      </div>
+      <div class="input-group">
+        <label for="edit-ic">IC/Passport</label>
+        <input type="text" id="edit-ic" name="ic_passport" required>
+      </div>
+      <div class="input-group">
+        <label for="edit-password">Password <span style="font-weight: normal;">(Leave blank to keep current password)</span></label>
+        <input type="password" id="edit-password" name="password" placeholder="Enter new password">
+      </div>
+      <button type="submit" class="action-btn save">Save Changes</button>
+    </form>
   </div>
+</div>
+
 
   <script>
     // Filter Pending Agents
@@ -304,18 +339,25 @@ $result_approved = $conn->query($sql_approved);
     }
 
     // Open Edit Agent Modal
-    function openEditAgentModal(agentId, name, email, phone, icPassport) {
-      document.getElementById('edit-agent-id').value = agentId;
-      document.getElementById('edit-name').value = name;
-      document.getElementById('edit-email').value = email;
-      document.getElementById('edit-phone').value = phone;
-      document.getElementById('edit-ic').value = icPassport;
-      document.getElementById('editAgentModal').style.display = 'flex';
-    }
+function openEditAgentModal(agentId, name, email, phone, icPassport) {
+  document.getElementById('edit-agent-id').value = agentId;
+  document.getElementById('edit-name').value = name;
+  document.getElementById('edit-email').value = email;
+  document.getElementById('edit-phone').value = phone;
+  document.getElementById('edit-ic').value = icPassport;
 
-    function closeEditAgentModal() {
-      document.getElementById('editAgentModal').style.display = 'none';
-    }
+  // Clear the password field
+  document.getElementById('edit-password').value = '';
+
+  document.getElementById('editAgentModal').style.display = 'flex';
+}
+
+function closeEditAgentModal() {
+  document.getElementById('editAgentModal').style.display = 'none';
+}
+
+
+    
   </script>
 </body>
 </html>

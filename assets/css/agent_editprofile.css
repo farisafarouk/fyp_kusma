@@ -1,0 +1,113 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(to right, #e6e6fa, #ffffff);
+    display: flex;
+    color: #333;
+  }
+  
+  /* Dashboard Container */
+  .dashboard-container {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  /* Main Content */
+  .dashboard-content {
+    width: 75%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    background: #f9f9ff;
+  }
+  
+  /* Edit Profile Section */
+  .dashboard-section {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid #ddd;
+  }
+  
+  .dashboard-section h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .dashboard-section p {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  /* Profile Form */
+  .profile-form .input-group {
+    margin-bottom: 20px;
+  }
+  
+  .profile-form .input-group label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+  }
+  
+  .profile-form .input-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #f9f9ff;
+  }
+  
+  .profile-form .input-group input:focus {
+    border-color: #6610f2;
+    outline: none;
+    box-shadow: 0 0 5px rgba(102, 16, 242, 0.5);
+  }
+  
+  /* Success/Error Messages */
+  .success-message {
+    color: green;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  /* Submit Button */
+  .dashboard-btn {
+    padding: 10px 20px;
+    background: linear-gradient(90deg, #6610f2, #6610f2);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+  }
+  
+  .dashboard-btn:hover {
+    background: linear-gradient(90deg, #6610f2, #9933ff);
+    transform: scale(1.05);
+  }
+  

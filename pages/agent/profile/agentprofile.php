@@ -31,6 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $phone = $_POST['phone'];
     $ic_passport = $_POST['ic_passport'];
+    $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
 
     try {
         $conn->begin_transaction();
@@ -47,13 +49,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt_agents->bind_param("ssi", $phone, $ic_passport, $user_id);
         $stmt_agents->execute();
 
+        // Update password if provided
+        if (!empty($password)) {
+            if ($password !== $confirm_password) {
+                throw new Exception("Passwords do not match.");
+            }
+
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            $sql_password = "UPDATE users SET password = ? WHERE id = ?";
+            $stmt_password = $conn->prepare($sql_password);
+            $stmt_password->bind_param("si", $hashed_password, $user_id);
+            $stmt_password->execute();
+        }
+
         $conn->commit();
         $_SESSION['success'] = "Profile updated successfully!";
-        header("Location: agent_profile.php");
+        header("Location: agentprofile.php");
         exit();
     } catch (Exception $e) {
         $conn->rollback();
-        $error_message = "An error occurred. Please try again later.";
+        $error_message = $e->getMessage();
     }
 }
 ?>
@@ -63,14 +78,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agent Profile Management</title>
-  <link rel="stylesheet" href="../../../assets/css/agentdashboard.css"> <!-- Dashboard CSS -->
-  <link rel="stylesheet" href="../../../assets/css/agentsidebar.css"> <!-- Sidebar CSS -->
+  <link rel="stylesheet" href="../../../assets/css/agent_editprofile.css"> <!-- Profile-specific CSS -->
+  <link rel="stylesheet" href="../../../assets/css/agent_sidebar.css"> <!-- Sidebar-specific CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome -->
 </head>
 <body>
   <div class="dashboard-container">
     <!-- Sidebar -->
-    <?php include 'agentsidebar.php'; ?>
+    <?php include '../agentsidebar.php'; ?>
 
     <!-- Main Content -->
     <main class="dashboard-content">
@@ -80,9 +95,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- Success/Error Message -->
         <?php if (isset($_SESSION['success'])): ?>
-          <p class="success-message" style="color: green;"><?php echo $_SESSION['success']; unset($_SESSION['success']); ?></p>
+          <p class="success-message"><?php echo $_SESSION['success']; unset($_SESSION['success']); ?></p>
         <?php elseif (isset($error_message)): ?>
-          <p class="error-message" style="color: red;"><?php echo $error_message; ?></p>
+          <p class="error-message"><?php echo $error_message; ?></p>
         <?php endif; ?>
 
         <!-- Profile Form -->
@@ -102,6 +117,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div class="input-group">
             <label for="ic_passport">IC Number/Passport Number</label>
             <input type="text" id="ic_passport" name="ic_passport" value="<?php echo htmlspecialchars($agent_data['ic_passport']); ?>" required>
+          </div>
+          <div class="input-group">
+            <label for="password">New Password</label>
+            <input type="password" id="password" name="password" placeholder="Leave blank to keep existing password">
+          </div>
+          <div class="input-group">
+            <label for="confirm_password">Confirm Password</label>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm new password">
           </div>
           <button type="submit" class="dashboard-btn">Save Changes</button>
         </form>
