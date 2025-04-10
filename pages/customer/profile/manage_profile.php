@@ -104,76 +104,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manage Profile</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../../../assets/css/customer_manageprofile.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-<div class="profile-container">
+
+<div class="container py-5">
   <h1><i class="fas fa-user-circle"></i> Manage Profile</h1>
 
   <!-- Profile Overview -->
-  <section class="profile-section">
+  <section class="profile-section mb-4">
     <h2>Profile Overview</h2>
     <p><strong>Name:</strong> <?php echo htmlspecialchars($user_data['name']); ?></p>
     <p><strong>Email:</strong> <?php echo htmlspecialchars($user_data['email']); ?></p>
-    <button class="action-btn" onclick="openModal('editProfileModal')">Edit Profile</button>
+    <button class="btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
   </section>
 
   <!-- Personal Details -->
-  <section class="profile-section">
+  <section class="profile-section mb-4">
     <h2>Personal Details</h2>
     <p><strong>First Name:</strong> <?php echo htmlspecialchars($personal_data['first_name'] ?? ''); ?></p>
     <p><strong>Last Name:</strong> <?php echo htmlspecialchars($personal_data['last_name'] ?? ''); ?></p>
     <p><strong>Phone Number:</strong> <?php echo htmlspecialchars($personal_data['phone_number'] ?? ''); ?></p>
     <p><strong>Address:</strong> <?php echo htmlspecialchars($personal_data['address'] ?? ''); ?></p>
-    <button class="action-btn" onclick="openModal('editPersonalModal')">Edit Personal Details</button>
+    <button class="btn-primary" data-bs-toggle="modal" data-bs-target="#editPersonalModal">Edit Personal Details</button>
   </section>
 
   <!-- Education Resources -->
-  <section class="profile-section">
+  <section class="profile-section mb-4">
     <h2>Education Resources</h2>
     <p><strong>Education Type:</strong> <?php echo htmlspecialchars($education_data['education_type'] ?? ''); ?></p>
     <p><strong>Certification Level:</strong> <?php echo htmlspecialchars($education_data['certification_level'] ?? ''); ?></p>
-    <button class="action-btn" onclick="openModal('editEducationModal')">Edit Education</button>
+    <button class="btn-primary" data-bs-toggle="modal" data-bs-target="#editEducationModal">Edit Education</button>
   </section>
 
   <!-- Business Details -->
-  <section class="profile-section">
+  <section class="profile-section mb-4">
     <h2>Business Details</h2>
     <p><strong>Business Type:</strong> <?php echo htmlspecialchars($business_data['business_type'] ?? ''); ?></p>
     <p><strong>Business Name:</strong> <?php echo htmlspecialchars($business_data['business_name'] ?? ''); ?></p>
-    <button class="action-btn" onclick="openModal('editBusinessModal')">Edit Business</button>
+    <button class="btn-primary" data-bs-toggle="modal" data-bs-target="#editBusinessModal">Edit Business</button>
   </section>
 </div>
 
 <!-- Modals -->
 <!-- Edit Profile Modal -->
-<div id="editProfileModal" class="modal">
-  <div class="modal-content">
-    <form method="POST" action="manage_profile.php">
-      <input type="hidden" name="form_type" value="profile">
-      <h2>Edit Profile</h2>
-      <label>Name:</label>
-      <input type="text" name="name" value="<?php echo htmlspecialchars($user_data['name']); ?>">
-      <label>Email:</label>
-      <input type="email" name="email" value="<?php echo htmlspecialchars($user_data['email']); ?>">
-      <label>Password:</label>
-      <input type="password" name="password" placeholder="Enter new password">
-      <button type="submit">Save Changes</button>
-    </form>
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="manage_profile.php">
+        <input type="hidden" name="form_type" value="profile">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label>Name</label>
+            <input type="text" class="form-control" name="name" value="<?php echo htmlspecialchars($user_data['name']); ?>" required>
+          </div>
+          <div class="mb-3">
+            <label>Email</label>
+            <input type="email" class="form-control" name="email" value="<?php echo htmlspecialchars($user_data['email']); ?>" required>
+          </div>
+          <div class="mb-3">
+            <label>Password</label>
+            <input type="password" class="form-control" name="password" placeholder="Enter new password">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 
-<!-- Add other modals for personal details, education resources, and business details similarly -->
+<!-- Bootstrap JS and Dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-  function openModal(modalId) {
-    document.getElementById(modalId).style.display = 'block';
-  }
-
-  function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
-  }
-</script>
 </body>
 </html>

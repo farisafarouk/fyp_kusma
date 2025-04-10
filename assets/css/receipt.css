@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Mono&family=Inter:wght@400;600&display=swap');
+
+body {
+  background-color: #f4f4f4;
+  font-family: 'Roboto Mono', monospace;
+  margin: 0;
+  padding: 40px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.receipt-container {
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+}
+
+.receipt-edge-top,
+.receipt-edge-bottom {
+  width: 100%;
+  height: 20px;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.receipt-edge-top svg,
+.receipt-edge-bottom svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.receipt-paper {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 15px 25px rgba(0,0,0,0.1);
+  text-align: left;
+  position: relative;
+  z-index: 2;
+}
+
+.receipt-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo {
+  height: 50px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.receipt-header h1 {
+  margin: 5px 0;
+  font-size: 1.4rem;
+  font-family: 'Fira Mono', monospace;
+}
+
+.receipt-header p {
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.receipt-body h3 {
+  margin: 15px 0 5px;
+  font-size: 0.9rem;
+  color: #000;
+  text-transform: uppercase;
+}
+
+.receipt-body p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+
+.receipt-footer {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.notice {
+  font-size: 0.75rem;
+  color: #888;
+  margin-bottom: 15px;
+}
+
+.btn-download {
+  background: #715dff;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background 0.3s;
+}
+
+.btn-download:hover {
+  background: #5b4add;
+}

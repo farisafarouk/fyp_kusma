@@ -4,8 +4,8 @@
 
     <a href="/fyp_kusma/index.php" class="logo d-flex align-items-center me-auto">
       <!-- Correct logo path -->
-      <img src="/fyp_kusma/assets/img/kusmaa.png" alt="" style="height: 60px; margin-right: 10px;">
-      <h1 class="sitename">Konsortium Usahawan Madani</h1>
+      <img src="/fyp_kusma/assets/img/kusmaa.png" alt="" style="height: 120px; margin-right: 100px;">
+      <h1 class="sitename">KUSMA</h1>
     </a>
 
     <nav id="navmenu" class="navmenu">

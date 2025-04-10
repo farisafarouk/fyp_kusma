@@ -1,0 +1,147 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: #f5f7fa;
+    color: #333;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 20px;
+    background-color: #f5f7fa;
+}
+
+.plan-compare {
+    max-width: 900px;
+    width: 100%;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 40px 30px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    position: relative;
+}
+
+.back-icon {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    font-size: 1.5rem;
+    color: #888;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.back-icon:hover {
+    color: #333;
+}
+
+.section-title {
+    font-size: 2rem;
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.plan-boxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.plan {
+    flex: 1 1 300px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 25px 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    text-align: left;
+    transition: all 0.3s ease;
+}
+
+.plan:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.plan h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: #6c63ff;
+}
+
+.plan ul {
+    padding-left: 20px;
+    font-size: 0.95rem;
+    color: #333;
+    list-style-type: none;
+}
+
+.plan ul li {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.plan ul li::before {
+    content: \"✔️\";
+    position: absolute;
+    left: -20px;
+}
+
+.plan.free {
+    border-left: 5px solid #ccc;
+}
+
+.plan.premium {
+    border-left: 5px solid #6c63ff;
+    background-color: #faf9ff;
+}
+
+.plan .price {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #ff5722;
+    margin-bottom: 10px;
+}
+
+.plan .price span {
+    font-size: 0.85rem;
+    font-weight: normal;
+    color: #777;
+}
+
+.upgrade-action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.upgrade-action .btn {
+    padding: 12px 25px;
+    background-color: #6c63ff;
+    color: white;
+    font-weight: 500;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+.upgrade-action .btn:hover {
+    background-color: #574fcf;
+}
