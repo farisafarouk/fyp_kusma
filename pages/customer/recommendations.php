@@ -103,6 +103,11 @@ if ($userProfile) {
         <h1 class="title">Tailored Resources Just for You</h1>
         <p class="subtitle">Explore curated opportunities designed to help you succeed.</p>
     </header>
+    
+    <div class="mb-4 text-center">
+    <input type="text" id="searchInput" class="form-control w-50 mx-auto" placeholder="Search by program, agency, or type...">
+</div>
+
 
     <div class="row" id="programCards">
         <?php if (empty($programs)): ?>
