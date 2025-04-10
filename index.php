@@ -74,9 +74,9 @@
           <div class="col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-up" data-aos-delay="200">
             <div class="content">
               <h3>About KUSMA</h3>
-              <h2>Konsortium Usahawan Madani</h2>
+              <h2>KUSMA</h2>
               <p>
-                Konsortium Usahawan Madani Sdn Bhd (Established on August, 2024) is an integrated Business & Financial
+                KUSMA Sdn Bhd (Established on August, 2024) is an integrated Business & Financial
 Consultation solutions provider, specializing in Business Planning & Financial Planning of commercial and government business trade. With our technical expertise, remarkable service and rapid responds towards our clients has made us recognized worldwide.
               </p>
               <div class="text-center text-lg-start">

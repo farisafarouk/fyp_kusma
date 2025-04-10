@@ -17,7 +17,7 @@ $sql = "SELECT id, title, message, recipient, recipient_email, sent_at
         WHERE recipient = 'all' OR recipient = 'agents' OR recipient_email = ? 
         ORDER BY sent_at DESC";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param('s', $user_email);
+$stmt->bind_param('s', $user_email);  // Bind the email of the logged-in agent
 $stmt->execute();
 $result = $stmt->get_result();
 ?>

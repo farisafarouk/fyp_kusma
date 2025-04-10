@@ -1,15 +1,19 @@
-
 <?php
 require '../../../config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $recipientType = $_POST['recipient'] ?? '';
-    $email = $_POST['email'] ?? null; // Retrieve the specific email if provided
+    $email = ($recipientType === 'email') ? ($_POST['email'] ?? '') : null;
     $title = $_POST['title'] ?? '';
     $message = $_POST['message'] ?? '';
 
     // Validate input
     if (!empty($title) && !empty($message)) {
+        if ($recipientType === 'email' && empty($email)) {
+            echo "<script>alert('Please provide a recipient email.'); window.location.href = 'notificationadmin.php';</script>";
+            exit;
+        }
+
         $stmt = $conn->prepare("INSERT INTO notifications (title, message, recipient, recipient_email) VALUES (?, ?, ?, ?)");
         $stmt->bind_param('ssss', $title, $message, $recipientType, $email);
 

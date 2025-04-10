@@ -1,0 +1,116 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body */
+body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(to right, #e6e6fa, #ffffff);
+    display: flex;
+    color: #333;
+}
+
+/* Dashboard Container */
+.dashboard-container {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Sidebar */
+.dashboard-sidebar {
+    width: 25%;
+    background: #6610f2;
+    padding: 20px;
+    color: #fff;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-sidebar a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.dashboard-sidebar a:hover {
+    color: #f1f1f1;
+}
+
+/* Main Content */
+.dashboard-content {
+    width: 75%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    background: #f9f9ff;
+}
+
+/* Dashboard Section */
+.dashboard-section {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid #ddd;
+}
+
+.dashboard-section h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.dashboard-section p {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+/* Referral Table */
+.referral-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.referral-table th, .referral-table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.referral-table th {
+    background-color: #f1f1f1;
+    font-weight: bold;
+}
+
+.referral-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.referral-table tr:hover {
+    background-color: #f0f0f0;
+}
+
+/* Success/Error Messages */
+.success-message {
+    color: green;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+}

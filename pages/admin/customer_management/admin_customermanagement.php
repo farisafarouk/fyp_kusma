@@ -29,7 +29,7 @@
         <table class="contact-table">
           <thead>
             <tr>
-              <th>ID</th>
+             
               <th>Name</th>
               <th>Email</th>
               <th>Password</th>
@@ -47,7 +47,7 @@
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr id='row-{$row['id']}'>
-                            <td>{$row['id']}</td>
+                            
                             <td id='name-{$row['id']}'>{$row['name']}</td>
                             <td id='email-{$row['id']}'>{$row['email']}</td>
                             <td id='password-{$row['id']}'>{$row['password']}</td>

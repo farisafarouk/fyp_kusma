@@ -190,7 +190,7 @@ $result_approved = $conn->query($sql_approved);
         <table class="contact-table">
           <thead>
             <tr>
-              <th>ID</th>
+             
               <th>Name</th>
               <th>Email</th>
               <th>Phone</th>
@@ -201,7 +201,7 @@ $result_approved = $conn->query($sql_approved);
           <tbody id="approved-agents-table">
             <?php while ($row = $result_approved->fetch_assoc()): ?>
               <tr>
-                <td><?php echo htmlspecialchars($row['agent_id']); ?></td>
+               
                 <td><?php echo htmlspecialchars($row['name']); ?></td>
                 <td><?php echo htmlspecialchars($row['email']); ?></td>
                 <td><?php echo htmlspecialchars($row['phone']); ?></td>

@@ -135,7 +135,7 @@ $resource_types = ['Loan', 'Grant', 'Training', 'Premises', 'Other'];
         <table id="resources-table" class="contact-table">
           <thead>
             <tr>
-              <th>ID</th>
+              
               <th>Name</th>
               <th>Description</th>
               <th>Type</th>
@@ -149,7 +149,7 @@ $resource_types = ['Loan', 'Grant', 'Training', 'Premises', 'Other'];
                 while ($row = $result->fetch_assoc()) {
                     echo "
                     <tr id='row-{$row['id']}'>
-                      <td>{$row['id']}</td>
+                      
                       <td data-id='{$row['id']}' data-field='name'>{$row['name']}</td>
                       <td data-id='{$row['id']}' data-field='description'>{$row['description']}</td>
                       <td data-id='{$row['id']}' data-field='resource_types'>

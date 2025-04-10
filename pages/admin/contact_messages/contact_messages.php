@@ -28,7 +28,7 @@ $result = $conn->query($sql);
             <table class="contact-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                       
                         <th>Name</th>
                         <th>Email</th>
                         <th>Subject</th>
@@ -40,7 +40,7 @@ $result = $conn->query($sql);
                     <?php if ($result->num_rows > 0): ?>
                         <?php while ($row = $result->fetch_assoc()): ?>
                             <tr>
-                                <td><?php echo $row['id']; ?></td>
+                               
                                 <td><?php echo htmlspecialchars($row['name']); ?></td>
                                 <td><?php echo htmlspecialchars($row['email']); ?></td>
                                 <td><?php echo htmlspecialchars($row['subject']); ?></td>
