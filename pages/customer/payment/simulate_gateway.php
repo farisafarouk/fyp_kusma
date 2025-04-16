@@ -1,6 +1,9 @@
 <?php
 session_start();
 require_once '../../../config/database.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../login/login.php");
@@ -21,7 +24,6 @@ $prefill = function($field, $fallback = '') use ($user) {
 };
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sanitize input
     $full_name = trim($_POST['full_name']);
     $email = trim($_POST['email']);
     $address = trim($_POST['address']);
@@ -35,7 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cvv = trim($_POST['cvv']);
     $referral_code = trim($_POST['referral_code']);
 
-    // Validate
     $valid_months = [
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
@@ -62,22 +63,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $insert->execute();
         $payment_id = $insert->insert_id;
 
-        $conn->query("UPDATE users SET subscription_status = 'subscribed' WHERE id = $user_id");
+        // ✅ Updated: Handle subscription upgrade with expiry extension
+        $conn->query("
+            UPDATE users 
+            SET 
+                subscription_status = 'subscribed',
+                subscription_expiry = IF(
+                    subscription_expiry IS NOT NULL AND subscription_expiry > NOW(),
+                    DATE_ADD(subscription_expiry, INTERVAL 1 YEAR),
+                    DATE_ADD(NOW(), INTERVAL 1 YEAR)
+                ),
+                subscription_updated_at = NOW()
+            WHERE id = $user_id
+        ");
 
+        // ✅ Referral code logic
         if ($referral_code) {
-            $referral = $conn->prepare("
-                SELECT user_id FROM agents 
-                WHERE user_id = (SELECT id FROM users WHERE id = ?)
-            ");
-            $referral->bind_param("i", $user_id);
-            $referral->execute();
-            $agent = $referral->get_result()->fetch_assoc();
+            $ref_check = $conn->prepare("SELECT user_id FROM agents WHERE referral_code = ?");
+            if (!$ref_check) {
+                die("SQL prepare failed: " . $conn->error);
+            }
 
-            if ($agent) {
+            $ref_check->bind_param("s", $referral_code);
+            $ref_check->execute();
+            $ref_result = $ref_check->get_result();
+
+            if ($ref_result->num_rows > 0) {
+                $agent = $ref_result->fetch_assoc();
                 $agent_id = $agent['user_id'];
-                $log = $conn->prepare("INSERT INTO referrals (agent_user_id, referred_user_id, payment_id) VALUES (?, ?, ?)");
-                $log->bind_param("iii", $agent_id, $user_id, $payment_id);
+
+                // Insert referral log
+                $log = $conn->prepare("INSERT INTO referrals (agent_id, customer_id, referral_code, status, commission_status) 
+                                       VALUES (?, ?, ?, 'approved', 'paid')");
+                $log->bind_param("iis", $agent_id, $user_id, $referral_code);
                 $log->execute();
+
+                // Update agent commission
+                $conn->query("UPDATE agents SET referral_earnings = referral_earnings + 1.00 WHERE user_id = $agent_id");
             }
         }
 
@@ -86,6 +108,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">

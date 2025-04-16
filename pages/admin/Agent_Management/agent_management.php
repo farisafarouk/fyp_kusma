@@ -13,35 +13,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
     if ($action === 'add') {
-        $name = $_POST['name'] ?? '';
-        $email = $_POST['email'] ?? '';
-        $phone = $_POST['phone'] ?? '';
-        $ic_passport = $_POST['ic_passport'] ?? '';
-        $password = password_hash($_POST['password'] ?? '', PASSWORD_DEFAULT);
-
-        // Insert into users table
-        $sql_user = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'agent')";
-        $stmt_user = $conn->prepare($sql_user);
-        $stmt_user->bind_param('sss', $name, $email, $password);
-
-        if ($stmt_user->execute()) {
-            $user_id = $stmt_user->insert_id;
-
-            // Insert into agents table with `approved` status for admin-added agents
-            $sql_agent = "INSERT INTO agents (user_id, phone, ic_passport, approval_status) VALUES (?, ?, ?, 'approved')";
-            $stmt_agent = $conn->prepare($sql_agent);
-            $stmt_agent->bind_param('iss', $user_id, $phone, $ic_passport);
-
-            if ($stmt_agent->execute()) {
-                header("Location: agent_management.php");
-                exit();
-            } else {
-                die("Error adding agent: " . $stmt_agent->error);
-            }
-        } else {
-            die("Error adding user: " . $stmt_user->error);
-        }
-    } elseif ($action === 'edit') {
+      $name = $_POST['name'] ?? '';
+      $email = $_POST['email'] ?? '';
+      $phone = $_POST['phone'] ?? '';
+      $ic_passport = $_POST['ic_passport'] ?? '';
+      $password = password_hash($_POST['password'] ?? '', PASSWORD_DEFAULT);
+  
+      // Function to generate a referral code
+      function generateReferralCode($length = 10) {
+          $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+          $code = '';
+          for ($i = 0; $i < $length; $i++) {
+              $code .= $characters[rand(0, strlen($characters) - 1)];
+          }
+          return $code;
+      }
+  
+      // Make sure referral code is unique
+      function getUniqueReferralCode($conn) {
+          do {
+              $code = generateReferralCode();
+              $stmt = $conn->prepare("SELECT COUNT(*) FROM agents WHERE referral_code = ?");
+              $stmt->bind_param("s", $code);
+              $stmt->execute();
+              $stmt->bind_result($count);
+              $stmt->fetch();
+              $stmt->close();
+          } while ($count > 0);
+          return $code;
+      }
+  
+      // Create referral code
+      $referral_code = getUniqueReferralCode($conn);
+  
+      // Insert into users table
+      $sql_user = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'agent')";
+      $stmt_user = $conn->prepare($sql_user);
+      $stmt_user->bind_param('sss', $name, $email, $password);
+  
+      if ($stmt_user->execute()) {
+          $user_id = $stmt_user->insert_id;
+  
+          // Insert into agents table with referral code
+          $sql_agent = "INSERT INTO agents (user_id, phone, ic_passport, approval_status, referral_code) VALUES (?, ?, ?, 'approved', ?)";
+          $stmt_agent = $conn->prepare($sql_agent);
+          $stmt_agent->bind_param('isss', $user_id, $phone, $ic_passport, $referral_code);
+  
+          if ($stmt_agent->execute()) {
+              header("Location: agent_management.php");
+              exit();
+          } else {
+              die("Error adding agent: " . $stmt_agent->error);
+          }
+      } else {
+          die("Error adding user: " . $stmt_user->error);
+      }
+  }
+   elseif ($action === 'edit') {
         $agent_id = $_POST['agent_id'] ?? '';
         $name = $_POST['name'] ?? '';
         $email = $_POST['email'] ?? '';

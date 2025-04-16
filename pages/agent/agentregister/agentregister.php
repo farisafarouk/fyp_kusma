@@ -1,5 +1,31 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once '../../../config/database.php';
+
+function generateReferralCode($length = 10) {
+    $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $code = '';
+    for ($i = 0; $i < $length; $i++) {
+        $code .= $characters[rand(0, strlen($characters) - 1)];
+    }
+    return $code;
+}
+
+function getUniqueReferralCode($conn) {
+    do {
+        $referral_code = generateReferralCode();
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM agents WHERE referral_code = ?");
+        $stmt->bind_param("s", $referral_code);
+        $stmt->execute();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        $stmt->close();
+    } while ($count > 0);
+    return $referral_code;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
@@ -8,43 +34,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ic_passport = $_POST['ic_passport'];
     $password = $_POST['password'];
 
-    // Hash the password
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
     try {
-        // Start a database transaction
         $conn->begin_transaction();
 
-        // Insert agent into the users table
+        // Insert into users table
         $sql_users = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'agent')";
         $stmt_users = $conn->prepare($sql_users);
         $stmt_users->bind_param("sss", $name, $email, $hashed_password);
         $stmt_users->execute();
 
-        // Get the inserted user ID
         $user_id = $stmt_users->insert_id;
 
-        // Insert agent-specific data into the agents table with `pending` status
-        $sql_agents = "INSERT INTO agents (user_id, phone, ic_passport, approval_status) VALUES (?, ?, ?, 'pending')";
+        // Generate unique referral code
+        $referral_code = getUniqueReferralCode($conn);
+
+        // Insert into agents table
+        $sql_agents = "INSERT INTO agents (user_id, phone, ic_passport, approval_status, referral_code) VALUES (?, ?, ?, 'pending', ?)";
         $stmt_agents = $conn->prepare($sql_agents);
-        $stmt_agents->bind_param("iss", $user_id, $phone, $ic_passport);
+        $stmt_agents->bind_param("isss", $user_id, $phone, $ic_passport, $referral_code);
         $stmt_agents->execute();
 
-        // Commit the transaction
         $conn->commit();
 
-        // Show success message
         $success_message = "Your agent registration request has been submitted. Please wait for admin approval.";
     } catch (Exception $e) {
-        // Rollback transaction in case of error
         $conn->rollback();
-
-        // Log the error and display an error message
         error_log($e->getMessage());
         $error_message = "An error occurred during registration. Please try again later.";
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>

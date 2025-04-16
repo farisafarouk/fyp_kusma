@@ -169,17 +169,19 @@
     }
 
     function deleteCustomer(id) {
-      if (confirm('Are you sure you want to delete this customer?')) {
-        $.post('process_customermanagement.php', { action: 'delete', id }, function(response) {
-          if (response.trim() === 'Success') {
-            $(`#row-${id}`).remove();
-            alert('Customer deleted successfully!');
-          } else {
-            alert('Failed to delete customer.');
-          }
-        }).fail(() => alert('Failed to delete customer.'));
+  if (confirm('Are you sure you want to delete this customer?')) {
+    $.post('process_customermanagement.php', { action: 'delete', id: id }, function(response) {
+      if (response.trim() === 'Success') {
+        $(`#row-${id}`).remove();
+        alert('Customer deleted successfully!');
+      } else {
+        alert('Failed to delete customer.');
+        console.log(response); // <-- add this line to inspect any error
       }
-    }
+    }).fail(() => alert('Failed to delete customer.'));
+  }
+}
+
   </script>
 </body>
 </html>

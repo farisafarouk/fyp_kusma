@@ -3,18 +3,17 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
-/* Body */
-body {
+  }
+  
+  body {
     font-family: "Poppins", sans-serif;
     background: linear-gradient(to right, #e6e6fa, #ffffff);
     display: flex;
     color: #333;
-}
-
-/* Dashboard Container */
-.dashboard-container {
+  }
+  
+  /* Dashboard Container */
+  .dashboard-container {
     display: flex;
     width: 100%;
     max-width: 1200px;
@@ -23,139 +22,82 @@ body {
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-}
-
-/* Sidebar */
-.dashboard-sidebar {
-    width: 25%;
-    background: #6610f2;
-    padding: 20px;
-    color: #fff;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-}
-
-.dashboard-sidebar a {
-    color: #fff;
-    text-decoration: none;
-    display: block;
-    margin-bottom: 15px;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.dashboard-sidebar a:hover {
-    color: #f1f1f1;
-}
-
-/* Main Content */
-.dashboard-content {
+  }
+  
+  /* Main Content */
+  .dashboard-content {
     width: 75%;
     padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 40px;
     background: #f9f9ff;
-}
-
-/* Dashboard Section */
-.dashboard-section {
+  }
+  
+  /* Section Styling */
+  .dashboard-section {
     background: #ffffff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     border: 1px solid #ddd;
-}
-
-.dashboard-section h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-
-.dashboard-section p {
-    font-size: 16px;
+  }
+  
+  /* Table Styling */
+  .commission-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  .commission-table th,
+  .commission-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .commission-table th {
+    background-color: #6610f2;
+    color: #fff;
+  }
+  
+  .commission-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  /* Summary Box */
+  .summary-box {
+    background-color: #f4f4f4;
+    padding: 20px;
+    border-radius: 10px;
     margin-bottom: 20px;
-}
-
-/* Generate Referral Code Form */
-.generate-code-form .input-group {
+  }
+  
+  /* Input Group (Reuse from Profile CSS) */
+  .profile-form .input-group {
     margin-bottom: 20px;
-}
-
-.generate-code-form .input-group label {
+  }
+  
+  .profile-form .input-group label {
     font-size: 14px;
     font-weight: bold;
     margin-bottom: 5px;
     display: block;
-}
-
-.generate-code-form .input-group input {
+  }
+  
+  .profile-form .input-group input {
     width: 100%;
     padding: 10px;
     font-size: 14px;
     border: 1px solid #ddd;
     border-radius: 5px;
     background: #f9f9ff;
-}
-
-.generate-code-form .input-group input:focus {
+  }
+  
+  .profile-form .input-group input:focus {
     border-color: #6610f2;
     outline: none;
     box-shadow: 0 0 5px rgba(102, 16, 242, 0.5);
-}
-
-/* Referral Table */
-.referral-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-.referral-table th, .referral-table td {
-    padding: 10px;
-    text-align: left;
-    border: 1px solid #ddd;
-}
-
-.referral-table th {
-    background-color: #f1f1f1;
-    font-weight: bold;
-}
-
-.referral-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.referral-table tr:hover {
-    background-color: #f0f0f0;
-}
-
-/* Success/Error Messages */
-.success-message {
-    color: green;
-    font-size: 14px;
-    margin-bottom: 10px;
-}
-
-.error-message {
-    color: red;
-    font-size: 14px;
-    margin-bottom: 10px;
-}
-
-/* Submit Button */
-.dashboard-btn {
-    padding: 10px 20px;
-    background: linear-gradient(90deg, #6610f2, #6610f2);
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
-}
-
-.dashboard-btn:hover {
-    background: linear-gradient(90deg, #6610f2, #9933ff);
-    transform: scale(1.05);
-}
+  }
+  

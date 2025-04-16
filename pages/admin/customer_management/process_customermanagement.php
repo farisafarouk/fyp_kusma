@@ -1,3 +1,4 @@
+
 <?php
 require '../../../config/database.php';
 
@@ -16,14 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         if ($stmt->execute()) {
             $id = $stmt->insert_id;
             echo "<tr id='row-{$id}'>
-                    <td>{$id}</td>
                     <td id='name-{$id}'>{$name}</td>
                     <td id='email-{$id}'>{$email}</td>
                     <td id='password-{$id}'>********</td>
                     <td>customer</td>
                     <td>
                       <div class='action-btn-group'>
-                        <button class='action-btn edit' onclick='openEditCustomerModal({$id})'><i class='fas fa-edit'></i> Edit</button>
+                        <button class='action-btn edit' onclick='openEditCustomerModal({$id}, \"{$name}\", \"{$email}\")'><i class='fas fa-edit'></i> Edit</button>
                         <button class='action-btn delete' onclick='deleteCustomer({$id})'><i class='fas fa-trash-alt'></i> Delete</button>
                       </div>
                     </td>
@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         } else {
             echo "Error adding customer.";
         }
+
     } elseif ($action === 'edit') {
         $id = $_POST['id'] ?? 0;
         $name = $_POST['name'] ?? '';
@@ -53,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         } else {
             echo "Error updating customer.";
         }
+
     } elseif ($action === 'delete') {
         $id = $_POST['id'] ?? 0;
 

@@ -33,12 +33,7 @@
           <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter your password" required>
         </div>
 
-        <!-- Referral Code Field (Optional) -->
-        <div class="input-group">
-          <label for="referral_code">Do you have a referral code? (Optional)</label>
-          <input type="text" id="referral_code" name="referral_code" placeholder="Enter referral code (if any)">
-        </div>
-
+       
         <div class="terms">
           <input type="checkbox" id="terms" name="terms" required>
           <label for="terms">I agree to the <a href="#">Terms and Conditions</a></label>
