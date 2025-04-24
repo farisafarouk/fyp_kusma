@@ -186,23 +186,27 @@ $result_approved = $conn->query($sql_approved);
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody id="pending-agents-table">
-            <?php while ($row = $result_pending->fetch_assoc()): ?>
-              <tr>
-                <td><?php echo htmlspecialchars($row['name']); ?></td>
-                <td><?php echo htmlspecialchars($row['email']); ?></td>
-                <td><?php echo htmlspecialchars($row['phone']); ?></td>
-                <td><?php echo htmlspecialchars($row['ic_passport']); ?></td>
-                <td>
-                  <form method="POST" action="agent_management.php" style="display:inline;">
-                    <input type="hidden" name="agent_id" value="<?php echo $row['id']; ?>">
-                    <button type="submit" name="action" value="approve" class="action-btn save">Approve</button>
-                    <button type="submit" name="action" value="decline" class="action-btn delete">Decline</button>
-                  </form>
-                </td>
-              </tr>
-            <?php endwhile; ?>
-          </tbody>
+         <!-- Pending Agents Table -->
+<tbody id="pending-agents-table">
+  <?php while ($row = $result_pending->fetch_assoc()): ?>
+    <tr>
+      <td><?php echo htmlspecialchars($row['name']); ?></td>
+      <td><?php echo htmlspecialchars($row['email']); ?></td>
+      <td><?php echo htmlspecialchars($row['phone']); ?></td>
+      <td><?php echo htmlspecialchars($row['ic_passport']); ?></td>
+      <td>
+        <form method="POST" action="agent_management.php" style="display:inline;">
+          <input type="hidden" name="agent_id" value="<?php echo $row['id']; ?>">
+          <button type="submit" name="action" value="approve" class="action-btn save"
+            onclick="return confirm('Are you sure you want to approve this agent?');">Approve</button>
+          <button type="submit" name="action" value="decline" class="action-btn delete"
+            onclick="return confirm('Are you sure you want to decline this agent?');">Decline</button>
+        </form>
+      </td>
+    </tr>
+  <?php endwhile; ?>
+</tbody>
+
         </table>
       </section>
 
@@ -226,35 +230,35 @@ $result_approved = $conn->query($sql_approved);
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody id="approved-agents-table">
-            <?php while ($row = $result_approved->fetch_assoc()): ?>
-              <tr>
-               
-                <td><?php echo htmlspecialchars($row['name']); ?></td>
-                <td><?php echo htmlspecialchars($row['email']); ?></td>
-                <td><?php echo htmlspecialchars($row['phone']); ?></td>
-                <td><?php echo htmlspecialchars($row['ic_passport']); ?></td>
-                <td>
-  <button class="action-btn edit" onclick="openEditAgentModal(
-      '<?php echo htmlspecialchars($row['agent_id']); ?>',
-      '<?php echo htmlspecialchars($row['name']); ?>',
-      '<?php echo htmlspecialchars($row['email']); ?>',
-      '<?php echo htmlspecialchars($row['phone']); ?>',
-      '<?php echo htmlspecialchars($row['ic_passport']); ?>'
-  )">
-      <i class="fas fa-edit"></i> Edit
-  </button>
-  <form method="POST" style="display:inline;">
-      <input type="hidden" name="agent_id" value="<?php echo $row['agent_id']; ?>">
-      <button type="submit" name="action" value="delete" class="action-btn delete">
-          <i class="fas fa-trash-alt"></i> Delete
-      </button>
-  </form>
-</td>
+        <!-- Approved Agents Table -->
+<tbody id="approved-agents-table">
+  <?php while ($row = $result_approved->fetch_assoc()): ?>
+    <tr>
+      <td><?php echo htmlspecialchars($row['name']); ?></td>
+      <td><?php echo htmlspecialchars($row['email']); ?></td>
+      <td><?php echo htmlspecialchars($row['phone']); ?></td>
+      <td><?php echo htmlspecialchars($row['ic_passport']); ?></td>
+      <td>
+        <button class="action-btn edit" onclick="openEditAgentModal(
+            '<?php echo htmlspecialchars($row['agent_id']); ?>',
+            '<?php echo htmlspecialchars($row['name']); ?>',
+            '<?php echo htmlspecialchars($row['email']); ?>',
+            '<?php echo htmlspecialchars($row['phone']); ?>',
+            '<?php echo htmlspecialchars($row['ic_passport']); ?>'
+        )"><i class="fas fa-edit"></i> Edit</button>
+        
+        <form method="POST" action="agent_management.php" style="display:inline;">
+          <input type="hidden" name="agent_id" value="<?php echo $row['agent_id']; ?>">
+          <button type="submit" name="action" value="delete" class="action-btn delete"
+            onclick="return confirm('Are you sure you want to delete this agent? This action cannot be undone.');">
+            <i class="fas fa-trash-alt"></i> Delete
+          </button>
+        </form>
+      </td>
+    </tr>
+  <?php endwhile; ?>
+</tbody>
 
-              </tr>
-            <?php endwhile; ?>
-          </tbody>
         </table>
       </section>
     </main>
@@ -292,7 +296,7 @@ $result_approved = $conn->query($sql_approved);
     </div>
   </div>
 
- <!-- Edit Agent Modal -->
+<!-- Edit Agent Modal -->
 <div id="editAgentModal" class="modal">
   <div class="modal-content">
     <span class="close-btn" onclick="closeEditAgentModal()">&times;</span>
@@ -320,10 +324,14 @@ $result_approved = $conn->query($sql_approved);
         <label for="edit-password">Password <span style="font-weight: normal;">(Leave blank to keep current password)</span></label>
         <input type="password" id="edit-password" name="password" placeholder="Enter new password">
       </div>
-      <button type="submit" class="action-btn save">Save Changes</button>
+      <button type="submit" class="action-btn save"
+        onclick="return confirm('Are you sure you want to save these changes?');">
+        Save Changes
+      </button>
     </form>
   </div>
 </div>
+
 
 
   <script>

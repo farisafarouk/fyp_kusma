@@ -1,3 +1,54 @@
+
+/* Referral Management Admin CSS */
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f5f8ff;
+    color: #333;
+}
+
+.dashboard-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 20px auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.dashboard-content {
+    width: 100%;
+    padding: 30px;
+    background: #f9f9ff;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.dashboard-section {
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    border: 1px solid #eee;
+}
+
+.dashboard-section h1 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.dashboard-section p {
+    color: #666;
+    margin-bottom: 15px;
+}
 /* Contact Messages Table Styles */
 .contact-table {
     width: 100%;

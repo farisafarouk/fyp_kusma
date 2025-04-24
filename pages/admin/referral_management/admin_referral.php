@@ -1,20 +1,62 @@
 <?php
+require '../../../config/database.php';
 session_start();
-require_once '../../../config/database.php';
 
-// Ensure the user is logged in and has the "admin" role
-if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'admin') {
-    // Fetch all referrals data for the admin to manage
-    $sql_referrals = "SELECT u.name AS agent_name, a.name AS customer_name, a.email AS customer_email, r.referral_date, r.status, r.commission_status 
-                      FROM users u
-                      JOIN referrals r ON u.id = r.agent_id
-                      JOIN users a ON a.id = r.customer_id";
-    $stmt_referrals = $conn->prepare($sql_referrals);
-    $stmt_referrals->execute();
-    $referrals_result = $stmt_referrals->get_result();
-} else {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../../login/login.php");
     exit();
+}
+
+// Handle commission status update and deletion
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['update_status'])) {
+        $referral_id = $_POST['referral_id'];
+        $new_status = $_POST['commission_status'];
+        $stmt = $conn->prepare("UPDATE referrals SET commission_status = ? WHERE id = ?");
+        $stmt->bind_param("si", $new_status, $referral_id);
+        $stmt->execute();
+    }
+
+    if (isset($_POST['delete_referral'])) {
+        $referral_id = $_POST['referral_id'];
+        $stmt = $conn->prepare("DELETE FROM referrals WHERE id = ?");
+        $stmt->bind_param("i", $referral_id);
+        $stmt->execute();
+    }
+
+    header("Location: admin_referral.php");
+    exit();
+}
+
+// Fetch all referral grouped by agent
+$sql = "
+    SELECT 
+        r.id, r.agent_id, ua.name AS agent_name, uc.name AS customer_name, 
+        r.referral_code, r.status, r.commission_status, r.referral_date
+    FROM referrals r
+    JOIN users ua ON ua.id = r.agent_id
+    JOIN users uc ON uc.id = r.customer_id
+    ORDER BY ua.name ASC, r.referral_date DESC
+";
+$result = $conn->query($sql);
+
+// Group referrals by agent
+$grouped = [];
+while ($row = $result->fetch_assoc()) {
+    $grouped[$row['agent_id']]['name'] = $row['agent_name'];
+    $grouped[$row['agent_id']]['referrals'][] = $row;
+}
+
+// Compute total commissions
+$commission_sql = "
+    SELECT agent_id, COUNT(*) AS paid_count, SUM(CASE WHEN commission_status = 'paid' THEN 1 ELSE 0 END) * 1.00 AS total_paid
+    FROM referrals
+    GROUP BY agent_id
+";
+$commissions = [];
+$cres = $conn->query($commission_sql);
+while ($row = $cres->fetch_assoc()) {
+    $commissions[$row['agent_id']] = $row['total_paid'];
 }
 ?>
 
@@ -22,56 +64,86 @@ if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'admin') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Referral Tracking</title>
-    <link rel="stylesheet" href="../../../assets/css/admin_referral.css">
+    <title>Referral Management</title>
     <link rel="stylesheet" href="../../../assets/css/adminsidebar.css">
+    <link rel="stylesheet" href="../../../assets/css/admin_referral.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="dashboard-container">
-        <!-- Sidebar -->
-        <?php include '../adminsidebar.php'; ?>
+<div class="dashboard-container">
+    <?php include '../adminsidebar.php'; ?>
+    <main class="dashboard-content">
+        <section class="dashboard-section">
+            <h1><i class="fas fa-users"></i> Referral Management</h1>
+            <p>View all referrals grouped by agent, update status, and track commission earnings.</p>
 
-        <!-- Main Content -->
-        <main class="dashboard-content">
-            <section class="dashboard-section">
-                <h1><i class="fas fa-users"></i> Referral Tracking</h1>
-                <p>Manage all agent referrals and monitor commissions.</p>
+            <div class="filter-container">
+                <input type="text" id="filterInput" placeholder="Search agent or customer..." onkeyup="filterTable()">
+            </div>
 
-                <!-- Referral Table -->
-                <table class="referral-table">
-                    <thead>
-                        <tr>
-                            <th>Agent Name</th>
-                            <th>Customer Name</th>
-                            <th>Email</th>
-                            <th>Referral Date</th>
-                            <th>Status</th>
-                            <th>Commission Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if ($referrals_result->num_rows > 0): ?>
-                            <?php while ($row = $referrals_result->fetch_assoc()): ?>
+            <div id="referralTable">
+                <?php foreach ($grouped as $agent_id => $data): ?>
+                    <div class="agent-block">
+                        <h2><?= htmlspecialchars($data['name']) ?> 
+                            <span class="commission-badge">
+                                Total Commission: RM <?= number_format($commissions[$agent_id] ?? 0, 2) ?>
+                            </span>
+                        </h2>
+
+                        <table class="contact-table">
+                            <thead>
                                 <tr>
-                                    <td><?php echo htmlspecialchars($row['agent_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['customer_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['customer_email']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['referral_date']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['status']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['commission_status']); ?></td>
+                                    <th>Customer</th>
+                                    <th>Referral Code</th>
+                                    <th>Status</th>
+                                    <th>Commission</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
                                 </tr>
-                            <?php endwhile; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="6">No referrals found.</td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </section>
-        </main>
-    </div>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($data['referrals'] as $ref): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($ref['customer_name']) ?></td>
+                                        <td><?= htmlspecialchars($ref['referral_code']) ?></td>
+                                        <td><?= ucfirst($ref['status']) ?></td>
+                                        <td>
+                                            <form method="POST" class="inline-form">
+                                                <input type="hidden" name="referral_id" value="<?= $ref['id'] ?>">
+                                                <select name="commission_status">
+                                                    <option value="pending" <?= $ref['commission_status'] === 'pending' ? 'selected' : '' ?>>Pending</option>
+                                                    <option value="paid" <?= $ref['commission_status'] === 'paid' ? 'selected' : '' ?>>Paid</option>
+                                                </select>
+                                               
+                                            </form>
+                                        </td>
+                                        <td><?= $ref['referral_date'] ?></td>
+                                        <td>
+                                            <form method="POST" onsubmit="return confirm('Delete this referral?');">
+                                                <input type="hidden" name="referral_id" value="<?= $ref['id'] ?>">
+                                                <button type="submit" name="delete_referral" class="action-btn delete"><i class="fas fa-trash"></i></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+function filterTable() {
+    const filter = document.getElementById("filterInput").value.toLowerCase();
+    const blocks = document.querySelectorAll(".agent-block");
+    blocks.forEach(block => {
+        const text = block.textContent.toLowerCase();
+        block.style.display = text.includes(filter) ? "block" : "none";
+    });
+}
+</script>
 </body>
 </html>

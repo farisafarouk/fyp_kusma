@@ -1,0 +1,49 @@
+/* General layout */
+body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(to right, #e6e6fa, #ffffff);
+    color: #333;
+  }
+  
+  .dashboard-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 20px auto;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .dashboard-content {
+    width: 100%;
+    padding: 30px;
+    background: #f9f9ff;
+  }
+  
+  /* Section Styling */
+  .dashboard-section {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid #ddd;
+  }
+  
+  .dashboard-section h1 {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+  
+  .dashboard-section p {
+    font-size: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .total-summary {
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+  }
+  

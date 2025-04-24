@@ -19,6 +19,8 @@
 
   <!-- Vendor CSS Files -->
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/pricing_section.css">
+
   <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
   <link href="assets/vendor/aos/aos.css" rel="stylesheet">
   <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
@@ -191,66 +193,48 @@ Consultation solutions provider, specializing in Business Planning & Financial P
     </section><!-- /Services Section -->
 
 <!-- Pricing Section -->
-<section id="pricing" class="pricing section">
-
-  <!-- Section Title -->
+<section id="pricing" class="pricing-section">
   <div class="container section-title" data-aos="fade-up">
     <h2>Subscription Plans</h2>
-    <p>Check Our Affordable Pricing<br></p>
-  </div><!-- End Section Title -->
-
-  <div class="container" style="max-width: 1200px; margin: 0 auto;">
-
-    <div class="row" style="display: flex; justify-content: center; gap: 20px;">
-
-      <div class="col-lg-3 col-md-6" style="flex: 0 1 300px; max-width: 300px; text-align: center;" data-aos="zoom-in" data-aos-delay="100">
-        <div class="pricing-tem" style="border: 1px solid #e5e5e5; padding: 30px; border-radius: 10px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); background-color: #fff;">
-          <h3 style="color: #20c997; font-size: 1.5rem; margin-bottom: 15px;">Free Plan</h3>
-          <div class="price" style="font-size: 2rem; font-weight: bold; color: #343a40; margin: 20px 0;">
-            <sup style="font-size: 1rem; color: #6c757d;">$</sup>0<span style="font-size: 1rem; color: #6c757d;"> / mo</span>
-          </div>
-          <div class="icon" style="margin-bottom: 20px;">
-            <i class="bi bi-box" style="color: #20c997; font-size: 2.5rem;"></i>
-          </div>
-          <ul style="list-style: none; padding: 0; margin: 0; line-height: 1.8; font-size: 0.9rem; color: #495057;">
-            <li>Aida dere</li>
-            <li>Nec feugiat nisl</li>
-            <li>Nulla at volutpat dola</li>
-            <li style="color: #adb5bd; text-decoration: line-through;">Pharetra massa</li>
-            <li style="color: #adb5bd; text-decoration: line-through;">Massa ultricies mi</li>
-          </ul>
-          <a href="#" class="btn-buy" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #20c997; color: #fff; border-radius: 5px; text-decoration: none; font-size: 1rem;">Buy Now</a>
-        </div>
-      </div><!-- End Pricing Item -->
-
-      <div class="col-lg-3 col-md-6" style="flex: 0 1 300px; max-width: 300px; text-align: center;" data-aos="zoom-in" data-aos-delay="200">
-        <div class="pricing-tem" style="border: 1px solid #e5e5e5; padding: 30px; border-radius: 10px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); background-color: #fff;">
-          <span class="featured" style="display: inline-block; padding: 5px 10px; background-color: #0dcaf0; color: #fff; border-radius: 3px; font-size: 0.8rem; margin-bottom: 10px;">Featured</span>
-          <h3 style="color: #0dcaf0; font-size: 1.5rem; margin-bottom: 15px;">Starter Plan</h3>
-          <div class="price" style="font-size: 2rem; font-weight: bold; color: #343a40; margin: 20px 0;">
-            <sup style="font-size: 1rem; color: #6c757d;">$</sup>19<span style="font-size: 1rem; color: #6c757d;"> / mo</span>
-          </div>
-          <div class="icon" style="margin-bottom: 20px;">
-            <i class="bi bi-send" style="color: #0dcaf0; font-size: 2.5rem;"></i>
-          </div>
-          <ul style="list-style: none; padding: 0; margin: 0; line-height: 1.8; font-size: 0.9rem; color: #495057;">
-            <li>Aida dere</li>
-            <li>Nec feugiat nisl</li>
-            <li>Nulla at volutpat dola</li>
-            <li>Pharetra massa</li>
-            <li style="color: #adb5bd; text-decoration: line-through;">Massa ultricies mi</li>
-          </ul>
-          <a href="#" class="btn-buy" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #0dcaf0; color: #fff; border-radius: 5px; text-decoration: none; font-size: 1rem;">Buy Now</a>
-        </div>
-      </div><!-- End Pricing Item -->
-
-    </div><!-- End pricing row -->
-
+    <p>Check Our Affordable Pricing</p>
   </div>
 
-</section><!-- /Pricing Section -->
+  <div class="container">
+    <div class="pricing-cards">
 
-  
+      <!-- Free Plan -->
+      <div class="pricing-item" data-aos="zoom-in" data-aos-delay="100">
+        <h3 class="plan-title free">Free Plan</h3>
+        <div class="plan-price">RM <span class="amount">0</span> <span class="duration">/ mo</span></div>
+        <div class="plan-icon"><i class="bi bi-box"></i></div>
+        <ul class="plan-features">
+          <li>🔍 View up to 2 recommendations</li>
+          <li>🚫 No access to full recommendations features</li>
+          <li>🚫 Cannot view full government-linked program list</li>
+          <li>🚫 Limited personalization</li>
+        </ul>
+        <a href="pages/signup/signup.php" class="btn-buy free">Buy Now</a>
+      </div>
+
+      <!-- Premium Plan -->
+      <div class="pricing-item featured" data-aos="zoom-in" data-aos-delay="200">
+        <span class="badge-featured">Featured</span>
+        <h3 class="plan-title premium">Premium Plan</h3>
+        <div class="plan-price">RM <span class="amount">99.90</span> <span class="duration">/ mo</span></div>
+        <div class="plan-icon"><i class="bi bi-send"></i></div>
+        <ul class="plan-features">
+          <li>✅ Unlimited Program Recommendations</li>
+          <li>✅ Full access to personalised results</li>
+          <li>✅ Access all government-linked funding/ grant programs</li>
+          <li>✅ E-invoice download after payment</li>
+          <li>✅ Early access to future upgrades</li>
+        </ul>
+        <a href="pages/signup/signup.php" class="btn-buy premium">Buy Now</a>
+      </div>
+
+    </div>
+  </div>
+</section>
 
 
           

@@ -1,209 +1,182 @@
-/* General Reset */
+
+/* Referral Management Admin CSS */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 body {
-    font-family: "Poppins", sans-serif;
-    background: linear-gradient(to right, #e6e6fa, #ffffff);
-    display: flex;
-    color: #333;
+  font-family: 'Poppins', sans-serif;
+  background: #f5f8ff;
+  color: #333;
 }
 
-/* Dashboard Container */
 .dashboard-container {
-    display: flex;
-    width: 100%;
-    max-width: 1200px;
-    margin: 20px auto;
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+  display: flex;
+  max-width: 1200px;
+  margin: 20px auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
 }
-
-
-/* Main Content */
 .dashboard-content {
-    width: 75%;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-    background: #f9f9ff;
+  width: 100%;
+  padding: 30px;
+  background: #f9f9ff;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 }
 
-/* Section Styles */
 .dashboard-section {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    animation: fadeIn 1s ease-in-out;
-    border: 1px solid #ddd;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.dashboard-section:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+  border: 1px solid #eee;
 }
 
 .dashboard-section h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-    color: #333;
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 10px;
 }
 
 .dashboard-section p {
-    font-size: 16px;
+  color: #666;
+  margin-bottom: 15px;
+}
+  
+  .input-group {
     margin-bottom: 20px;
-    color: #666;
-}
-
-/* Form Styles */
-.input-group {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-}
-
-.input-group label {
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #333;
-}
-
-.input-group input,
-.input-group textarea,
-.input-group select {
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+  }
+  
+  .input-group label {
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: block;
+  }
+  
+  .input-group input,
+  .input-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
     background: #f9f9ff;
-    color: #333;
-}
-
-.input-group textarea {
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  
+  .input-group textarea {
     resize: vertical;
-}
-
-.input-group input:focus,
-.input-group textarea:focus,
-.input-group select:focus {
-    outline: none;
+  }
+  
+  .input-group input:focus,
+  .input-group textarea:focus {
     border-color: #6610f2;
-    box-shadow: 0 0 5px rgba(102, 16, 242, 0.5);
-}
-
-/* Buttons */
-.dashboard-btn {
-    padding: 10px 20px;
-    background: linear-gradient(90deg, #6610f2, #5a54d6);
+    box-shadow: 0 0 5px rgba(108, 99, 255, 0.3);
+    outline: none;
+  }
+  
+  .dashboard-btn {
+    background: #6610f2;
     color: #fff;
-    font-size: 16px;
-    font-weight: bold;
+    padding: 10px 24px;
     border: none;
     border-radius: 5px;
+    font-weight: 600;
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s;
-    display: inline-block;
-}
-
-.dashboard-btn:hover {
-    background: linear-gradient(90deg, #5a54d6, #6610f2);
-    transform: scale(1.05);
-}
-
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .dashboard-container {
-        flex-direction: column;
-    }
-
-    .dashboard-content {
-        width: 100%;
-        padding: 10px;
-    }
-}
-
-
-
-/* Notification History Styles */
-.contact-table {
+    transition: all 0.3s ease;
+  }
+  
+  .dashboard-btn:hover {
+    background: #6610f2;
+  }
+  
+  .contact-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    background-color: #ffffff;
+    background: #fff;
     border-radius: 10px;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
 }
 
 .contact-table thead {
-    background-color: #6610f2;
+    background: #6610f2;
     color: white;
 }
 
 .contact-table th,
 .contact-table td {
-    padding: 12px;
+    padding: 16px 20px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
-    font-size: 14px;
+    vertical-align: middle;
+    font-size: 15px;
+}
+
+.contact-table .action-col {
+    width: 140px;
+    text-align: center;
 }
 
 .contact-table tbody tr:nth-child(even) {
-    background-color: #f9f9ff;
+    background-color: #f7f7fc;
 }
 
 .contact-table tbody tr:hover {
-    background-color: #ececff;
+    background-color: #f1f1fb;
 }
 
-.contact-table th {
+/* Delete Button Style */
+.action-btn.delete {
+    background: #dc3545;
+    color: #fff;
+    padding: 10px 18px;
+    font-size: 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
     font-weight: bold;
-}
-
-.input-group {
-    margin-bottom: 20px;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-.input-group label {
+.action-btn.delete i {
+    margin-right: 6px;
+}
+
+/* Offset the delete button slightly to the right */
+.contact-table .action-col {
+  width: 160px;
+  text-align: left;
+  padding-left: 20px; /* Shift contents to the right */
+}
+
+  
+  /* Filter input styling */
+  .filter-container {
+    margin: 10px 0 20px;
+  }
+  
+  .filter-container input {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
     font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #333;
-}
-
-.input-group input,
-.input-group select,
-.input-group textarea {
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #f9f9ff;
-}
-
-.input-group input:focus,
-.input-group select:focus,
-.input-group textarea:focus {
-    outline: none;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: all 0.3s;
+  }
+  
+  .filter-container input:focus {
     border-color: #6610f2;
-    box-shadow: 0 0 5px rgba(102, 16, 242, 0.5);
-}
-
-
-.input-group input#filter:focus {
-    border-color: #6610f2;
-    box-shadow: 0 0 5px rgba(102, 16, 242, 0.5);
-}
-
-
+    box-shadow: 0 0 5px rgba(108, 99, 255, 0.4);
+  }
+  
