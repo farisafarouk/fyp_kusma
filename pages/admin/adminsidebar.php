@@ -9,7 +9,7 @@
     <li><a href="/fyp_kusma/pages/admin/manage_resources/manage_resources.php"><i class="fas fa-book"></i> Program and Resources</a></li>
     <li><a href="/fyp_kusma/pages/admin/subscription/subscription.php"><i class="fas fa-file-invoice"></i> Subscriptions</a></li>
     <li><a href="/fyp_kusma/pages/admin/referral_management/admin_referral.php"><i class="fas fa-handshake"></i> Referrals</a></li>
-    <li><a href="/fyp_kusma/pages/admin/reports/system_reports.php"><i class="fas fa-chart-line"></i> Reports</a></li>
+    <li><a href="/fyp_kusma/pages/admin/report/admin_report.php"><i class="fas fa-chart-line"></i> Reports</a></li>
     <li><a href="/fyp_kusma/pages/admin/notification/notificationadmin.php"><i class="fas fa-bell"></i> Notifications</a></li>
     <li><a href="/fyp_kusma/pages/login/login.php"><i class="fas fa-sign-out-alt"></i> Log Out</a></li>
   </ul>

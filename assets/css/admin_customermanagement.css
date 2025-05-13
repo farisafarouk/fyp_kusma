@@ -1,3 +1,4 @@
+/* === Global Reset === */
 * {
     margin: 0;
     padding: 0;
@@ -5,39 +6,39 @@
 }
 
 body {
-    font-family: "Poppins", sans-serif;
-    background: linear-gradient(to right, #e6e6fa, #ffffff); /* Lighter pastel gradient */
-    display: flex;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to right, #f3f3ff, #ffffff);
     color: #333;
+    display: flex;
 }
 
-/* Dashboard Container */
+/* === Container & Content === */
 .dashboard-container {
     display: flex;
-    width: 100%;
     max-width: 1200px;
     margin: 20px auto;
     background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
     overflow: hidden;
 }
 
-/* Main Content */
 .dashboard-content {
     width: 100%;
-    padding: 20px;
+    padding: 30px;
+    background: #f9f9ff;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 30px;
 }
 
-/* Section Styles */
+/* === Section Box === */
 .dashboard-section {
-    background: #f4f8fb;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
 }
 
 .dashboard-section h1 {
@@ -47,44 +48,58 @@ body {
 }
 
 .dashboard-section p {
-    font-size: 16px;
-    margin-bottom: 20px;
+    font-size: 15px;
     color: #666;
+    margin-bottom: 20px;
 }
 
-/* Filter Container */
+/* === Filter & Add === */
 .filter-container {
-    margin-bottom: 15px;
     display: flex;
-    align-items: left;
-    justify-content: left;
-    gap: 10px;
+    justify-content: start;
+    margin-bottom: 15px;
 }
 
 .filter-container input {
     width: 300px;
     padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
     font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
     outline: none;
-    transition: border 0.3s, box-shadow 0.3s;
+    transition: border 0.3s ease;
 }
 
 .filter-container input:focus {
     border-color: #6610f2;
-    box-shadow: 0 0 5px rgba(102, 16, 242, 0.5);
+    box-shadow: 0 0 0 3px rgba(102, 16, 242, 0.15);
 }
 
-/* Contact Table */
+.action-btn.add {
+    margin-left: auto;
+    margin-bottom: 10px;
+    background-color: #6610f2;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.action-btn.add:hover {
+    background-color: #4e0ec9;
+}
+
+/* === Table Styling === */
 .contact-table {
     width: 100%;
     border-collapse: collapse;
-    background-color: #fff;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
+    background: #fff;
     border-radius: 10px;
     overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
 }
 
 .contact-table thead {
@@ -94,59 +109,48 @@ body {
 
 .contact-table th,
 .contact-table td {
-    padding: 12px 15px;
+    padding: 14px 16px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
     font-size: 14px;
+    border-bottom: 1px solid #eee;
 }
 
-.contact-table tbody tr:nth-child(even) {
+.contact-table tr:nth-child(even) {
     background-color: #f9f9ff;
 }
 
-.contact-table tbody tr:hover {
-    background-color: #ececff;
+.contact-table tr:hover {
+    background-color: #f1f0ff;
 }
 
 .contact-table th {
-    font-weight: bold;
+    font-weight: 600;
 }
 
-/* Buttons */
+/* === Action Buttons Group === */
+.action-btn-group {
+    display: flex;
+    gap: 8px;
+}
+
 .action-btn {
-    padding: 8px 16px;
-    font-size: 14px;
+    padding: 6px 12px;
+    font-size: 13px;
     border-radius: 5px;
-    cursor: pointer;
     border: none;
-    transition: 0.3s;
-}
-
-.action-btn.add {
-    background-color: #6610f2;
-    color: white;
-}
-
-.action-btn.save {
-    background-color: #28a745;
-    color: white;
-}
-
-.action-btn.delete {
-    background-color: #ff4d4d;
-    color: white;
+    color: #fff;
+    cursor: pointer;
 }
 
 .action-btn.edit {
-    background-color: #007bff;
-    color: white;
+    background-color: #0d6efd;
 }
 
-.action-btn:hover {
-    opacity: 0.9;
+.action-btn.delete {
+    background-color: #dc3545;
 }
 
-/* Modal */
+/* === Modal Styling === */
 .modal {
     display: none;
     position: fixed;
@@ -162,10 +166,10 @@ body {
 
 .modal-content {
     background: #fff;
-    width: 40%;
-    padding: 20px;
+    width: 400px;
+    padding: 25px;
     border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
     position: relative;
     animation: fadeIn 0.3s ease-in-out;
 }
@@ -181,31 +185,36 @@ body {
 }
 
 .input-group label {
-    font-size: 14px;
-    font-weight: bold;
-    display: block;
+    font-size: 13px;
+    font-weight: 600;
     margin-bottom: 5px;
+    display: block;
 }
 
 .input-group input {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
 }
 
 .input-group input:focus {
     border-color: #6610f2;
-    box-shadow: 0 0 5px rgba(102, 16, 242, 0.5);
+    box-shadow: 0 0 0 3px rgba(102, 16, 242, 0.15);
+}
+
+.action-btn.save {
+    background-color: #28a745;
 }
 
 .close-btn {
     position: absolute;
     top: 10px;
-    right: 10px;
+    right: 14px;
     font-size: 20px;
+    color: #999;
     cursor: pointer;
-    color: #6610f2;
 }
 
 .close-btn:hover {

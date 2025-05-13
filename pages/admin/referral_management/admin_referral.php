@@ -107,21 +107,20 @@ while ($row = $cres->fetch_assoc()) {
                                         <td><?= htmlspecialchars($ref['customer_name']) ?></td>
                                         <td><?= htmlspecialchars($ref['referral_code']) ?></td>
                                         <td><?= ucfirst($ref['status']) ?></td>
-                                        <td>
-                                            <form method="POST" class="inline-form">
-                                                <input type="hidden" name="referral_id" value="<?= $ref['id'] ?>">
-                                                <select name="commission_status">
-                                                    <option value="pending" <?= $ref['commission_status'] === 'pending' ? 'selected' : '' ?>>Pending</option>
-                                                    <option value="paid" <?= $ref['commission_status'] === 'paid' ? 'selected' : '' ?>>Paid</option>
-                                                </select>
-                                               
-                                            </form>
-                                        </td>
+                                      
+                                        <td style="text-align: center; font-weight: bold;">
+    RM1.00
+</td>
+
+
                                         <td><?= $ref['referral_date'] ?></td>
                                         <td>
                                             <form method="POST" onsubmit="return confirm('Delete this referral?');">
                                                 <input type="hidden" name="referral_id" value="<?= $ref['id'] ?>">
-                                                <button type="submit" name="delete_referral" class="action-btn delete"><i class="fas fa-trash"></i></button>
+                                                <button type="submit" name="delete_referral" class="action-btn delete">
+    <i class="fas fa-trash"></i> <span>Delete</span>
+</button>
+
                                             </form>
                                         </td>
                                     </tr>

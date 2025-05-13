@@ -1,14 +1,6 @@
-
-/* Referral Management Admin CSS */
-* {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-}
-
 body {
     font-family: 'Poppins', sans-serif;
-    background: #f5f8ff;
+    background: #f4f6fa;
     color: #333;
 }
 
@@ -17,89 +9,39 @@ body {
     max-width: 1200px;
     margin: 20px auto;
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
 }
 
 .dashboard-content {
     width: 100%;
     padding: 30px;
-    background: #f9f9ff;
+    background: #f9faff;
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 30px;
 }
 
 .dashboard-section {
-    background: #fff;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
-    border: 1px solid #eee;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
 .dashboard-section h1 {
-    font-size: 22px;
-    color: #333;
+    font-size: 24px;
     margin-bottom: 10px;
 }
 
-.dashboard-section p {
-    color: #666;
-    margin-bottom: 15px;
-}
-
-.contact-table {
-    width: 100%;
-    border-collapse: collapse;
-    border-radius: 8px;
-    overflow: hidden;
-    background: #fff;
-}
-
-.contact-table thead {
-    background: #6c63ff;
-    color: white;
-}
-
-.contact-table th,
-.contact-table td {
-    padding: 14px;
-    text-align: left;
-    font-size: 14px;
-    border-bottom: 1px solid #eee;
-}
-
-.contact-table tbody tr:hover {
-    background: #f1f1ff;
-}
-
-.filter-container {
-    margin-bottom: 20px;
-}
-
 .filter-container input {
-    padding: 10px 14px;
     width: 300px;
+    padding: 10px;
+    margin-bottom: 20px;
     border-radius: 6px;
     border: 1px solid #ccc;
-    font-size: 14px;
-    transition: 0.3s;
 }
 
-.filter-container input:focus {
-    border-color: #6c63ff;
-    box-shadow: 0 0 4px rgba(108, 99, 255, 0.4);
-}
-
-
-
-.inline-form {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
 .agent-block {
     margin-bottom: 40px;
     padding: 20px;
@@ -110,72 +52,89 @@ body {
 }
 
 .agent-block h2 {
-    color: #333;
     margin-bottom: 15px;
     font-size: 20px;
 }
 
 .commission-badge {
     background: #6610f2;
-    color: #fff;
-    font-size: 14px;
-    padding: 4px 10px;
-    border-radius: 5px;
-    margin-left: 15px;
+    color: white;
+    font-size: 13px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-left: 10px;
 }
 
 .contact-table {
     width: 100%;
     border-collapse: collapse;
     background: #fff;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.03);
 }
 
 .contact-table th {
-    background-color: #6610f2;
+    background: #6610f2;
     color: white;
     padding: 12px;
-    font-weight: bold;
 }
+
+
+.contact-table tr:nth-child(even) {
+    background: #f9f9ff;
+}
+
+.action-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.action-btn i {
+    margin-right: 6px;
+}
+
+
+.action-btn.save {
+    background: #28a745;
+    color: white;
+}
+
+.action-btn.delete {
+    background: #ff4d4d;
+    color: white;
+}
+
+.action-btn:hover {
+    opacity: 0.9;
+}
+
+
 
 .contact-table td {
     padding: 10px;
     border-bottom: 1px solid #ddd;
+    vertical-align: middle;
+    text-align: center; /* Ensures RM1.00 is centered */
 }
 
-.contact-table tr:nth-child(even) {
-    background-color: #f9f9ff;
+.badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
 }
 
-.filter-container input {
-    width: 300px;
-    padding: 10px;
-    font-size: 14px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.inline-form {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-.action-btn.save {
+.badge.paid {
     background-color: #28a745;
-    color: white;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
 }
 
-.action-btn.delete {
-    background-color: #dc3545;
-    color: white;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+.badge.pending {
+    background-color: #ffc107;
+    color: #000;
 }

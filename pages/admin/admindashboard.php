@@ -1,76 +1,95 @@
+<?php
+session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once '../../config/database.php';
+
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../../login/login.php");
+    exit();
+}
+
+// Get key stats
+$totalCustomers = $conn->query("SELECT COUNT(*) AS total FROM users WHERE role = 'customer'")->fetch_assoc()['total'] ?? 0;
+$totalAgents = $conn->query("SELECT COUNT(*) AS total FROM users WHERE role = 'agent'")->fetch_assoc()['total'] ?? 0;
+$totalConsultants = $conn->query("SELECT COUNT(*) AS total FROM users WHERE role = 'consultant'")->fetch_assoc()['total'] ?? 0;
+$totalSubscriptions = $conn->query("SELECT COUNT(*) AS total FROM users WHERE subscription_status = 'subscribed'")->fetch_assoc()['total'] ?? 0;
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="../../assets/css/admindashboard.css"> <!-- Admin-specific CSS -->
-  <link rel="stylesheet" href="../../assets/css/adminsidebar.css"> <!-- Sidebar-specific CSS -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="../../assets/css/adminsidebar.css" />
+  <link rel="stylesheet" href="../../assets/css/admin_report.css" />
+  <link rel="stylesheet" href="../../assets/css/admindashboard.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
   <div class="dashboard-container">
-    <!-- Sidebar -->
     <?php include 'adminsidebar.php'; ?>
 
-    <!-- Main Content -->
     <main class="dashboard-content">
-      <!-- Customer Management Section -->
-      <section id="customer-management" class="dashboard-section">
-        <h1><i class="fas fa-users"></i> Customer Management</h1>
-        <p>View, add, update, or delete customer accounts.</p>
-        <button class="dashboard-btn" onclick="location.href='customer_management/admin_customermanagement.php';">Go to Customer Management</button>
-      </section>
+      <section class="dashboard-section">
+        <div class="welcome-banner">
+          <h1><i class="fas fa-user-shield"></i> Welcome, Admin</h1>
+          <p>Here's a quick overview of the platform performance today.</p>
+        </div>
 
-      <!-- Agent Management Section -->
-      <section id="agent-management" class="dashboard-section">
-        <h1><i class="fas fa-user-tie"></i> Agent Management</h1>
-        <p>Approve, reject, or track agent performance.</p>
-        <button class="dashboard-btn">Manage Agents</button>
-      </section>
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+          <div class="card">
+            <h3>👥 Total Customers</h3>
+            <p><?= $totalCustomers ?></p>
+          </div>
+          <div class="card">
+            <h3>🧑‍💼 Total Agents</h3>
+            <p><?= $totalAgents ?></p>
+          </div>
+          <div class="card">
+            <h3>🎓 Total Consultants</h3>
+            <p><?= $totalConsultants ?></p>
+          </div>
+          <div class="card">
+            <h3>📦 Active Subscriptions</h3>
+            <p><?= $totalSubscriptions ?></p>
+          </div>
+        </div>
 
-      <!-- Consultant Management Section -->
-      <section id="consultant-management" class="dashboard-section">
-        <h1><i class="fas fa-user-friends"></i> Consultant Management</h1>
-        <p>View, add, update, or delete consultant profiles.</p>
-        <button class="dashboard-btn">Manage Consultants</button>
-      </section>
-
-      <!-- Resource Management Section -->
-      <section id="resource-management" class="dashboard-section">
-        <h1><i class="fas fa-book"></i> Program and Resources</h1>
-        <p>Manage loans, grants, and training programs.</p>
-        <button class="dashboard-btn">Manage Resources</button>
-      </section>
-
-      <!-- Subscriptions Section -->
-      <section id="subscriptions" class="dashboard-section">
-        <h1><i class="fas fa-file-invoice"></i> Subscriptions</h1>
-        <p>Track subscription plans and billing statuses.</p>
-        <button class="dashboard-btn">Manage Subscriptions</button>
-      </section>
-
-      <!-- Referrals Section -->
-      <section id="referrals" class="dashboard-section">
-        <h1><i class="fas fa-handshake"></i> Referrals</h1>
-        <p>Track agent referrals and commissions.</p>
-        <button class="dashboard-btn">View Referrals</button>
-      </section>
-
-      <!-- Reports Section -->
-      <section id="reports" class="dashboard-section">
-        <h1><i class="fas fa-chart-line"></i> Reports</h1>
-        <p>Generate detailed insights on system performance.</p>
-        <button class="dashboard-btn">Generate Reports</button>
-      </section>
-
-      <!-- Notifications Section -->
-      <section id="notifications" class="dashboard-section">
-        <h1><i class="fas fa-bell"></i> Notifications</h1>
-        <p>Send updates and alerts to all users.</p>
-        <button class="dashboard-btn">Send Notifications</button>
+        <!-- Insights Chart -->
+        <section class="chart-section">
+          <h3><i class="fas fa-chart-pie"></i> User Distribution</h3>
+          <canvas id="adminDashboardChart" height="90"></canvas>
+        </section>
       </section>
     </main>
   </div>
+
+  <script>
+    const ctx = document.getElementById('adminDashboardChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Customers', 'Agents', 'Consultants'],
+        datasets: [{
+          label: 'Total Users by Role',
+          data: [<?= $totalCustomers ?>, <?= $totalAgents ?>, <?= $totalConsultants ?>],
+          backgroundColor: ['#6610f2', '#0dcaf0', '#28a745']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: 'User Role Overview' }
+        }
+      }
+    });
+  </script>
 </body>
 </html>

@@ -168,10 +168,10 @@ body {
 }
 
 .action-btn.reset {
-    background-color: #ffc107;
-    color: black;
+    background-color: #ff4d4d;
+    color: white;
 }
 
 .action-btn.reset:hover {
-    background-color: #e0a800;
+    background-color: #ff1a1a;
 }
