@@ -97,6 +97,8 @@ body {
   border-radius: 12px;
   max-width: 500px;
   width: 100%;
+  max-height: 80vh; /* Add this */
+  overflow-y: auto;  /* Enable scrolling */
   box-shadow: var(--shadow);
   animation: fadeIn 0.3s ease-in-out;
 }
@@ -155,7 +157,9 @@ body {
 }
 
 .slot-group {
-  margin-bottom: 24px;
+   padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 16px;
 }
 
 .slot-group h4 {

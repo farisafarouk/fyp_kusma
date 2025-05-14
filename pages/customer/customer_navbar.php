@@ -1,18 +1,22 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
+  header("Location: ../../login/login.php");
+  exit();
+}
+?>
 <nav class="navbar">
-    <div class="container">
-        <!-- Branding -->
-        <a href="customer_dashboard.php" class="navbar-brand">
-           
-        </a>
-
-        <!-- Menu Items -->
-        <ul class="navbar-menu">
-            <li><a href="../profile/customer_dashboard.php" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
-            <li><a href="../profile/manage_profile.php"><i class="fas fa-user"></i> Profile</a></li>
-            <li><a href="../recommendations.php"><i class="fas fa-lightbulb"></i> Recommendations</a></li>
-            <li><a href="../booking/customer_appointments.php"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
-            <li><a href="customer_notifications.php"><i class="fas fa-bell"></i> Notifications</a></li>
-            <li><a href="/fyp_kusma/pages/login/login.php" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-        </ul>
-    </div>
+  <div class="container">
+    <a href="../profile/customer_dashboard.php" class="navbar-brand">
+      <i class="fas fa-user-circle"></i> KUSMA
+    </a>
+    <ul class="navbar-menu">
+      <li><a href="../profile/customer_dashboard.php">Dashboard</a></li>
+      <li><a href="../booking/consultant_list.php">Book Appointment</a></li>
+      <li><a href="../booking/customer_appointments.php">My Appointments</a></li>
+      <li><a href="../payment/manage_subscription.php">Manage Subscription</a></li>
+      <li><a href="../profile/manage_profile.php">Profile</a></li>
+      <li><a href="../login/login.php" class="logout-link">Logout</a></li>
+    </ul>
+  </div>
 </nav>

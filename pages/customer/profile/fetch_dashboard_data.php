@@ -1,7 +1,6 @@
 <?php
-session_start();
 require_once '../../../config/database.php';
-header('Content-Type: application/json');
+session_start();
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
   echo json_encode(['error' => 'Unauthorized']);
@@ -11,56 +10,64 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
 $user_id = $_SESSION['user_id'];
 
 $response = [
-  'recommendation_count' => '-',
+  'subscription_status' => '-',
+  'expiry_text' => '-',
+  'recommendation_count' => 0,
   'upcoming_date' => '-',
+  'consultant_name' => '-',
   'has_personal' => false,
   'has_business' => false,
   'has_education' => false
 ];
 
-// --- Recommendation Count ---
-// Count logic simulated from recommendations.php (e.g., all forms completed)
-$rec_check = $conn->prepare("SELECT form_status FROM users WHERE id = ?");
-$rec_check->bind_param("i", $user_id);
-$rec_check->execute();
-$rec_check->bind_result($form_status);
-if ($rec_check->fetch() && $form_status === 'completed') {
-  $response['recommendation_count'] = 'Available';
-} else {
-  $response['recommendation_count'] = 'Incomplete';
+// Subscription
+$stmt = $conn->prepare("SELECT subscription_status, subscription_expiry FROM users WHERE id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+if ($row = $result->fetch_assoc()) {
+  $response['subscription_status'] = ucfirst($row['subscription_status']);
+  if ($row['subscription_expiry']) {
+    $exp_date = new DateTime($row['subscription_expiry']);
+    $now = new DateTime();
+    $days = $now->diff($exp_date)->format('%r%a');
+    $response['expiry_text'] = $days >= 0 ? "$days days left" : "Expired " . abs($days) . " days ago";
+  }
 }
-$rec_check->close();
 
-// --- Upcoming Appointment ---
-$appt = $conn->prepare("SELECT scheduled_date FROM appointments WHERE customer_id = ? AND status IN ('pending','confirmed') AND scheduled_date >= CURDATE() ORDER BY scheduled_date ASC LIMIT 1");
-$appt->bind_param("i", $user_id);
-$appt->execute();
-$appt->bind_result($next_date);
-if ($appt->fetch()) {
-  $response['upcoming_date'] = $next_date;
+// Recommendations (basic logic placeholder based on profile form)
+$form_stmt = $conn->prepare("SELECT form_status FROM users WHERE id = ?");
+$form_stmt->bind_param("i", $user_id);
+$form_stmt->execute();
+$form_stmt->bind_result($form_status);
+if ($form_stmt->fetch() && $form_status === 'completed') {
+  $response['recommendation_count'] = rand(3, 8); // Example placeholder count
 }
-$appt->close();
+$form_stmt->close();
 
-// --- Profile Checks ---
-$check_personal = $conn->prepare("SELECT id FROM personal_details WHERE user_id = ? LIMIT 1");
-$check_personal->bind_param("i", $user_id);
-$check_personal->execute();
-$check_personal->store_result();
-$response['has_personal'] = $check_personal->num_rows > 0;
-$check_personal->close();
+// Next appointment
+$stmt = $conn->prepare("SELECT a.scheduled_date, a.scheduled_time, u.name AS consultant FROM appointments a JOIN consultants c ON a.consultant_id = c.id JOIN users u ON c.user_id = u.id WHERE a.customer_id = ? AND a.status IN ('confirmed', 'pending') AND a.scheduled_date >= CURDATE() ORDER BY a.scheduled_date ASC, a.scheduled_time ASC LIMIT 1");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$res = $stmt->get_result();
+if ($row = $res->fetch_assoc()) {
+  $response['upcoming_date'] = $row['scheduled_date'] . ' at ' . substr($row['scheduled_time'], 0, 5);
+  $response['consultant_name'] = $row['consultant'];
+}
 
-$check_business = $conn->prepare("SELECT id FROM business_details WHERE user_id = ? LIMIT 1");
-$check_business->bind_param("i", $user_id);
-$check_business->execute();
-$check_business->store_result();
-$response['has_business'] = $check_business->num_rows > 0;
-$check_business->close();
+// Completion checks
+foreach ([
+  'personal_details' => 'has_personal',
+  'business_details' => 'has_business',
+  'education_resources' => 'has_education'
+] as $table => $key) {
+  $stmt = $conn->prepare("SELECT id FROM $table WHERE user_id = ? LIMIT 1");
+  $stmt->bind_param("i", $user_id);
+  $stmt->execute();
+  $stmt->store_result();
+  $response[$key] = $stmt->num_rows > 0;
+  $stmt->close();
+}
 
-$check_edu = $conn->prepare("SELECT id FROM edu_resources WHERE user_id = ? LIMIT 1");
-$check_edu->bind_param("i", $user_id);
-$check_edu->execute();
-$check_edu->store_result();
-$response['has_education'] = $check_edu->num_rows > 0;
-$check_edu->close();
-
+header('Content-Type: application/json');
 echo json_encode($response);

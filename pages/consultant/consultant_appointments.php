@@ -148,7 +148,6 @@ function renderAppointments(statusFilter) {
         <p><strong>Time:</strong> ${app.scheduled_time}</p>
         <p><strong>Duration:</strong> ${readableDuration}</p>
         <p><strong>Mode:</strong> ${app.appointment_mode}</p>
-        <p><strong>Reason:</strong> ${app.reason_for_appointment || 'N/A'}</p>
         ${app.status === 'canceled' && app.feedback ? `<p><strong>Note:</strong> ${app.feedback}</p>` : ''}
       </div>
       ${renderActions(app)}

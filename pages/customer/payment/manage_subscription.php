@@ -63,7 +63,7 @@ if ($status === 'subscribed' && $expiry && $expiry < $today) {
 
     <div class="container">
         <div class="nav-links">
-            <a href="../profile/user_dashboard.php">&larr; Back to Dashboard</a>
+            <a href="../profile/customer_dashboard.php">&larr; Back to Dashboard</a>
             <a href="../recommendations.php">Explore Recommendations &rarr;</a>
         </div>
 

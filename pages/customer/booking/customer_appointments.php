@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
 }
 
 $customer_id = $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT a.id, a.consultant_id, a.scheduled_date, a.scheduled_time, a.duration, a.status, a.appointment_mode, a.reason_for_appointment, a.feedback, a.rating, u.name AS consultant_name FROM appointments a JOIN users u ON a.consultant_id = u.id WHERE a.customer_id = ? ORDER BY a.scheduled_date DESC, a.scheduled_time DESC");
+$stmt = $conn->prepare("SELECT a.*, u.name AS consultant_name FROM appointments a JOIN consultants c ON a.consultant_id = c.id JOIN users u ON c.user_id = u.id WHERE a.customer_id = ? ORDER BY a.scheduled_date DESC, a.scheduled_time DESC");
 $stmt->bind_param("i", $customer_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -102,7 +102,7 @@ function renderAppointments(filter = 'all') {
       <div class="card-body">
         <p><i class="far fa-calendar-alt"></i> ${a.scheduled_date} at ${a.scheduled_time}</p>
         ${a.reason_for_appointment ? `<p><strong>Reason:</strong> ${a.reason_for_appointment}</p>` : ''}
-        ${a.status === 'canceled' && a.feedback ? `<p><strong>Cancel Note:</strong> ${a.feedback}</p>` : ''}
+${a.status === 'canceled' && a.cancel_note ? `<p><strong>Cancel Note:</strong> ${a.cancel_note}</p>` : ''}
         ${a.status === 'completed' && a.feedback ? `<p><strong>Feedback:</strong> ${a.feedback}</p>` : ''}
         ${a.status === 'completed' && a.rating ? `<p><strong>Rating:</strong> ${'★'.repeat(a.rating)}${'☆'.repeat(5 - a.rating)}</p>` : ''}
       </div>

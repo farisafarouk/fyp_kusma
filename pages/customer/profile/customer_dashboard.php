@@ -16,12 +16,14 @@ $user = $result->fetch_assoc();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Customer Dashboard</title>
-  <link rel="stylesheet" href="../../../assets/css/customer_navbar.css" />
-  <link rel="stylesheet" href="../../../assets/css/customer_dashboard.css" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../../../assets/css/customer_navbar.css">
+  <link rel="stylesheet" href="../../../assets/css/customer_dashboard.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
 </head>
 <body>
 <?php include '../customer_navbar.php'; ?>
@@ -31,53 +33,38 @@ $user = $result->fetch_assoc();
     <section class="dashboard-section">
       <header>
         <h1>👋 Welcome, <?= htmlspecialchars($user['name']) ?>!</h1>
-        <p class="muted">Here's your personalized dashboard overview.</p>
+        <p class="muted">Here's your personalized dashboard summary.</p>
       </header>
 
-      <div class="badge-group">
-        <span class="badge <?= $user['subscription_status'] === 'subscribed' ? 'badge-success' : 'badge-warning' ?>">
-          <?= ucfirst($user['subscription_status']) ?> Member
-          <?php if ($user['subscription_status'] === 'subscribed' && $user['subscription_expiry']) echo " - Expires: " . $user['subscription_expiry']; ?>
-        </span>
-        <span class="badge badge-muted">Profile Status: <?= ucfirst($user['form_status']) ?></span>
-      </div>
-
-      <div class="report-grid">
-        <div class="stat-card">
-          <h3>📚 Matched Recommendations</h3>
-          <p id="recommendationCount">-</p>
+      <div class="summary-cards">
+        <div class="summary-box">
+          <h3>📜 Subscription</h3>
+          <p class="big-number" id="subscriptionType">-</p>
+          <p class="caption" id="expiryCountdown">Loading expiry info...</p>
         </div>
-        <div class="stat-card">
+        <div class="summary-box">
+          <h3>🎯 Matched Programs</h3>
+          <p class="big-number" id="recommendationCount">-</p>
+          <p class="caption">Based on your profile</p>
+        </div>
+        <div class="summary-box">
           <h3>📅 Next Appointment</h3>
-          <p id="nextAppointment">-</p>
-        </div>
-        <div class="stat-card">
-          <h3>📋 Profile Completion</h3>
-          <p id="profileSteps">-</p>
+          <p class="big-number" id="nextAppointment">-</p>
+          <p class="caption" id="appointmentWith">Consultant info</p>
         </div>
       </div>
 
-      <div class="quick-links">
-        <a href="../booking/consultant_list.php" class="quick-link">
-          <i class="fas fa-calendar-plus"></i>
-          <span>Book Appointment</span>
-        </a>
-        <a href="../recommendations/recommendations.php" class="quick-link">
-          <i class="fas fa-lightbulb"></i>
-          <span>View Recommendations</span>
-        </a>
-        <a href="../manage_profile.php" class="quick-link">
-          <i class="fas fa-user-cog"></i>
-          <span>Manage Profile</span>
-        </a>
-        <a href="../subscription/manage_subscription.php" class="quick-link">
-          <i class="fas fa-sync-alt"></i>
-          <span>Renew Subscription</span>
-        </a>
-        <a href="../notifications.php" class="quick-link">
-          <i class="fas fa-bell"></i>
-          <span>Notifications</span>
-        </a>
+      <div class="progress-section">
+        <h3>✅ Profile Completion</h3>
+        <div class="progress-grid">
+          <div class="progress-tile" id="personalStatus">Personal: -</div>
+          <div class="progress-tile" id="businessStatus">Business: -</div>
+          <div class="progress-tile" id="educationStatus">Education: -</div>
+        </div>
+      </div>
+
+      <div class="tip-section" id="tipBox">
+        <i class="fas fa-lightbulb"></i> Loading tip...
       </div>
     </section>
   </div>
@@ -88,14 +75,29 @@ document.addEventListener("DOMContentLoaded", () => {
   fetch("fetch_dashboard_data.php")
     .then(res => res.json())
     .then(data => {
-      document.getElementById("recommendationCount").textContent = data.recommendation_count || 0;
-      document.getElementById("nextAppointment").textContent = data.upcoming_date || "-";
+      // Subscription
+      document.getElementById("subscriptionType").textContent = data.subscription_status || '-';
+      document.getElementById("expiryCountdown").textContent = data.expiry_text || 'N/A';
 
-      let steps = [];
-      if (data.has_personal) steps.push("Personal ✔️");
-      if (data.has_business) steps.push("Business ✔️");
-      if (data.has_education) steps.push("Education ✔️");
-      document.getElementById("profileSteps").textContent = steps.length > 0 ? steps.join(", ") : "Incomplete";
+      // Recommendation logic
+      document.getElementById("recommendationCount").textContent = data.recommendation_count || 0;
+
+      // Appointment
+      document.getElementById("nextAppointment").textContent = data.upcoming_date || '-';
+      document.getElementById("appointmentWith").textContent = data.consultant_name || '-';
+
+      // Profile
+      document.getElementById("personalStatus").textContent = data.has_personal ? 'Personal: ✔️' : 'Personal: ❌';
+      document.getElementById("businessStatus").textContent = data.has_business ? 'Business: ✔️' : 'Business: ❌';
+      document.getElementById("educationStatus").textContent = data.has_education ? 'Education: ✔️' : 'Education: ❌';
+
+      // Tip
+      const tips = [];
+      if (!data.has_business) tips.push("Complete your business info for tailored programs.");
+      if (data.subscription_status === 'free') tips.push("Upgrade to access full recommendations.");
+      if (!data.upcoming_date) tips.push("Book a consultation to get started!");
+      if (tips.length === 0) tips.push("You're all set! ✅ Keep exploring.");
+      document.getElementById("tipBox").innerHTML = `<i class='fas fa-lightbulb'></i> ${tips[0]}`;
     });
 });
 </script>

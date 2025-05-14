@@ -1,6 +1,9 @@
 .logo img {
-  height: 60px; /* Adjust as per design */
-  margin-right: 50px;
+  height: 120px;         /* Match your explicit inline style */
+  max-height: 120px;     /* Ensure it doesn’t grow larger */
+  width: auto;           /* Maintain aspect ratio */
+  margin-right: 100px;   /* Keep your requested spacing */
+  object-fit: contain;   /* Prevent distortion */
 }
 
 .sitename {
