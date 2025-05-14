@@ -1,0 +1,31 @@
+.notification-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.notification-item {
+    background-color: #f9f9ff;
+    border-left: 5px solid #6610f2;
+    margin-bottom: 15px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: 0.3s;
+}
+
+.notification-item:hover {
+    background-color: #f0f0fa;
+}
+
+.notification-message {
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}
+
+.notification-timestamp {
+    font-size: 14px;
+    color: #888;
+    margin-top: 5px;
+}

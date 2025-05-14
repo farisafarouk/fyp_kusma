@@ -73,106 +73,133 @@ if ($userProfile) {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recommendations - KUSMA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../assets/css/recommendations.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recommendations - KUSMA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/css/customer_dashboard.css" />
+  <link rel="stylesheet" href="../../assets/css/customer_navbar.css" />
+  <link rel="stylesheet" href="../../assets/css/recommendations.css" />
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">KUSMA</a>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="profile/user_dashboard.php">Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" href="profile/manage_profile.php">Manage Profile</a></li>
-                <li class="nav-item"><a class="nav-link" href="../login/login.php">Logout</a></li>
-            </ul>
-        </div>
-    </div>
+
+<?php
+$current_page = basename($_SERVER['SCRIPT_NAME']);
+?>
+<nav class="navbar">
+  <div class="container">
+    <ul class="navbar-menu">
+      <li>
+        <a href="/fyp_kusma/pages/customer/profile/user_dashboard.php" class="<?= $current_page === 'user_dashboard.php' ? 'active' : '' ?>">
+          <i class="fas fa-home"></i> Dashboard
+        </a>
+      </li>
+      <li>
+        <a href="/fyp_kusma/pages/customer/profile/manage_profile.php" class="<?= $current_page === 'manage_profile.php' ? 'active' : '' ?>">
+          <i class="fas fa-user"></i> Profile
+        </a>
+      </li>
+      <li>
+        <a href="/fyp_kusma/pages/customer/recommendations.php" class="<?= $current_page === 'recommendations.php' ? 'active' : '' ?>">
+          <i class="fas fa-lightbulb"></i> Recommendations
+        </a>
+      </li>
+      <li>
+        <a href="/fyp_kusma/pages/customer/booking/customer_appointments.php" class="<?= $current_page === 'customer_appointments.php' ? 'active' : '' ?>">
+          <i class="fas fa-calendar-alt"></i> Appointments
+        </a>
+      </li>
+      <li>
+        <a href="/fyp_kusma/pages/customer/notifications/notification_cust.php" class="<?= $current_page === 'notification_cust.php' ? 'active' : '' ?>">
+          <i class="fas fa-bell"></i> Notifications
+        </a>
+      </li>
+      <li>
+        <a href="/fyp_kusma/pages/login/login.php" class="logout-link">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </li>
+    </ul>
+  </div>
 </nav>
 
-<div class="container mt-5">
-    <header class="text-center mb-4">
-        <h1 class="title">Tailored Resources Just for You</h1>
-        <p class="subtitle">Explore curated opportunities designed to help you succeed.</p>
-    </header>
-    
-    <div class="mb-4 text-center">
-    <input type="text" id="searchInput" class="form-control w-50 mx-auto" placeholder="Search by program, agency, or type...">
+
+
+<div class="dashboard-container">
+  <header class="dashboard-header text-center">
+    <h1 class="title">Tailored Resources Just for You</h1>
+    <p class="subtitle">Explore curated opportunities designed to help you succeed.</p>
+  </header>
+
+  <div class="search-container">
+  <input type="text" id="searchInput" placeholder="Search by program, agency, or type..." />
 </div>
 
 
-    <div class="row" id="programCards">
-        <?php if (empty($programs)): ?>
-            <div class="alert alert-warning text-center">
-                No resources matched your profile. Update your preferences for better results.
+  <div class="dashboard-sections" id="programCards">
+    <?php if (empty($programs)): ?>
+      <div class="dashboard-card" style="width: 100%;">
+        <p class="text-center">No resources matched your profile. Update your preferences for better results.</p>
+      </div>
+    <?php else: ?>
+      <?php foreach ($programs as $index => $program): ?>
+        <div class="dashboard-card">
+          <div class="recommendation-content <?= ($userProfile['subscription_status'] === 'free' && $index >= 2) ? 'blurred' : '' ?>">
+            <div class="card-icon" style="margin-bottom: 10px;">
+              <img src="/fyp_kusma/<?= htmlspecialchars($program['agency_logo']) ?>" alt="Agency Logo" style="width: 40px; height: 40px;">
             </div>
-        <?php else: ?>
-            <?php foreach ($programs as $index => $program): ?>
-                <div class="col-md-6 my-3 program-card">
-                    <div class="recommendation-card">
-                        <div class="recommendation-content <?= ($userProfile['subscription_status'] === 'free' && $index >= 2) ? 'blurred' : '' ?>">
-                            <div class="card-header d-flex align-items-center">
-                                <img src="/fyp_kusma/<?= htmlspecialchars($program['agency_logo']) ?>" alt="Agency Logo" class="agency-logo me-3">
-                                <h5 class="card-title mb-0"><?= htmlspecialchars($program['name']) ?></h5>
-                            </div>
-                            <div class="card-body">
-                                <p class="description"><?= htmlspecialchars($program['description']) ?></p>
-                                <div class="details">
-                                    <span><strong>Type:</strong> <?= htmlspecialchars($program['resource_types']) ?></span>
-                                    <span><strong>Loan Range:</strong> <span class="loan-range-badge">
-                                        <?= formatLoanRange($program['min_loan_amount'], $program['max_loan_amount']) ?>
-                                    </span></span>
-                                </div>
-                                <div class="explanation-box">
-                                    <strong>🔍 You qualify for this program because:</strong>
-                                    <ul>
-                                        <?php foreach ($program['explanation'] as $reason): ?>
-                                            <li><?= $reason ?></li>
-                                        <?php endforeach; ?>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <?php if ($userProfile['subscription_status'] === 'free' && $index >= 2): ?>
-                            <div class="lock-overlay">
-                                <i class="bi bi-lock-fill"></i>
-                            </div>
-                        <?php endif; ?>
-                        <div class="unlock-wrapper">
-                            <?php if ($userProfile['subscription_status'] === 'free' && $index >= 2): ?>
-                                <a href="../customer/payment/upgrade.php" class="btn btn-unlock mt-2">Unlock Full Access</a>
-                            <?php else: ?>
-                                <a href="<?= htmlspecialchars($program['application_link']) ?>" class="btn btn-learn-more mt-2" target="_blank">Learn More</a>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
-    </div>
+            <h2 style="margin-bottom: 10px; font-size: 18px;"><?= htmlspecialchars($program['name']) ?></h2>
+            <p style="font-size: 14px; color: #555;"><?= htmlspecialchars($program['description']) ?></p>
+            <div style="font-size: 14px; margin: 10px 0;">
+              <strong>Type:</strong> <?= htmlspecialchars($program['resource_types']) ?><br>
+              <strong>Loan Range:</strong> <?= formatLoanRange($program['min_loan_amount'], $program['max_loan_amount']) ?>
+            </div>
+            <div class="explanation-box" style="background: #f8f8ff; border-radius: 10px; padding: 10px; margin-top: 10px;">
+              <strong>🔍 You qualify for this program because:</strong>
+              <ul style="text-align: left; margin-top: 8px;">
+                <?php foreach ($program['explanation'] as $reason): ?>
+                  <li><?= $reason ?></li>
+                <?php endforeach; ?>
+              </ul>
+            </div>
+          </div>
+
+          <?php if ($userProfile['subscription_status'] === 'free' && $index >= 2): ?>
+            <div class="lock-overlay">
+              <i class="fas fa-lock"></i>
+            </div>
+          <?php endif; ?>
+
+          <div class="unlock-wrapper" style="margin-top: 15px;">
+            <?php if ($userProfile['subscription_status'] === 'free' && $index >= 2): ?>
+              <a href="../customer/payment/upgrade.php" class="dashboard-btn">Unlock Full Access</a>
+            <?php else: ?>
+              <a href="<?= htmlspecialchars($program['application_link']) ?>" target="_blank" class="dashboard-btn">Learn More</a>
+            <?php endif; ?>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    <?php endif; ?>
+  </div>
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            searchInput.addEventListener('input', () => {
-                const value = searchInput.value.toLowerCase();
-                document.querySelectorAll('.program-card').forEach(card => {
-                    card.style.display = card.textContent.toLowerCase().includes(value) ? 'block' : 'none';
-                });
-            });
-        }
-    });
+  document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        const value = searchInput.value.toLowerCase();
+        document.querySelectorAll('.dashboard-card').forEach(card => {
+          card.style.display = card.textContent.toLowerCase().includes(value) ? 'block' : 'none';
+        });
+      });
+    }
+  });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

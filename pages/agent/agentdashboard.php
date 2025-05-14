@@ -2,72 +2,84 @@
 session_start();
 require_once '../../config/database.php';
 
-// Ensure the user is logged in and has the "agent" role
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'agent') {
     header("Location: ../login/login.php");
     exit();
 }
-?>
 
+$user_id = $_SESSION['user_id'];
+
+// Total referral earnings
+$stmt1 = $conn->prepare("SELECT referral_earnings FROM agents WHERE user_id = ?");
+$stmt1->bind_param("i", $user_id);
+$stmt1->execute();
+$referralEarnings = $stmt1->get_result()->fetch_assoc()['referral_earnings'] ?? 0.00;
+
+// Total referrals
+$stmt2 = $conn->prepare("SELECT COUNT(*) as total FROM referrals WHERE agent_id = ?");
+$stmt2->bind_param("i", $user_id);
+$stmt2->execute();
+$totalReferrals = $stmt2->get_result()->fetch_assoc()['total'];
+
+// Pending commissions
+$stmt3 = $conn->prepare("SELECT COUNT(*) as pending FROM referrals WHERE agent_id = ? AND commission_status = 'unpaid'");
+$stmt3->bind_param("i", $user_id);
+$stmt3->execute();
+$pendingCommissions = $stmt3->get_result()->fetch_assoc()['pending'];
+
+// Notifications
+$stmt4 = $conn->prepare("SELECT COUNT(*) as count FROM notifications WHERE user_id = ?");
+$stmt4->bind_param("i", $user_id);
+$stmt4->execute();
+$notifications = $stmt4->get_result()->fetch_assoc()['count'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agent Dashboard</title>
-  <link rel="stylesheet" href="../../assets/css/agent_sidebar.css"> <!-- Sidebar-specific CSS -->
-  <link rel="stylesheet" href="../../assets/css/agentdashboard.css"> <!-- Dashboard-specific CSS -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Agent Dashboard</title>
+    <link rel="stylesheet" href="../../assets/css/agent_sidebar.css">
+    <link rel="stylesheet" href="../../assets/css/agentdashboard.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-  <div class="dashboard-container">
-    <!-- Sidebar -->
+<div class="dashboard-container">
     <?php include 'agentsidebar.php'; ?>
-
-    <!-- Main Content -->
     <main class="dashboard-content">
-      <!-- Commission Overview Section -->
-      <section id="commission-overview" class="dashboard-section">
-        <h1><i class="fas fa-wallet"></i> Commission Overview</h1>
-        <p>Track your earnings based on completed customer referrals.</p>
-        <button class="dashboard-btn" onclick="location.href='commission_details.php';">View Details</button>
-      </section>
+        <section class="dashboard-section">
+            <h1><i class="fas fa-user-shield"></i> Welcome, Agent</h1>
+            <p>This is your main dashboard. Monitor your performance and track your referrals.</p>
 
-      <!-- User Tracking Section -->
-      <section id="user-tracking" class="dashboard-section">
-        <h1><i class="fas fa-users"></i> User Tracking</h1>
-        <p>Monitor users who signed up using your referral code.</p>
-        <button class="dashboard-btn" onclick="location.href='user_tracking.php';">View Referred Users</button>
-      </section>
+            <div class="dashboard-cards">
+                <div class="dashboard-card purple">
+                    <i class="fas fa-users"></i>
+                    <h2><?= $totalReferrals ?></h2>
+                    <p>Total Referrals</p>
+                </div>
+                <div class="dashboard-card green">
+                    <i class="fas fa-coins"></i>
+                    <h2>RM <?= number_format($referralEarnings, 2) ?></h2>
+                    <p>Total Earnings</p>
+                </div>
+                <div class="dashboard-card orange">
+                    <i class="fas fa-clock"></i>
+                    <h2><?= $pendingCommissions ?></h2>
+                    <p>Pending Commissions</p>
+                </div>
+                <div class="dashboard-card blue">
+                    <i class="fas fa-bell"></i>
+                    <h2><?= $notifications ?></h2>
+                    <p>Notifications</p>
+                </div>
+            </div>
 
-      <!-- Profile Management Section -->
-      <section id="profile-updates" class="dashboard-section">
-        <h1><i class="fas fa-user-edit"></i> Profile Updates</h1>
-        <p>Add, update, or delete your personal and business information.</p>
-        <button class="dashboard-btn" onclick="location.href='profile_management.php';">Edit Profile</button>
-      </section>
-
-      <!-- Referral Code Management Section -->
-      <section id="referral-code-management" class="dashboard-section">
-        <h1><i class="fas fa-link"></i> Referral Code Management</h1>
-        <p>View and manage your unique referral code to share with customers.</p>
-        <button class="dashboard-btn" onclick="location.href='referral_code.php';">Manage Referral Code</button>
-      </section>
-
-      <!-- Commission Management Section -->
-      <section id="commission-management" class="dashboard-section">
-        <h1><i class="fas fa-chart-line"></i> Commission Management</h1>
-        <p>View detailed commission reports and request payouts.</p>
-        <button class="dashboard-btn" onclick="location.href='commission_reports.php';">View Reports</button>
-      </section>
-
-      <!-- Notifications Section -->
-      <section id="notifications" class="dashboard-section">
-        <h1><i class="fas fa-bell"></i> Notifications</h1>
-        <p>Stay updated with alerts about commission updates or new referrals.</p>
-        <button class="dashboard-btn" onclick="location.href='notifications.php';">View Notifications</button>
-      </section>
+            <div class="dashboard-links">
+                <a href="agent_commission_report.php" class="dashboard-link"><i class="fas fa-chart-line"></i> View Commission Graph</a>
+                <a href="agent_referral_report.php" class="dashboard-link"><i class="fas fa-table"></i> View Referral Report</a>
+                <a href="agentnotifications.php" class="dashboard-link"><i class="fas fa-bell"></i> View Notifications</a>
+            </div>
+        </section>
     </main>
-  </div>
+</div>
 </body>
 </html>
