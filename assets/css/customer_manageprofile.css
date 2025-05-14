@@ -1,49 +1,285 @@
-/* Button Styling */
-button {
-    position: relative;
-    display: inline-block;
-    margin: 10px;
-    padding: 10px 20px; /* Smaller size for buttons */
-    text-align: center;
-    font-size: 16px;
-    letter-spacing: 1px;
-    text-decoration: none;
-    color: #725AC1;
-    background: transparent;
-    cursor: pointer;
-    transition: ease-out 0.5s;
-    border: 2px solid #725AC1;
-    border-radius: 10px;
-    box-shadow: inset 0 0 0 0 #725AC1;
+:root {
+  --primary: #6610f2;
+  --primary-dark: #4e0cd6;
+  --primary-light: #845ef7;
+  --danger: #ff6b6b;
+  --success: #2ecc71;
+  --warning: #ffc107;
+  --light: #f8f9fa;
+  --white: #ffffff;
+  --dark: #2e2e2e;
+  --shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  --radius: 20px;
+  --transition: all 0.3s ease;
+  --font-main: 'Poppins', sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-main);
+  background: linear-gradient(to bottom right, #f5f6fa, #e9eaf5);
+  color: var(--dark);
+}
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 50px;
+  background: transparent;
+}
+
+/* Header */
+.dashboard-section h1 {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+
+.dashboard-section p {
+  font-size: 16px;
+  color: #6c757d;
+  margin-bottom: 40px;
+}
+
+/* Card Grid */
+.card-list {
+  display: grid;
+  gap: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+}
+
+/* Individual Card */
+.appointment-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 30px;
+  position: relative;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+}
+
+.appointment-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.card-sub {
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 12px;
+}
+
+.card-body p {
+  margin: 6px 0;
+  font-size: 15px;
+  color: #333;
+}
+
+/* Status Tag */
+.status-badge {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 30px;
+  background: #e0e0e0;
+  color: #444;
+  text-transform: capitalize;
+}
+
+.status-confirmed {
+  background: #e6f7ff;
+  color: #007bff;
+}
+.status-completed {
+  background: #eafaf1;
+  color: var(--success);
+}
+.status-canceled {
+  background: #ffe9e9;
+  color: var(--danger);
+}
+
+/* Feedback Box */
+.feedback-box {
+  margin-top: 14px;
+  padding: 12px;
+  background: #f1f1f1;
+  border-left: 4px solid var(--primary);
+  font-size: 14px;
+  border-radius: 10px;
+  color: #444;
+}
+
+/* Status Pills */
+.status-toggle {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.status-pill {
+  background: #f2f2f2;
+  color: #333;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 25px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.status-pill:hover {
+  background: #e6e6e6;
+}
+
+.status-pill.active {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Action Buttons */
+.button-group {
+  margin-top: 22px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: white;
+}
+
+.action-btn:hover {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+  transform: scale(1.03);
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.45);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.show {
+  display: flex !important;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: var(--shadow);
+  animation: fadeIn 0.3s ease-in-out;
+  position: relative;
+}
+
+@keyframes fadeIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-content h2 {
+  margin: 0;
+  color: var(--primary);
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.modal-content label {
+  font-weight: 600;
+  display: block;
+  margin-top: 12px;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  font-family: var(--font-main);
+}
+
+.save-btn,
+.cancel-btn {
+  margin-top: 20px;
+  padding: 12px;
+  font-weight: 600;
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.save-btn {
+  background: var(--primary);
+  color: white;
+}
+
+.cancel-btn {
+  background: #ddd;
+  color: #444;
+}
+
+.close-btn {
+  position: absolute;
+  right: 16px;
+  top: 14px;
+  font-size: 22px;
+  color: var(--danger);
+  cursor: pointer;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .dashboard-content {
+    padding: 25px;
   }
-  
-  button:hover {
-    color: white;
-    box-shadow: inset 0 -100px 0 0 #725AC1;
+
+  .card-list {
+    grid-template-columns: 1fr;
   }
-  
-  button:active {
-    transform: scale(0.9);
+
+  .appointment-card {
+    padding: 20px;
   }
-  
-  /* Apply to all buttons */
-  .btn-primary {
-    background-color: transparent;
-    border-color: #725AC1;
-    color: #725AC1;
-    padding: 10px 20px;
-    font-size: 16px;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: ease-out 0.5s;
-  }
-  
-  .btn-primary:hover {
-    color: white;
-    box-shadow: inset 0 -100px 0 0 #725AC1;
-  }
-  
-  .btn-primary:active {
-    transform: scale(0.9);
-  }
-  
+}

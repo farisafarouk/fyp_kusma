@@ -1,204 +1,257 @@
-/* General Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+:root {
+  --primary: #6c63ff;
+  --hover: #584be0;
+  --success: #2ecc71;
+  --danger: #e74c3c;
+  --light: #f9f9ff;
+  --white: #ffffff;
+  --muted: #7f8c8d;
+  --shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  --dark: #2c3e50;
 }
 
 body {
-    font-family: "Poppins", sans-serif;
-    background: linear-gradient(to right, #e6e6fa, #ffffff);
-    color: #333;
+  font-family: 'Poppins', sans-serif;
+  background: var(--light);
+  color: var(--dark);
+  margin: 0;
+  padding: 0;
 }
 
-/* Dashboard Container */
-.dashboard-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 20px auto;
-    max-width: 1200px;
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+.container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 20px;
 }
 
-/* Main Content */
-.dashboard-content {
-    width: 100%;
+.page-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.dashboard-content h1 {
-    font-size: 28px;
-    text-align: center;
-    margin-bottom: 20px;
+.top-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
 }
 
-/* Appointments Section */
-.appointments-section {
-    margin-bottom: 30px;
-    background: #f9f9ff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background 0.3s ease;
 }
 
-.appointments-section h2 {
-    font-size: 22px;
-    color: #6610f2;
-    margin-bottom: 10px;
+.btn-primary:hover {
+  background: var(--hover);
 }
 
-/* Appointments Table */
-.appointments-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    background: #fff;
-    border-radius: 10px;
-    overflow: hidden;
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
-.appointments-table th, .appointments-table td {
-    padding: 12px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
-    font-size: 14px;
+.filter-buttons button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  background: var(--muted);
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.3s ease;
 }
 
-.appointments-table thead {
-    background: #6610f2;
-    color: #fff;
+.filter-buttons button.active,
+.filter-buttons button:hover {
+  background: var(--primary);
 }
 
-.appointments-table tbody tr:nth-child(even) {
-    background: #f9f9ff;
+.appointment-card {
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  animation: fadeIn 0.4s ease-in-out;
+  border-left: 6px solid var(--primary);
+  transition: all 0.3s ease;
 }
 
-.appointments-table tbody tr:hover {
-    background: #ececff;
-    cursor: pointer;
+.appointment-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* Buttons */
-.action-btn {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    font-size: 12px;
-    font-weight: bold;
-    color: #fff;
-    cursor: pointer;
-    transition: all 0.3s;
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
 }
 
-.action-btn.reschedule {
-    background: #007bff;
+.card-header p {
+  margin: 0;
+  font-weight: 500;
+  color: var(--dark);
 }
 
-.action-btn.reschedule:hover {
-    background: #0056b3;
+.appt-mode {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 2px;
 }
 
-.action-btn.cancel {
-    background: #ff4d4d;
+.status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
 }
 
-.action-btn.cancel:hover {
-    background: #c82333;
+.status.pending { background: #f39c12; }
+.status.confirmed { background: var(--primary); }
+.status.completed { background: var(--success); }
+.status.canceled { background: var(--danger); }
+
+.card-body p {
+  margin: 6px 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
-/* Modals */
+.card-actions {
+  margin-top: 18px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-cancel, .btn-reschedule, .btn-feedback {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #fff;
+  transition: background 0.3s ease;
+}
+
+.btn-cancel { background: var(--danger); }
+.btn-cancel:hover { background: #c0392b; }
+
+.btn-reschedule { background: var(--primary); }
+.btn-reschedule:hover { background: var(--hover); }
+
+.btn-feedback { background: var(--success); }
+.btn-feedback:hover { background: #27ae60; }
+
+.empty-message {
+  text-align: center;
+  color: var(--muted);
+  font-size: 1rem;
+  margin-top: 40px;
+}
+
 .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
 
 .modal-content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    width: 400px;
-    animation: fadeIn 0.3s ease;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: var(--shadow);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  margin-bottom: 14px;
+  color: var(--dark);
+}
+
+.modal-content textarea {
+  font-family: 'Poppins', sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  padding: 10px;
+  resize: vertical;
+  background: #fefefe;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.toast {
+  visibility: hidden;
+  position: fixed;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%);
+  background-color: var(--dark);
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 9999;
+}
+
+.toast.show {
+  visibility: visible;
+  opacity: 1;
+  bottom: 50px;
+}
+
+.toast.success {
+  background-color: var(--success);
+}
+
+.toast.error {
+  background-color: var(--danger);
+}
+
+.stars i {
+  font-size: 1.4rem;
+  color: gold;
+  margin-right: 4px;
+  transition: color 0.3s;
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.modal-content h2 {
-    font-size: 20px;
-    margin-bottom: 15px;
-    text-align: center;
-    color: #6610f2;
-}
-
-.modal-content .input-group {
-    margin-bottom: 15px;
-}
-
-.modal-content .input-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.modal-content .input-group input {
-    width: 100%;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-
-.modal-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
-}
-
-.modal-buttons .save-btn {
-    background: #28a745;
-    color: white;
-}
-
-.modal-buttons .cancel-btn {
-    background: #dc3545;
-    color: white;
-}
-
-.modal-buttons button:hover {
-    opacity: 0.9;
-}
-
-/* Book Appointment Button */
-.book-appointment button {
-    background: #28a745;
-    color: #fff;
-    font-weight: bold;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 10px;
-    transition: all 0.3s;
-}
-
-.book-appointment button:hover {
-    background: #218838;
-    transform: scale(1.05);
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }

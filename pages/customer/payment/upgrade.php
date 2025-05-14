@@ -43,7 +43,7 @@ $user = $stmt->get_result()->fetch_assoc();
                 </div>
                 <div class="plan premium">
                     <h3>Premium Plan</h3>
-                    <p class="price">RM99.90 <span>one-time</span></p>
+                    <p class="price">RM99.90 <span>/ year</span></p>
                     <ul>
                         <li>✅ Unlimited program recommendations</li>
                         <li>✅ Full access to personalized results</li>

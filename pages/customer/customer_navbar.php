@@ -7,7 +7,7 @@
 
         <!-- Menu Items -->
         <ul class="navbar-menu">
-            <li><a href="../profile/user_dashboard.php" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="../profile/customer_dashboard.php" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
             <li><a href="../profile/manage_profile.php"><i class="fas fa-user"></i> Profile</a></li>
             <li><a href="../recommendations.php"><i class="fas fa-lightbulb"></i> Recommendations</a></li>
             <li><a href="../booking/customer_appointments.php"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
