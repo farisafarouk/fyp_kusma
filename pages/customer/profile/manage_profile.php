@@ -81,9 +81,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Manage Profile</title>
-    <link rel="stylesheet" href="../../../assets/css/customer_dashboard.css">
+    
+    
     <link rel="stylesheet" href="../../../assets/css/customer_navbar.css">
     <link rel="stylesheet" href="../../../assets/css/customer_manageprofile.css">
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Icons -->
    

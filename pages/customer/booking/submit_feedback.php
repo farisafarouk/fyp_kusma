@@ -1,70 +1,41 @@
 <?php
 session_start();
 require_once '../../../config/database.php';
+header('Content-Type: application/json');
 
-// Ensure the user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Content-Type: application/json");
-    http_response_code(401);
-    echo json_encode(['error' => 'Unauthorized access']);
-    exit();
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
+  echo json_encode(['success' => false, 'message' => 'Unauthorized.']);
+  exit();
 }
 
-$user_id = $_SESSION['user_id'];
+$input = json_decode(file_get_contents("php://input"), true);
+$appointment_id = $input['id'] ?? null;
+$rating = $input['rating'] ?? null;
+$feedback = trim($input['feedback'] ?? '');
+$customer_id = $_SESSION['user_id'];
 
-// Check if request is POST and contains required fields
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Decode JSON request payload
-    $data = json_decode(file_get_contents('php://input'), true);
-    $appointment_id = $data['id'] ?? null;
-    $rating = $data['rating'] ?? null;
-    $feedback = $data['feedback'] ?? null;
+if (!$appointment_id || !$rating || !$feedback) {
+  echo json_encode(['success' => false, 'message' => 'Missing rating or feedback.']);
+  exit();
+}
 
-    // Validate input data
-    if (!$appointment_id || !$rating || !$feedback) {
-        header("Content-Type: application/json");
-        http_response_code(400);
-        echo json_encode(['error' => 'All fields are required']);
-        exit();
-    }
+// Validate ownership and completion status
+$check = $conn->prepare("SELECT id FROM appointments WHERE id = ? AND customer_id = ? AND status = 'completed'");
+$check->bind_param("ii", $appointment_id, $customer_id);
+$check->execute();
+$result = $check->get_result();
 
-    // Ensure the appointment belongs to the logged-in user and is completed
-    $sql_verify = "
-        SELECT id 
-        FROM appointments 
-        WHERE id = ? AND customer_id = ? AND status = 'completed' AND feedback IS NULL";
-    $stmt_verify = $conn->prepare($sql_verify);
-    $stmt_verify->bind_param('ii', $appointment_id, $user_id);
-    $stmt_verify->execute();
-    $result_verify = $stmt_verify->get_result();
+if ($result->num_rows === 0) {
+  echo json_encode(['success' => false, 'message' => 'Appointment not found or not eligible for feedback.']);
+  exit();
+}
 
-    if ($result_verify->num_rows === 0) {
-        header("Content-Type: application/json");
-        http_response_code(403);
-        echo json_encode(['error' => 'Invalid appointment or feedback already provided']);
-        exit();
-    }
+// Update with feedback and rating
+$update = $conn->prepare("UPDATE appointments SET feedback = ?, rating = ? WHERE id = ?");
+$update->bind_param("sii", $feedback, $rating, $appointment_id);
 
-    // Update the appointment with the feedback and rating
-    $sql_update = "
-        UPDATE appointments 
-        SET feedback = ?, rating = ? 
-        WHERE id = ? AND customer_id = ?";
-    $stmt_update = $conn->prepare($sql_update);
-    $stmt_update->bind_param('siii', $feedback, $rating, $appointment_id, $user_id);
-
-    if ($stmt_update->execute()) {
-        header("Content-Type: application/json");
-        http_response_code(200);
-        echo json_encode(['message' => 'Feedback submitted successfully']);
-    } else {
-        header("Content-Type: application/json");
-        http_response_code(500);
-        echo json_encode(['error' => 'Error submitting feedback']);
-    }
+if ($update->execute()) {
+  echo json_encode(['success' => true, 'message' => 'Thank you for your feedback!']);
 } else {
-    header("Content-Type: application/json");
-    http_response_code(405);
-    echo json_encode(['error' => 'Invalid request method']);
-    exit();
+  echo json_encode(['success' => false, 'message' => 'Failed to save feedback.']);
 }

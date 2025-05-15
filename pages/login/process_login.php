@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             header("Location: ../customer/edu_resources.php");
                             break;
                         case 'completed':
-                            header("Location: ../customer/profile/user_dashboard.php");
+                            header("Location: ../customer/profile/customer_dashboard.php");
                             break;
                         default:
                             $_SESSION['error'] = "Unexpected form status.";

@@ -28,7 +28,7 @@ if (isset($_GET['clear'])) {
 <head>
     <meta charset="UTF-8">
     <title>My Notifications</title>
-    <link rel="stylesheet" href="../../../assets/css/customer_dashboard.css">
+   
     <link rel="stylesheet" href="../../../assets/css/customer_navbar.css">
     <link rel="stylesheet" href="../../../assets/css/customer_notifications.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />

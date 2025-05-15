@@ -9,7 +9,7 @@
   <meta name="keywords" content="">
 
   <!-- Favicons -->
-  <link href="assets/img/kusmalogo.png" rel="icon">
+  <link href="assets/img/kusma_small.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <!-- Fonts -->
@@ -205,7 +205,7 @@ Consultation solutions provider, specializing in Business Planning & Financial P
       <!-- Free Plan -->
       <div class="pricing-item" data-aos="zoom-in" data-aos-delay="100">
         <h3 class="plan-title free">Free Plan</h3>
-        <div class="plan-price">RM <span class="amount">0</span> <span class="duration">/ mo</span></div>
+        <div class="plan-price">RM <span class="amount">0</span> <span class="duration"></span></div>
         <div class="plan-icon"><i class="bi bi-box"></i></div>
         <ul class="plan-features">
           <li>🔍 View up to 2 recommendations</li>
@@ -220,7 +220,7 @@ Consultation solutions provider, specializing in Business Planning & Financial P
       <div class="pricing-item featured" data-aos="zoom-in" data-aos-delay="200">
         <span class="badge-featured">Featured</span>
         <h3 class="plan-title premium">Premium Plan</h3>
-        <div class="plan-price">RM <span class="amount">99.90</span> <span class="duration">/ mo</span></div>
+        <div class="plan-price">RM <span class="amount">99.90</span> <span class="duration">/ year</span></div>
         <div class="plan-icon"><i class="bi bi-send"></i></div>
         <ul class="plan-features">
           <li>✅ Unlimited Program Recommendations</li>

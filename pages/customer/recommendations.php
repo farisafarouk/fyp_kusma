@@ -82,7 +82,7 @@ if ($userProfile) {
   <title>Recommendations - KUSMA</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="../../assets/css/customer_dashboard.css" />
+  
   <link rel="stylesheet" href="../../assets/css/customer_navbar.css" />
   <link rel="stylesheet" href="../../assets/css/recommendations.css" />
 </head>
@@ -91,42 +91,57 @@ if ($userProfile) {
 <?php
 $current_page = basename($_SERVER['SCRIPT_NAME']);
 ?>
+
 <nav class="navbar">
-  <div class="container">
+  <div class="navbar-wrapper">
     <ul class="navbar-menu">
       <li>
-        <a href="/fyp_kusma/pages/customer/profile/user_dashboard.php" class="<?= $current_page === 'user_dashboard.php' ? 'active' : '' ?>">
-          <i class="fas fa-home"></i> Dashboard
+        <a href="/fyp_kusma/pages/customer/profile/user_dashboard.php" class="<?= $current_page === 'customer_dashboard.php' ? 'active' : '' ?>">
+          <i class="fas fa-home"></i><span> Dashboard</span>
         </a>
       </li>
       <li>
-        <a href="/fyp_kusma/pages/customer/profile/manage_profile.php" class="<?= $current_page === 'manage_profile.php' ? 'active' : '' ?>">
-          <i class="fas fa-user"></i> Profile
-        </a>
-      </li>
-      <li>
-        <a href="/fyp_kusma/pages/customer/recommendations.php" class="<?= $current_page === 'recommendations.php' ? 'active' : '' ?>">
-          <i class="fas fa-lightbulb"></i> Recommendations
+        <a href="/fyp_kusma/pages/customer/booking/consultant_list.php" class="<?= $current_page === 'consultant_list.php' ? 'active' : '' ?>">
+          <i class="fas fa-user-md"></i><span> Book</span>
         </a>
       </li>
       <li>
         <a href="/fyp_kusma/pages/customer/booking/customer_appointments.php" class="<?= $current_page === 'customer_appointments.php' ? 'active' : '' ?>">
-          <i class="fas fa-calendar-alt"></i> Appointments
+          <i class="fas fa-calendar-check"></i><span> Appointments</span>
+        </a>
+      </li>
+      <li>
+        <a href="/fyp_kusma/pages/customer/payment/manage_subscription.php" class="<?= $current_page === 'manage_subscription.php' ? 'active' : '' ?>">
+          <i class="fas fa-wallet"></i><span> Subscription</span>
+        </a>
+      </li>
+      <li>
+        <a href="/fyp_kusma/pages/customer/recommendations.php" class="<?= $current_page === 'recommendations.php' ? 'active' : '' ?>">
+          <i class="fas fa-lightbulb"></i><span> Recommendations</span>
+        </a>
+      </li>
+      <li>
+        <a href="/fyp_kusma/pages/customer/profile/manage_profile.php" class="<?= $current_page === 'manage_profile.php' ? 'active' : '' ?>">
+          <i class="fas fa-user-circle"></i><span> Profile</span>
         </a>
       </li>
       <li>
         <a href="/fyp_kusma/pages/customer/notifications/notification_cust.php" class="<?= $current_page === 'notification_cust.php' ? 'active' : '' ?>">
-          <i class="fas fa-bell"></i> Notifications
+          <i class="fas fa-bell"></i><span> Notifications</span>
         </a>
       </li>
       <li>
-        <a href="/fyp_kusma/pages/login/login.php" class="logout-link">
-          <i class="fas fa-sign-out-alt"></i> Logout
+        <a href="/fyp_kusma/pages/customer/login/login.php" class="logout-link">
+          <i class="fas fa-sign-out-alt"></i><span> Logout</span>
         </a>
       </li>
     </ul>
   </div>
 </nav>
+
+
+
+
 
 
 

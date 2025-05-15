@@ -1,0 +1,182 @@
+/* Base Layout */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f2f4f8;
+    margin: 0;
+    padding: 50px 20px;
+  }
+  
+  .container {
+    max-width: 700px;
+    margin: auto;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Top Navigation Links */
+  .nav-links {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+  }
+  
+  .nav-links a {
+    color: #6c63ff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+  
+  .nav-links a:hover {
+    color: #5146e1;
+  }
+  
+  /* Title */
+  h1 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  /* Status Box */
+  .status-box {
+    background-color: #f9fafa;
+    padding: 20px 25px;
+    border-left: 5px solid #6c63ff;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    font-size: 16px;
+    color: #444;
+  }
+  
+  .status-box p {
+    margin: 8px 0;
+  }
+  
+  /* Badge Styles */
+  .badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-block;
+  }
+  
+  .badge-premium {
+    background-color: #6c63ff;
+    color: white;
+  }
+  
+  .badge-free {
+    background-color: #ccc;
+    color: #333;
+  }
+  
+  /* Action Buttons */
+  .actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .btn {
+    padding: 12px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-primary {
+    background-color: #6c63ff;
+    color: white;
+  }
+  
+  .btn-warning {
+    background-color: #ffa726;
+    color: white;
+  }
+  
+  .btn-danger {
+    background-color: #ef5350;
+    color: white;
+  }
+  
+  .btn:hover {
+    opacity: 0.92;
+  }
+  
+  /* Toast Notification */
+  .toast-message {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #4caf50;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    z-index: 9999;
+    animation: fadeInOut 4s ease;
+  }
+  
+  @keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(20px); }
+    10%, 90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(20px); }
+  }
+  
+  /* Persistent Banner */
+  .status-banner {
+    background-color: #4caf50;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    font-weight: 500;
+    border-radius: 6px;
+  }
+  
+  /* Downgrade Confirmation Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 400px;
+    text-align: center;
+  }
+  
+  .modal-content h2 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: #333;
+  }
+  
+  .modal-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+  
