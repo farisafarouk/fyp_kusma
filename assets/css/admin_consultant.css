@@ -1,179 +1,122 @@
-/* === Global Reset === */
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 body {
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(to right, #f3f3ff, #ffffff);
+  background: #f5f8ff;
   color: #333;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
 }
 
-/* === Container & Content === */
+/* Common container structure */
 .dashboard-container {
   display: flex;
-  width: 100%;
-  max-width: 1300px;
-  margin: 0 auto;
+  max-width: 1200px;
+  margin: 20px auto;
   background: white;
-  border-radius: 20px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
   overflow: hidden;
-  min-height: 85vh;
 }
 
+/* Consistent main section */
 .dashboard-content {
-  flex: 1;
-  padding: 40px;
+  width: 100%;
+  padding: 30px;
   background: #f9faff;
   display: flex;
   flex-direction: column;
   gap: 30px;
-  border-radius: 0 20px 20px 0;
 }
 
 .dashboard-section {
   background: white;
   padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-  width: 100%;
-  max-width: 1100px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
 .dashboard-section h1 {
   font-size: 24px;
   margin-bottom: 10px;
-  color: #333;
+  color: #343a40;
 }
 
 .dashboard-section p {
   font-size: 15px;
-  color: #666;
+  color: #6c757d;
   margin-bottom: 20px;
 }
 
-/* === Add Button === */
-.action-btn.add {
-  margin-left: 0;
-  margin-bottom: 20px;
-  background-color: #6610f2;
-  color: white;
-  padding: 10px 18px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.3s ease;
-}
-
-.action-btn.add:hover {
-  background-color: #4e0ec9;
-}
-
-/* === Table Styling === */
 .contact-table {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
+  background-color: #fff;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
 }
 
 .contact-table thead {
   background-color: #6610f2;
-  color: #fff;
+  color: white;
 }
 
 .contact-table th,
 .contact-table td {
-  padding: 14px 16px;
-  text-align: left;
+  padding: 14px;
+  border-bottom: 1px solid #ddd;
   font-size: 14px;
-  border-bottom: 1px solid #eee;
+  vertical-align: top;
 }
 
-.contact-table tr:nth-child(even) {
-  background-color: #f9f9ff;
-}
-
-.contact-table tr:hover {
-  background-color: #f1f0ff;
-}
-
-.contact-table th {
-  font-weight: 600;
-}
-
-/* === Action Buttons === */
-.action-btn-group {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-start;
+.contact-table tbody tr:hover {
+  background-color: #f4f4fc;
 }
 
 .action-btn {
-  padding: 6px 16px;
+  padding: 6px 12px;
   font-size: 13px;
-  border-radius: 6px;
+  border-radius: 5px;
   border: none;
-  color: #fff;
   cursor: pointer;
+  margin: 2px;
+  transition: 0.3s ease;
+  color: white;
+}
+
+.action-btn.add { background-color: #6610f2; }
+.action-btn.add:hover { background-color: #4e0ec9; }
+
+.action-btn.edit { background-color: #007bff; }
+.action-btn.edit:hover { background-color: #0056b3; }
+
+.action-btn.delete { background-color: #dc3545; }
+.action-btn.delete:hover { background-color: #a71d2a; }
+
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: white;
   font-weight: 500;
-  transition: background 0.3s ease;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
 }
 
-.action-btn.edit {
-  background-color: #0d6efd;
-}
+.toast.success { background: #28a745; }
+.toast.error { background: #e74c3c; }
 
-.action-btn.edit:hover {
-  background-color: #0056b3;
-}
-
-.action-btn.delete {
-  background-color: #dc3545;
-}
-
-.action-btn.delete:hover {
-  background-color: #a71d2a;
-}
-
-.action-btn.save {
-  background-color: #28a745;
-}
-
-.action-btn.save:hover {
-  background-color: #218838;
-}
-
-.action-btn.cancel {
-  background-color: #6c757d;
-  color: #fff;
-  border: none;
-  padding: 6px 16px;
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.action-btn.cancel:hover {
-  background-color: #5a6268;
-}
-
-/* === Modal Styling === */
 .modal {
   display: none;
   position: fixed;
-  z-index: 1000;
+  z-index: 2000;
   left: 0;
   top: 0;
   width: 100%;
@@ -185,18 +128,10 @@ body {
 
 .modal-content {
   background: #fff;
-  width: 400px;
+  width: 420px;
   padding: 25px;
   border-radius: 10px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-  position: relative;
   animation: fadeIn 0.3s ease-in-out;
-}
-
-.modal-content h3 {
-  font-size: 20px;
-  margin-bottom: 15px;
-  color: #333;
 }
 
 .input-group {
@@ -204,10 +139,10 @@ body {
 }
 
 .input-group label {
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 5px;
   display: block;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 5px;
 }
 
 .input-group input {
@@ -221,34 +156,4 @@ body {
 .input-group input:focus {
   border-color: #6610f2;
   box-shadow: 0 0 0 3px rgba(102, 16, 242, 0.15);
-}
-
-/* === Toast Messages === */
-.toast {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 12px 18px;
-  border-radius: 8px;
-  color: white;
-  font-weight: 500;
-  font-size: 14px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 9999;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-
-.toast.success {
-  background: #2ecc71;
-}
-
-.toast.error {
-  background: #e74c3c;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
 }
