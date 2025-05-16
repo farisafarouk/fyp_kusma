@@ -1,86 +1,52 @@
-/**
-* PHP Email Form Validation - v3.10
-* URL: https://bootstrapmade.com/php-email-form/
-* Author: BootstrapMade.com
-*/
 (function () {
   "use strict";
 
   let forms = document.querySelectorAll('.php-email-form');
 
-  forms.forEach( function(e) {
-    e.addEventListener('submit', function(event) {
+  forms.forEach(function (e) {
+    e.addEventListener('submit', function (event) {
       event.preventDefault();
 
       let thisForm = this;
-
       let action = thisForm.getAttribute('action');
-      let recaptcha = thisForm.getAttribute('data-recaptcha-site-key');
-      
-      if( ! action ) {
-        displayError(thisForm, 'The form action property is not set!');
+      let formData = new FormData(thisForm);
+
+      if (!action) {
+        displayError(thisForm, 'Form action URL is missing!');
         return;
       }
-      thisForm.querySelector('.loading').classList.add('d-block');
-      thisForm.querySelector('.error-message').classList.remove('d-block');
-      thisForm.querySelector('.sent-message').classList.remove('d-block');
 
-      let formData = new FormData( thisForm );
+      // Show loading
+      thisForm.querySelector('.loading').classList.remove('d-none');
+      thisForm.querySelector('.error-message').classList.add('d-none');
+      thisForm.querySelector('.success-message').classList.add('d-none');
 
-      if ( recaptcha ) {
-        if(typeof grecaptcha !== "undefined" ) {
-          grecaptcha.ready(function() {
-            try {
-              grecaptcha.execute(recaptcha, {action: 'php_email_form_submit'})
-              .then(token => {
-                formData.set('recaptcha-response', token);
-                php_email_form_submit(thisForm, action, formData);
-              })
-            } catch(error) {
-              displayError(thisForm, error);
-            }
-          });
+      fetch(action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+      .then(response => response.text())
+      .then(data => {
+        thisForm.querySelector('.loading').classList.add('d-none');
+        if (data.trim() === 'OK') {
+          thisForm.querySelector('.success-message').classList.remove('d-none');
+          thisForm.reset();
         } else {
-          displayError(thisForm, 'The reCaptcha javascript API url is not loaded!')
+          displayError(thisForm, data);
         }
-      } else {
-        php_email_form_submit(thisForm, action, formData);
-      }
+      })
+      .catch(error => {
+        displayError(thisForm, 'An unexpected error occurred. Please try again later.');
+        console.error('Form error:', error);
+      });
     });
   });
 
-  function php_email_form_submit(thisForm, action, formData) {
-    fetch(action, {
-      method: 'POST',
-      body: formData,
-      headers: {'X-Requested-With': 'XMLHttpRequest'}
-    })
-    .then(response => {
-      if( response.ok ) {
-        return response.text();
-      } else {
-        throw new Error(`${response.status} ${response.statusText} ${response.url}`); 
-      }
-    })
-    .then(data => {
-      thisForm.querySelector('.loading').classList.remove('d-block');
-      if (data.trim() == 'OK') {
-        thisForm.querySelector('.success-message').classList.add('d-block');
-
-        thisForm.reset(); 
-      } else {
-        throw new Error(data ? data : 'Form submission failed and no error message returned from: ' + action); 
-      }
-    })
-    .catch((error) => {
-      displayError(thisForm, error);
-    });
+  function displayError(thisForm, errorMsg) {
+    thisForm.querySelector('.loading').classList.add('d-none');
+    const errorDiv = thisForm.querySelector('.error-message');
+    errorDiv.innerHTML = errorMsg;
+    errorDiv.classList.remove('d-none');
   }
-
-  function displayError(thisForm, error) {
-    thisForm.querySelector('.loading').classList.remove('d-block');
-    thisForm.querySelector('.error-message').innerHTML = error;
-    thisForm.querySelector('.error-message').classList.add('d-block');
-  }
-
 })();

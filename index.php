@@ -1,3 +1,36 @@
+<?php
+require_once 'config/database.php'; // adjust if your DB file is in another folder
+
+$successMessage = '';
+$errorMessage = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contact_submit'])) {
+    $name = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $subject = trim($_POST['subject'] ?? '');
+    $message = trim($_POST['message'] ?? '');
+
+    if ($name && $email && $subject && $message) {
+        $stmt = $conn->prepare("INSERT INTO contact_messages (name, email, subject, message) VALUES (?, ?, ?, ?)");
+        if ($stmt) {
+            $stmt->bind_param("ssss", $name, $email, $subject, $message);
+            if ($stmt->execute()) {
+                $successMessage = "Your message has been sent. Thank you!";
+            } else {
+                $errorMessage = "Error saving message. Please try again.";
+            }
+            $stmt->close();
+        } else {
+            $errorMessage = "Database error: " . $conn->error;
+        }
+    } else {
+        $errorMessage = "Please fill in all fields.";
+    }
+
+    $conn->close();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -239,70 +272,7 @@ Consultation solutions provider, specializing in Business Planning & Financial P
 
           
 
-    <!-- Agency Section -->
-    <section id="clients" class="clients section">
-
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Clients</h2>
-        <p>We work with best clients<br></p>
-      </div><!-- End Section Title -->
-
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="swiper init-swiper">
-          <script type="application/json" class="swiper-config">
-            {
-              "loop": true,
-              "speed": 600,
-              "autoplay": {
-                "delay": 5000
-              },
-              "slidesPerView": "auto",
-              "pagination": {
-                "el": ".swiper-pagination",
-                "type": "bullets",
-                "clickable": true
-              },
-              "breakpoints": {
-                "320": {
-                  "slidesPerView": 2,
-                  "spaceBetween": 40
-                },
-                "480": {
-                  "slidesPerView": 3,
-                  "spaceBetween": 60
-                },
-                "640": {
-                  "slidesPerView": 4,
-                  "spaceBetween": 80
-                },
-                "992": {
-                  "slidesPerView": 6,
-                  "spaceBetween": 120
-                }
-              }
-            }
-          </script>
-          <div class="swiper-wrapper align-items-center">
-            <div class="swiper-slide"><img src="assets/img/clients/client-1.png" class="img-fluid" alt=""></div>
-            <div class="swiper-slide"><img src="assets/img/clients/client-2.png" class="img-fluid" alt=""></div>
-            <div class="swiper-slide"><img src="assets/img/clients/client-3.png" class="img-fluid" alt=""></div>
-            <div class="swiper-slide"><img src="assets/img/clients/client-4.png" class="img-fluid" alt=""></div>
-            <div class="swiper-slide"><img src="assets/img/clients/client-5.png" class="img-fluid" alt=""></div>
-            <div class="swiper-slide"><img src="assets/img/clients/client-6.png" class="img-fluid" alt=""></div>
-            <div class="swiper-slide"><img src="assets/img/clients/client-7.png" class="img-fluid" alt=""></div>
-            <div class="swiper-slide"><img src="assets/img/clients/client-8.png" class="img-fluid" alt=""></div>
-          </div>
-          <div class="swiper-pagination"></div>
-        </div>
-
-      </div>
-
-    </section><!-- /Clients Section -->
-
    
-
           
 
          
@@ -364,36 +334,105 @@ Consultation solutions provider, specializing in Business Planning & Financial P
           </div>
 
           <div class="col-lg-6">
-            <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="200">
-              <div class="row gy-4">
+          <style>
+  /* Form container */
+  .php-email-form {
+    background: #f9f9f9;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
 
-                <div class="col-md-6">
-                  <input type="text" name="name" class="form-control" placeholder="Your Name" required="">
-                </div>
+  .php-email-form .form-control {
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 12px 15px;
+    font-size: 15px;
+    transition: 0.3s;
+  }
 
-                <div class="col-md-6 ">
-                  <input type="email" class="form-control" name="email" placeholder="Your Email" required="">
-                </div>
+  .php-email-form .form-control:focus {
+    border-color: #6610f2;
+    box-shadow: 0 0 0 0.15rem rgba(102, 16, 242, 0.2);
+  }
 
-                <div class="col-12">
-                  <input type="text" class="form-control" name="subject" placeholder="Subject" required="">
-                </div>
+  .php-email-form textarea.form-control {
+    resize: vertical;
+  }
 
-                <div class="col-12">
-                  <textarea class="form-control" name="message" rows="6" placeholder="Message" required=""></textarea>
-                </div>
+  .php-email-form .btn {
+    background-color: #6610f2;
+    color: #fff;
+    padding: 12px 25px;
+    font-size: 16px;
+    border-radius: 50px;
+    border: none;
+    transition: all 0.3s ease;
+  }
 
-                <div class="col-12 text-center">
-                  <div class="loading">Loading</div>
-                  <div class="error-message"></div>
-                  <div class="sent-message">Your message has been sent. Thank you!</div>
+  .php-email-form .btn:hover {
+    background-color: #4b0dc6;
+  }
 
-                  <button type="submit">Send Message</button>
-                </div>
+  /* Form feedback messages */
+  .form-message {
+  margin-bottom: 20px;     /* Space below message */
+  margin-top: 10px;        /* Space above message */
+  padding: 15px 20px;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 15px;
+}
 
-              </div>
-            </form>
-          </div><!-- End Contact Form -->
+
+  .success-message {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+
+  .error-message {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  /* Responsive tweaks if needed */
+  @media (max-width: 768px) {
+    .php-email-form .btn {
+      width: 100%;
+    }
+  }
+</style>
+
+
+  <?php if (!empty($successMessage)): ?>
+    <div class="form-message success-message"><?= $successMessage ?></div>
+  <?php elseif (!empty($errorMessage)): ?>
+    <div class="form-message error-message"><?= $errorMessage ?></div>
+  <?php endif; ?>
+
+  <form method="POST" action="#contact">
+    <div class="row gy-4">
+      <div class="col-md-6">
+        <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+      </div>
+      <div class="col-md-6">
+        <input type="email" name="email" class="form-control" placeholder="Your Email" required>
+      </div>
+      <div class="col-12">
+        <input type="text" name="subject" class="form-control" placeholder="Subject" required>
+      </div>
+      <div class="col-12">
+        <textarea name="message" rows="6" class="form-control" placeholder="Message" required></textarea>
+      </div>
+      <div class="col-12 text-center">
+        <button type="submit" name="contact_submit" class="btn btn-primary">Send Message</button>
+      </div>
+    </div>
+  </form>
+</div>
+<!-- End Contact Form -->
 
         </div>
 

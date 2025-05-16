@@ -74,7 +74,9 @@ $result = $conn->query("SELECT c.id AS cid, u.name, u.email, c.phone, c.expertis
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Consultant Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Consultants</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../../../assets/css/adminsidebar.css">
   <link rel="stylesheet" href="../../../assets/css/admin_consultant.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">

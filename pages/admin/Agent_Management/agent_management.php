@@ -161,6 +161,8 @@ $result_approved = $conn->query($sql_approved);
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agent Management</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="../../../assets/css/adminsidebar.css">
   <link rel="stylesheet" href="../../../assets/css/admin_customermanagement.css">
 </head>
@@ -245,13 +247,13 @@ $result_approved = $conn->query($sql_approved);
             '<?php echo htmlspecialchars($row['email']); ?>',
             '<?php echo htmlspecialchars($row['phone']); ?>',
             '<?php echo htmlspecialchars($row['ic_passport']); ?>'
-        )"><i class="fas fa-edit"></i> Edit</button>
+        )"> Edit</button>
         
         <form method="POST" action="agent_management.php" style="display:inline;">
           <input type="hidden" name="agent_id" value="<?php echo $row['agent_id']; ?>">
           <button type="submit" name="action" value="delete" class="action-btn delete"
             onclick="return confirm('Are you sure you want to delete this agent? This action cannot be undone.');">
-            <i class="fas fa-trash-alt"></i> Delete
+            Delete
           </button>
         </form>
       </td>

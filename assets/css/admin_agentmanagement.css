@@ -1,11 +1,16 @@
-body {
-    font-family: 'Poppins', sans-serif;
-    background: #f4f6fa;
-    color: #333;
-    margin: 0;
+* {
+    box-sizing: border-box;
     padding: 0;
+    margin: 0;
   }
   
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #f5f8ff;
+    color: #333;
+  }
+  
+  /* Common container structure */
   .dashboard-container {
     display: flex;
     max-width: 1200px;
@@ -16,6 +21,7 @@ body {
     overflow: hidden;
   }
   
+  /* Consistent main section */
   .dashboard-content {
     width: 100%;
     padding: 30px;
@@ -28,131 +34,118 @@ body {
   .dashboard-section {
     background: white;
     padding: 30px;
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   }
   
   
-
-.dashboard-section h1 {
+  
+  
+  .dashboard-section h1 {
     font-size: 24px;
     margin-bottom: 10px;
     color: #333;
-}
-
-.dashboard-section p {
-    font-size: 16px;
-    margin-bottom: 20px;
+  }
+  
+  .dashboard-section p {
+    font-size: 15px;
     color: #666;
-}
-
-/* Contact Table */
-.contact-table {
+    margin-bottom: 20px;
+  }
+  
+  /* === Filter Input === */
+  .filter-container {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 15px;
+  }
+  
+  .filter-container input {
+    width: 300px;
+    padding: 10px 14px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  
+  .filter-container input:focus {
+    border-color: #6610f2;
+    box-shadow: 0 0 0 3px rgba(102, 16, 242, 0.15);
+  }
+  
+  /* === Table Styling === */
+  .contact-table {
     width: 100%;
     border-collapse: collapse;
-    background-color: #fff;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-    border-radius: 10px;
+    background: #fff;
+    border-radius: 12px;
     overflow: hidden;
-}
-
-.contact-table thead {
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+  }
+  
+  .contact-table thead {
     background-color: #6610f2;
-    color: #fff;
-}
-
-.contact-table th,
-.contact-table td {
-    padding: 12px 15px;
+    color: white;
+  }
+  
+  .contact-table th,
+  .contact-table td {
+    padding: 14px 16px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
     font-size: 14px;
-}
-
-.contact-table tbody tr:nth-child(even) {
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+  }
+  
+  .contact-table tbody tr:nth-child(even) {
     background-color: #f9f9ff;
-}
-
-.contact-table tbody tr:hover {
-    background-color: #ececff;
-}
-
-.contact-table th {
-    font-weight: bold;
-}
-
-/* Filter Container */
-.filter-container {
-    margin-top: 20px; /* Add space above the filter container */
-    margin-bottom: 15px; /* Add space below the filter container */
+  }
+  
+  .contact-table tbody tr:hover {
+    background-color: #f1f0ff;
+  }
+  
+  /* === Action Buttons === */
+  .action-btn-group {
     display: flex;
-    align-items: center; /* Vertically align items in the container */
-    justify-content: flex-start; /* Align the filter input to the left */
-    gap: 15px; /* Add spacing between multiple input fields if present */
-}
-
-.filter-container input {
-    width: 300px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    gap: 8px;
+  }
+  
+  .action-btn {
+    padding: 8px 14px;
     font-size: 14px;
-    outline: none;
-    transition: border 0.3s, box-shadow 0.3s;
-}
-
-.filter-container input:focus {
-    border-color: #6610f2;
-    box-shadow: 0 0 5px rgba(102, 16, 242, 0.5);
-}
-.action-btn.add {
-    margin-bottom: 15px; /* Add space below the Add Agent button */
-    background: #6610f2;
-    color: white;
-    padding: 8px 16px;
-    font-size: 14px;
+    border-radius: 6px;
     border: none;
-    border-radius: 5px;
+    color: #fff;
     cursor: pointer;
-    transition: 0.3s;
-}
-
-.action-btn.add:hover {
+    transition: 0.3s ease;
+  }
+  
+  .action-btn.edit {
+    background-color: #007bff;
+  }
+  
+  .action-btn.delete {
+    background-color: #dc3545;
+  }
+  
+  .action-btn.save {
+    background-color: #28a745;
+  }
+  
+  .action-btn.add {
+    background-color: #6610f2;
+    margin-bottom: 15px;
+  }
+  
+  .action-btn:hover {
     opacity: 0.9;
-    transform: scale(1.05); /* Slight zoom effect on hover */
-}
-/* Buttons */
-.action-btn {
-    padding: 8px 16px;
-    font-size: 14px;
-    border-radius: 5px;
-    cursor: pointer;
-    border: none;
-    transition: 0.3s;
-}
-
-.action-btn.save {
-    background: #28a745;
-    color: white;
-}
-
-.action-btn.delete {
-    background: #ff4d4d;
-    color: white;
-}
-
-.action-btn.edit {
-    background: #007bff;
-    color: white;
-}
-
-.action-btn:hover {
-    opacity: 0.9;
-}
-
-/* Modal */
-.modal {
+  }
+  
+  /* === Modal === */
+  .modal {
     display: none;
     position: fixed;
     z-index: 1000;
@@ -163,62 +156,70 @@ body {
     background: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
-}
-
-.modal-content {
+  }
+  
+  .modal-content {
     background: #fff;
-    width: 40%;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    width: 500px;
+    max-width: 90%;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     position: relative;
     animation: fadeIn 0.3s ease-in-out;
-}
-
-.modal-content h2 {
+  }
+  
+  .modal-content h2 {
     font-size: 20px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     color: #333;
-}
-
-.input-group {
+  }
+  
+  .input-group {
     margin-bottom: 15px;
-}
-
-.input-group label {
+  }
+  
+  .input-group label {
     font-size: 14px;
-    font-weight: bold;
+    font-weight: 600;
+    margin-bottom: 6px;
     display: block;
-    margin-bottom: 5px;
-}
-
-.input-group input {
+  }
+  
+  .input-group input {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.close-btn {
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  
+  .input-group input:focus {
+    border-color: #6610f2;
+    box-shadow: 0 0 0 3px rgba(102, 16, 242, 0.15);
+  }
+  
+  .close-btn {
     position: absolute;
     top: 10px;
-    right: 10px;
+    right: 14px;
     font-size: 20px;
+    color: #888;
     cursor: pointer;
-    color: #6610f2;
-}
-
-.close-btn:hover {
+  }
+  
+  .close-btn:hover {
     color: #ff4d4d;
-}
-
-@keyframes fadeIn {
+  }
+  
+  @keyframes fadeIn {
     from {
-        opacity: 0;
-        transform: scale(0.9);
+      opacity: 0;
+      transform: scale(0.95);
     }
     to {
-        opacity: 1;
-        transform: scale(1);
+      opacity: 1;
+      transform: scale(1);
     }
-}
+  }
+  

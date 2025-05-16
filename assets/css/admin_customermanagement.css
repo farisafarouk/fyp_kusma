@@ -1,21 +1,17 @@
-/* === Global Reset === */
 * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
-}
-
-body {
+    padding: 0;
+    margin: 0;
+  }
+  
+  body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(to right, #f3f3ff, #ffffff);
+    background: #f5f8ff;
     color: #333;
-    display: flex;
-}
-
-/* === Container & Content === */
-/* Common container structure */
-/* Ensure all admin pages follow same layout width & spacing */
-.dashboard-container {
+  }
+  
+  /* Common container structure */
+  .dashboard-container {
     display: flex;
     max-width: 1200px;
     margin: 20px auto;
@@ -25,6 +21,7 @@ body {
     overflow: hidden;
   }
   
+  /* Consistent main section */
   .dashboard-content {
     width: 100%;
     padding: 30px;

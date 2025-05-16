@@ -67,6 +67,8 @@ while ($row = $cres->fetch_assoc()) {
     <title>Referral Management</title>
     <link rel="stylesheet" href="../../../assets/css/adminsidebar.css">
     <link rel="stylesheet" href="../../../assets/css/admin_referral.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
@@ -118,7 +120,7 @@ while ($row = $cres->fetch_assoc()) {
                                             <form method="POST" onsubmit="return confirm('Delete this referral?');">
                                                 <input type="hidden" name="referral_id" value="<?= $ref['id'] ?>">
                                                 <button type="submit" name="delete_referral" class="action-btn delete">
-    <i class="fas fa-trash"></i> <span>Delete</span>
+     <span>Delete</span>
 </button>
 
                                             </form>
