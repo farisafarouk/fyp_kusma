@@ -1,47 +1,36 @@
 <?php
-session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once '../../config/database.php';
-
+session_start();
 header('Content-Type: application/json');
 
-// 1. Session check
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'consultant') {
-    echo json_encode(['error' => 'Unauthorized']);
-    exit();
+    echo json_encode([]);
+    exit;
 }
 
-// 2. Find consultant ID using current session's user_id
+// Step 1: Get consultant_id from session user_id
 $user_id = $_SESSION['user_id'];
 $stmt = $conn->prepare("SELECT id FROM consultants WHERE user_id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
-$res = $stmt->get_result();
-if ($res->num_rows === 0) {
-    echo json_encode(['error' => 'Consultant not found']);
-    exit();
+$result = $stmt->get_result();
+if ($result->num_rows === 0) {
+    echo json_encode([]);
+    exit;
 }
-$consultant_id = $res->fetch_assoc()['id'];
+$consultant_id = $result->fetch_assoc()['id'];
 
-// 3. Fetch appointments linked to this consultant
-$sql = "
-    SELECT 
-        a.id,
-        a.customer_id,
-        a.scheduled_date,
-        a.scheduled_time,
-        a.duration,
-        a.appointment_mode,
-        a.status,
-        a.reason_for_appointment,
-        a.feedback,
-        a.rating,
-        u.name AS customer_name,
-        u.email AS customer_email
-    FROM appointments a
-    JOIN users u ON a.customer_id = u.id
-    WHERE a.consultant_id = ?
-    ORDER BY a.scheduled_date, a.scheduled_time
-";
+// Step 2: Fetch appointments for this consultant
+$sql = "SELECT a.id, a.customer_id, a.consultant_id, a.scheduled_date, a.scheduled_time,
+               a.status, a.duration, a.appointment_mode, a.cancel_note,
+               u.name AS customer_name, u.email AS customer_email
+        FROM appointments a
+        JOIN users u ON a.customer_id = u.id
+        WHERE a.consultant_id = ?
+        ORDER BY a.scheduled_date DESC, a.scheduled_time DESC";
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $consultant_id);

@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 require_once '../../config/database.php';
 header('Content-Type: application/json');
@@ -39,11 +43,12 @@ while ($row = $results->fetch_assoc()) {
     if (!isset($slots[$date])) {
         $slots[$date] = [];
     }
-    $slots[$date][] = [
-        'slot_id' => $row['id'],
-        'start_time' => $row['start_time'],
-        'end_time' => $row['end_time']
-    ];
+   $slots[$date][] = [
+    'id' => $row['id'], // This must be 'id' to match frontend expectations
+    'start_time' => $row['start_time'],
+    'end_time' => $row['end_time']
+];
+
 }
 
 echo json_encode($slots);

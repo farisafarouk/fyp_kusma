@@ -40,7 +40,7 @@ $current_page = basename($_SERVER['SCRIPT_NAME']);
         </a>
       </li>
       <li>
-        <a href="../login/login.php" class="logout-link">
+        <a href="/fyp_kusma/pages/login/login.php" class="logout-link">
           <i class="fas fa-sign-out-alt"></i><span> Logout</span>
         </a>
       </li>

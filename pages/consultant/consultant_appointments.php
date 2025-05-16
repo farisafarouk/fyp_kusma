@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 require_once '../../config/database.php';
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'consultant') {
@@ -15,10 +19,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'consultant') {
   <link rel="stylesheet" href="../../assets/css/consultantsidebar.css">
   <link rel="stylesheet" href="../../assets/css/consultant_appointments.css">
   <link rel="stylesheet" href="../../assets/css/consultant_profile.css">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> <!-- Font Awesome for icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
-
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -30,16 +32,15 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'consultant') {
       <header>
         <h1>Manage Appointments</h1>
         <div class="search-filter-bar">
-  <input type="text" id="searchInput" class="search-bar" placeholder="Search by name or email...">
-  <div class="filter-buttons">
-    <button class="active" data-status="all">All</button>
-    <button data-status="pending">Pending</button>
-    <button data-status="confirmed">Confirmed</button>
-    <button data-status="completed">Completed</button>
-    <button data-status="canceled">Canceled</button>
-  </div>
-</div>
-
+          <input type="text" id="searchInput" class="search-bar" placeholder="Search by name or email...">
+          <div class="filter-buttons">
+            <button class="active" data-status="all">All</button>
+            <button data-status="pending">Pending</button>
+            <button data-status="confirmed">Confirmed</button>
+            <button data-status="completed">Completed</button>
+            <button data-status="canceled">Canceled</button>
+          </div>
+        </div>
       </header>
 
       <div id="appointmentsContainer" class="appointments-grid"></div>
@@ -48,16 +49,14 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'consultant') {
   </div>
 </div>
 
-<!-- Reject Modal -->
+<!-- Cancel Modal -->
 <div id="rejectModal" class="modal">
   <div class="modal-content">
     <h3>Cancel Appointment</h3>
-
     <div class="form-group">
       <label for="rejectReason">Reason for Cancellation</label>
       <textarea id="rejectReason" class="form-textarea" rows="4" placeholder="Why are you cancelling this appointment?"></textarea>
     </div>
-
     <div class="modal-actions">
       <button id="submitReject" class="btn-danger" type="button">Confirm Cancel</button>
       <button id="cancelReject" class="btn-secondary" type="button">Back</button>
@@ -65,29 +64,22 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'consultant') {
   </div>
 </div>
 
-</div>
-
 <!-- Reschedule Modal -->
 <div id="rescheduleModal" class="modal">
   <div class="modal-content">
     <h3>Reschedule Appointment</h3>
-
     <div class="form-group">
       <label for="rescheduleDate">Select Date</label>
       <select id="rescheduleDate" class="form-select"></select>
     </div>
-
     <div class="form-group">
       <label for="rescheduleTime">Select Time</label>
       <select id="rescheduleTime" class="form-select"></select>
     </div>
-
     <div class="form-group">
-  <label for="rescheduleReason">Reschedule Reason</label>
-  <textarea id="rescheduleReason" class="form-textarea" rows="3" placeholder="Optional reason for rescheduling..."></textarea>
-</div>
-
-
+      <label for="rescheduleReason">Reason</label>
+      <textarea id="rescheduleReason" class="form-textarea" rows="3" placeholder="Optional note for rescheduling..."></textarea>
+    </div>
     <div class="modal-actions">
       <button id="submitReschedule" class="btn-confirm" type="button">Confirm Reschedule</button>
       <button id="cancelReschedule" class="btn-secondary" type="button">Cancel</button>
@@ -95,22 +87,16 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'consultant') {
   </div>
 </div>
 
-
 <script>
 let appointments = [];
 let selectedRejectId = null;
 let selectedRescheduleId = null;
-let availableSlotData = {};
 
 function fetchAppointments() {
   fetch('fetch_appointments.php')
     .then(res => res.json())
     .then(data => {
-      appointments = data.sort((a, b) => {
-        const d1 = new Date(`${b.scheduled_date}T${b.scheduled_time}`);
-        const d2 = new Date(`${a.scheduled_date}T${a.scheduled_time}`);
-        return d1 - d2;
-      });
+      appointments = data;
       renderAppointments('all');
     });
 }
@@ -120,9 +106,9 @@ function renderAppointments(statusFilter) {
   const search = document.getElementById('searchInput').value.toLowerCase();
   container.innerHTML = '';
 
-  const filtered = appointments.filter(a => {
-    const matchesStatus = (statusFilter === 'all' || a.status === statusFilter);
-    const matchesSearch = a.customer_name?.toLowerCase().includes(search) || a.customer_email?.toLowerCase().includes(search);
+  const filtered = appointments.filter(app => {
+    const matchesStatus = statusFilter === 'all' || app.status === statusFilter;
+    const matchesSearch = app.customer_name?.toLowerCase().includes(search) || app.customer_email?.toLowerCase().includes(search);
     return matchesStatus && matchesSearch;
   });
 
@@ -131,11 +117,7 @@ function renderAppointments(statusFilter) {
   filtered.forEach(app => {
     const card = document.createElement('div');
     card.className = 'appointment-card';
-    const readableDuration = app.duration === 30 ? '30 mins' :
-                             app.duration === 60 ? '1 hour' :
-                             app.duration === 90 ? '1.5 hours' :
-                             app.duration === 120 ? '2 hours' :
-                             `${app.duration} mins`;
+    const readableDuration = app.duration + ' mins';
 
     card.innerHTML = `
       <div class="card-header">
@@ -148,7 +130,7 @@ function renderAppointments(statusFilter) {
         <p><strong>Time:</strong> ${app.scheduled_time}</p>
         <p><strong>Duration:</strong> ${readableDuration}</p>
         <p><strong>Mode:</strong> ${app.appointment_mode}</p>
-        ${app.status === 'canceled' && app.feedback ? `<p><strong>Note:</strong> ${app.feedback}</p>` : ''}
+        ${app.status === 'canceled' && app.cancel_note ? `<p><strong>Note:</strong> ${app.cancel_note}</p>` : ''}
       </div>
       ${renderActions(app)}
     `;
@@ -175,11 +157,11 @@ function renderActions(app) {
   return '';
 }
 
-function updateStatus(id, status, feedback = '') {
+function updateStatus(id, status, cancel_note = '') {
   fetch('appointment_action.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id, status, feedback })
+    body: JSON.stringify({ id, status, cancel_note })
   })
   .then(res => res.json())
   .then(data => {
@@ -187,10 +169,7 @@ function updateStatus(id, status, feedback = '') {
       fetchAppointments();
       document.getElementById('rejectModal').classList.remove('show');
       document.getElementById('rescheduleModal').classList.remove('show');
-
-      if (status === 'confirmed') showToast("Appointment confirmed.");
-      if (status === 'canceled') showToast("Appointment cancelled.");
-      if (status === 'completed') showToast("Appointment marked as completed.");
+      showToast(`Appointment ${status}.`);
     } else {
       alert(data.error || 'Action failed.');
     }
@@ -204,7 +183,7 @@ function openRejectModal(id) {
 
 document.getElementById('submitReject').onclick = () => {
   const reason = document.getElementById('rejectReason').value.trim();
-  if (!reason) return alert('Please provide a reason for cancellation.');
+  if (!reason) return alert('Please provide a reason.');
   updateStatus(selectedRejectId, 'canceled', reason);
 };
 
@@ -217,8 +196,14 @@ function openRescheduleModal(id) {
   document.getElementById('rescheduleModal').classList.add('show');
 
   const appointment = appointments.find(a => a.id === id);
-  const currentDate = appointment.scheduled_date;
-  const currentTime = appointment.scheduled_time;
+
+  if (!appointment || !appointment.consultant_id) {
+    console.error("❌ Consultant ID not found for appointment ID:", id, appointment);
+    alert("Unable to load available slots. Consultant ID missing.");
+    return;
+  }
+
+  console.log("✅ Reschedule modal opened for appointment:", appointment.id, "Consultant ID:", appointment.consultant_id);
 
   const dateSelect = document.getElementById('rescheduleDate');
   const timeSelect = document.getElementById('rescheduleTime');
@@ -228,16 +213,16 @@ function openRescheduleModal(id) {
   timeSelect.innerHTML = '';
   reasonBox.value = '';
 
-  fetch('fetch_available_slots.php')
+  fetch(`fetch_available_slots.php?consultant_id=${appointment.consultant_id}`)
     .then(res => res.json())
     .then(data => {
-      availableSlotData = data;
       const dates = Object.keys(data);
       if (dates.length === 0) {
         dateSelect.innerHTML = '<option>No available dates</option>';
         return;
       }
 
+      // Populate date dropdown
       dates.forEach(date => {
         const opt = document.createElement('option');
         opt.value = date;
@@ -245,37 +230,48 @@ function openRescheduleModal(id) {
         dateSelect.appendChild(opt);
       });
 
-      dateSelect.value = currentDate;
-      updateTimeOptions(currentDate, data);
+      // Hook time dropdown update
+      dateSelect.onchange = () => updateTimeOptions(dateSelect.value, data);
 
+      // Pre-select the original date
+      dateSelect.value = appointment.scheduled_date;
+      updateTimeOptions(appointment.scheduled_date, data);
+
+      // Optional: try to select the current scheduled time
       setTimeout(() => {
-        timeSelect.value = currentTime;
-      }, 50);
+        for (let opt of timeSelect.options) {
+          if (opt.textContent.includes(appointment.scheduled_time)) {
+            timeSelect.value = opt.value;
+            break;
+          }
+        }
+      }, 100);
+    })
+    .catch(error => {
+      console.error("❌ Failed to fetch available slots:", error);
+      alert("Error fetching available slots.");
     });
 }
+
 
 function updateTimeOptions(date, data) {
   const timeSelect = document.getElementById('rescheduleTime');
   timeSelect.innerHTML = '';
   (data[date] || []).forEach(slot => {
     const opt = document.createElement('option');
-    opt.value = slot.start_time;
+    opt.value = slot.id;
     opt.textContent = `${slot.start_time} - ${slot.end_time}`;
     timeSelect.appendChild(opt);
   });
 }
 
+
 document.getElementById('submitReschedule').onclick = () => {
-  const date = document.getElementById('rescheduleDate').value;
-  const time = document.getElementById('rescheduleTime').value;
-  const reason = document.getElementById('rescheduleReason').value.trim();
+  const timeSelect = document.getElementById('rescheduleTime');
+  const slot_id = timeSelect.value;
+  const cancel_note = document.getElementById('rescheduleReason').value.trim();
 
-  if (!date || !time) {
-    alert('Please select both date and time.');
-    return;
-  }
-
-  const new_slot = `${date}|${time}`;
+  if (!slot_id) return alert('Please select a valid time slot.');
 
   fetch('appointment_action.php', {
     method: 'POST',
@@ -283,8 +279,8 @@ document.getElementById('submitReschedule').onclick = () => {
     body: JSON.stringify({
       id: selectedRescheduleId,
       status: 'rescheduled',
-      new_slot: new_slot,
-      feedback: reason || ''
+      slot_id: parseInt(slot_id),
+      cancel_note
     })
   })
   .then(res => res.json())
@@ -327,7 +323,6 @@ function showToast(message) {
 
 fetchAppointments();
 </script>
-
 
 <div id="toast" class="toast"></div>
 

@@ -70,6 +70,25 @@ $appointments = $result->fetch_all(MYSQLI_ASSOC);
     </div>
   </div>
 </div>
+<!-- Reschedule Modal -->
+<div id="rescheduleModal" class="modal">
+  <div class="modal-content">
+    <h3>Reschedule Appointment</h3>
+
+    <label for="rescheduleReason"><strong>Reason for Rescheduling</strong></label>
+    <textarea id="rescheduleReason" placeholder="Please explain why you want to reschedule..." rows="3" style="width: 100%; margin-bottom: 15px;"></textarea>
+
+    <label><strong>Select a New Time Slot</strong></label>
+    <div id="slotContainer" style="margin-bottom: 20px;">
+      <div class="loading-spinner"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-reschedule" id="confirmReschedule">Confirm Reschedule</button>
+      <button class="btn-cancel" onclick="closeModal('rescheduleModal')">Cancel</button>
+    </div>
+  </div>
+</div>
 
 <!-- Toast -->
 <div id="toast" class="toast"></div>
@@ -102,13 +121,13 @@ function renderAppointments(filter = 'all') {
       <div class="card-body">
         <p><i class="far fa-calendar-alt"></i> ${a.scheduled_date} at ${a.scheduled_time}</p>
         ${a.reason_for_appointment ? `<p><strong>Reason:</strong> ${a.reason_for_appointment}</p>` : ''}
-${a.status === 'canceled' && a.cancel_note ? `<p><strong>Cancel Note:</strong> ${a.cancel_note}</p>` : ''}
+        ${a.status === 'canceled' && a.cancel_note ? `<p><strong>Cancel Note:</strong> ${a.cancel_note}</p>` : ''}
         ${a.status === 'completed' && a.feedback ? `<p><strong>Feedback:</strong> ${a.feedback}</p>` : ''}
         ${a.status === 'completed' && a.rating ? `<p><strong>Rating:</strong> ${'★'.repeat(a.rating)}${'☆'.repeat(5 - a.rating)}</p>` : ''}
       </div>
       <div class="card-actions">
         ${a.status === 'pending' ? `<button class="btn-cancel" onclick="openCancelModal(${a.id})">Cancel</button>` : ''}
-        ${a.status === 'confirmed' ? `<button class="btn-reschedule" onclick="openRescheduleModal(${a.id}, ${a.consultant_id})">Reschedule</button>` : ''}
+        ${a.status === 'pending' ? `<button class="btn-reschedule" onclick="openRescheduleModal(${a.id}, ${a.consultant_id})">Reschedule</button>` : ''}
         ${a.status === 'completed' && !a.feedback ? `<button class="btn-feedback" onclick="openFeedbackModal(${a.id})">Leave Feedback</button>` : ''}
       </div>
     `;
@@ -140,6 +159,7 @@ function submitCancel() {
 function openRescheduleModal(id, consultant_id) {
   selectedRescheduleId = id;
   selectedScheduleId = null;
+  document.getElementById('rescheduleReason').value = '';
   document.getElementById('rescheduleModal').style.display = 'flex';
   document.getElementById('slotContainer').innerHTML = '<div class="loading-spinner"></div>';
 
@@ -149,34 +169,42 @@ function openRescheduleModal(id, consultant_id) {
       document.getElementById('slotContainer').innerHTML = html;
     });
 }
-
 function confirmBooking(slotId) {
   selectedScheduleId = slotId;
+
+  // Remove 'selected' class from all slot buttons
+  document.querySelectorAll('.slot-btn').forEach(btn => btn.classList.remove('selected'));
+
+  // Add 'selected' class to the clicked one
+  const selectedBtn = document.querySelector(`.slot-btn[data-slot-id="${slotId}"]`);
+  if (selectedBtn) {
+    selectedBtn.classList.add('selected');
+  }
 }
 
-const confirmBtn = document.getElementById('confirmReschedule');
-if (confirmBtn) {
-  confirmBtn.onclick = () => {
-    if (!selectedScheduleId) {
-      showToast('Please choose a time slot.', 'error');
-      return;
-    }
 
-    fetch('reschedule_appointment.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        original_id: selectedRescheduleId,
-        new_schedule_id: selectedScheduleId
-      })
+document.getElementById('confirmReschedule').onclick = () => {
+  const reason = document.getElementById('rescheduleReason').value.trim();
+  if (!selectedScheduleId || !reason) {
+    showToast('Please select a slot and provide a reason.', 'error');
+    return;
+  }
+
+  fetch('reschedule_appointment.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      original_id: selectedRescheduleId,
+      new_schedule_id: selectedScheduleId,
+      reason: reason
     })
-    .then(res => res.json())
-    .then(data => {
-      showToast(data.message, data.success ? 'success' : 'error');
-      if (data.success) setTimeout(() => location.reload(), 1200);
-    });
-  };
-}
+  })
+  .then(res => res.json())
+  .then(data => {
+    showToast(data.message, data.success ? 'success' : 'error');
+    if (data.success) setTimeout(() => location.reload(), 1200);
+  });
+};
 
 function openFeedbackModal(id) {
   selectedFeedbackId = id;
@@ -239,5 +267,6 @@ function showToast(msg, type) {
 
 renderAppointments();
 </script>
+
 </body>
 </html>

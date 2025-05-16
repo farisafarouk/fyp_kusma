@@ -18,8 +18,8 @@ if (!isset($data['id']) || !isset($data['status'])) {
 
 $appointment_id = $data['id'];
 $status = $data['status'];
-$feedback = isset($data['feedback']) ? trim($data['feedback']) : null;
-$new_slot = isset($data['new_slot']) ? trim($data['new_slot']) : null;
+$cancel_note = isset($data['cancel_note']) ? trim($data['cancel_note']) : null;
+$slot_id = isset($data['slot_id']) ? intval($data['slot_id']) : null;
 $updated_by = 'consultant';
 
 // Get consultant_id
@@ -34,7 +34,7 @@ if ($result->num_rows === 0) {
 }
 $consultant_id = $result->fetch_assoc()['id'];
 
-// Get appointment and validate ownership
+// Check appointment ownership
 $checkStmt = $conn->prepare("SELECT * FROM appointments WHERE id = ? AND consultant_id = ?");
 $checkStmt->bind_param("ii", $appointment_id, $consultant_id);
 $checkStmt->execute();
@@ -45,38 +45,55 @@ if ($res->num_rows === 0) {
 }
 $appointment = $res->fetch_assoc();
 
-// Handle actions
+// Handle appointment status changes
 if ($status === 'confirmed') {
     $stmt = $conn->prepare("UPDATE appointments SET status = 'confirmed', updated_by = ? WHERE id = ?");
     $stmt->bind_param("si", $updated_by, $appointment_id);
 
 } elseif ($status === 'canceled') {
     $stmt = $conn->prepare("UPDATE appointments SET status = 'canceled', cancel_note = ?, updated_by = ? WHERE id = ?");
-    $stmt->bind_param("ssi", $feedback, $updated_by, $appointment_id);
-
+    $stmt->bind_param("ssi", $cancel_note, $updated_by, $appointment_id);
 
 } elseif ($status === 'rescheduled') {
-    if (!$new_slot || strpos($new_slot, '|') === false) {
-        echo json_encode(['success' => false, 'error' => 'Invalid slot format']);
+    if (!$slot_id) {
+        echo json_encode(['success' => false, 'error' => 'Missing slot_id for reschedule']);
         exit;
     }
-    list($new_date, $new_time) = explode('|', $new_slot);
 
-    // Log original to history before updating
-    $history = $conn->prepare("INSERT INTO reschedule_history (appointment_id, old_date, old_time, new_date, new_time, updated_by, feedback) SELECT id, scheduled_date, scheduled_time, ?, ?, ?, ? FROM appointments WHERE id = ?");
-    $history->bind_param("sssssi", $new_date, $new_time, $updated_by, $feedback, $appointment_id);
+    // Patch: rescheduled is not a valid ENUM status in appointments
+    $status = 'confirmed';
+
+    $slotStmt = $conn->prepare("SELECT date, start_time FROM schedules WHERE id = ? AND is_available = 1");
+    $slotStmt->bind_param("i", $slot_id);
+    $slotStmt->execute();
+    $slotResult = $slotStmt->get_result();
+
+    if ($slotResult->num_rows === 0) {
+        echo json_encode(['success' => false, 'error' => 'Invalid or unavailable slot']);
+        exit;
+    }
+
+    $slot = $slotResult->fetch_assoc();
+    $new_date = $slot['date'];
+    $new_time = $slot['start_time'];
+
+    // Log to reschedule history
+    $history = $conn->prepare("INSERT INTO reschedule_history 
+        (appointment_id, reschedule_date, reschedule_time, reason) 
+        VALUES (?, ?, ?, ?)");
+    $history->bind_param("isss", $appointment_id, $new_date, $new_time, $cancel_note);
     $history->execute();
 
-    $stmt = $conn->prepare("UPDATE appointments SET status = 'rescheduled', scheduled_date = ?, scheduled_time = ?, updated_by = ?, feedback = ? WHERE id = ?");
-    $stmt->bind_param("ssssi", $new_date, $new_time, $updated_by, $feedback, $appointment_id);
+    // Update appointment with new slot
+    $stmt = $conn->prepare("UPDATE appointments SET status = ?, scheduled_date = ?, scheduled_time = ?, updated_by = ?, cancel_note = ? WHERE id = ?");
+    $stmt->bind_param("sssssi", $status, $new_date, $new_time, $updated_by, $cancel_note, $appointment_id);
 
 } elseif ($status === 'completed') {
     $stmt = $conn->prepare("UPDATE appointments SET status = 'completed', updated_by = ? WHERE id = ?");
     $stmt->bind_param("si", $updated_by, $appointment_id);
 }
 
-
-if ($stmt->execute()) {
+if (isset($stmt) && $stmt->execute()) {
     echo json_encode(['success' => true]);
 } else {
     echo json_encode(['success' => false, 'error' => 'Database update failed']);

@@ -96,7 +96,7 @@ $current_page = basename($_SERVER['SCRIPT_NAME']);
   <div class="navbar-wrapper">
     <ul class="navbar-menu">
       <li>
-        <a href="/fyp_kusma/pages/customer/profile/user_dashboard.php" class="<?= $current_page === 'customer_dashboard.php' ? 'active' : '' ?>">
+        <a href="/fyp_kusma/pages/customer/profile/customer_dashboard.php" class="<?= $current_page === 'customer_dashboard.php' ? 'active' : '' ?>">
           <i class="fas fa-home"></i><span> Dashboard</span>
         </a>
       </li>
