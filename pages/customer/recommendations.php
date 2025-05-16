@@ -91,9 +91,8 @@ if ($userProfile) {
 <?php
 $current_page = basename($_SERVER['SCRIPT_NAME']);
 ?>
-
 <nav class="navbar">
-  <div class="navbar-wrapper">
+  <div class="navbar-container">
     <ul class="navbar-menu">
       <li>
         <a href="/fyp_kusma/pages/customer/profile/customer_dashboard.php" class="<?= $current_page === 'customer_dashboard.php' ? 'active' : '' ?>">
@@ -131,7 +130,7 @@ $current_page = basename($_SERVER['SCRIPT_NAME']);
         </a>
       </li>
       <li>
-        <a href="/fyp_kusma/pages/customer/login/login.php" class="logout-link">
+        <a href="/fyp_kusma/pages/login/login.php" class="logout-link">
           <i class="fas fa-sign-out-alt"></i><span> Logout</span>
         </a>
       </li>
