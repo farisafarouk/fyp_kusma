@@ -161,6 +161,8 @@ $result_approved = $conn->query($sql_approved);
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agent Management</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="../../../assets/css/adminsidebar.css">
   <link rel="stylesheet" href="../../../assets/css/admin_customermanagement.css">
 </head>
