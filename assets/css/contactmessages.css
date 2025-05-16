@@ -1,11 +1,15 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
 body {
   font-family: 'Poppins', sans-serif;
-  background: #f4f6fa;
+  background: #f5f8ff;
   color: #333;
 }
 
-/* Wrapper & Content */
-/* Ensure all admin pages follow same layout width & spacing */
 .dashboard-container {
   display: flex;
   max-width: 1200px;
@@ -32,8 +36,6 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
-
-
 .dashboard-section h1 {
   font-size: 24px;
   margin-bottom: 10px;
@@ -44,9 +46,7 @@ body {
   color: #555;
   margin-bottom: 20px;
 }
-  
 
-/* Filter */
 .filter-container input {
   width: 320px;
   padding: 10px 12px;
@@ -68,18 +68,19 @@ body {
   border-radius: 12px;
   margin-bottom: 10px;
   box-shadow: 0 3px 10px rgba(102, 16, 242, 0.08);
+  width: 100%;
+  border-collapse: collapse;
 }
-
 
 .contact-table thead {
   background: #6610f2;
   color: white;
-  font-size: 24px;
-    
-    font-weight: 600;
+  font-size: 18px;
+  font-weight: 600;
 }
 
-.contact-table th, .contact-table td {
+.contact-table th,
+.contact-table td {
   padding: 14px 16px;
   text-align: left;
   font-size: 14px;
@@ -100,4 +101,19 @@ body {
   font-size: 16px;
   color: #888;
   padding: 20px;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
 }

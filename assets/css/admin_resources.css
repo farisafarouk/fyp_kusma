@@ -1,45 +1,43 @@
-/* General Reset */
 * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
-}
-
-body {
-    font-family: "Poppins", sans-serif;
-    background: linear-gradient(to right, #e6e6fa, #ffffff);
-    display: flex;
+    padding: 0;
+    margin: 0;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #f5f8ff;
     color: #333;
-}
-
-/* Dashboard Container */
-.dashboard-container {
+  }
+  
+  /* Common container structure */
+  .dashboard-container {
     display: flex;
-    width: 100%;
     max-width: 1200px;
     margin: 20px auto;
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
     overflow: hidden;
-}
-
-/* Main Content */
-.dashboard-content {
+  }
+  
+  /* Consistent main section */
+  .dashboard-content {
     width: 100%;
-    padding: 20px;
+    padding: 30px;
+    background: #f9faff;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-}
-
-/* Section Styles */
-.dashboard-section {
-    background: #f4f8fb;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
+    gap: 30px;
+  }
+  
+  .dashboard-section {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+  
 
 .dashboard-section h1 {
     font-size: 24px;

@@ -42,6 +42,8 @@ $result = $conn->query("
   <title>Admin Notifications</title>
   <link rel="stylesheet" href="../../../assets/css/adminsidebar.css">
   <link rel="stylesheet" href="../../../assets/css/admin_notifications.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
@@ -90,7 +92,7 @@ $result = $conn->query("
         <form method="POST" style="display:inline;">
           <input type="hidden" name="delete_id" value="<?= $row['id'] ?>">
           <button class="action-btn delete" onclick="return confirm('Delete this notification?');">
-            <i class="fas fa-trash-alt"></i> Delete
+            Delete
           </button>
         </form>
       </td>

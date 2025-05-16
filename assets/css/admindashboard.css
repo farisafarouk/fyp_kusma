@@ -1,10 +1,15 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
 body {
   font-family: 'Poppins', sans-serif;
-  background: #f4f6fa;
+  background: #f5f8ff;
   color: #333;
 }
 
-/* Wrapper & Content */
 /* Common container structure */
 .dashboard-container {
   display: flex;
@@ -32,6 +37,7 @@ body {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
+
 
 
 .dashboard-section h1 {
@@ -74,17 +80,17 @@ body {
   }
   
   .card {
-    background: linear-gradient(145deg, #f5f7ff, #e8e8ff);
+    background: #ffffff;
     padding: 20px;
     border-radius: 15px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+    border: 2px solid #6610f2; /* Purple border */
+    box-shadow: 0 4px 12px rgba(102, 16, 242, 0.08); /* Light purple shadow */
     transition: all 0.3s ease-in-out;
-    border-left: 5px solid #6610f2;
   }
   
   .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(102, 16, 242, 0.12); /* Slightly darker shadow on hover */
   }
   
   .card h3 {
@@ -102,19 +108,7 @@ body {
     color: #2d2d2d;
   }
   
-  /* Color variants per card */
-  .card:nth-child(1) {
-    border-left-color: #6610f2;
-  }
-  .card:nth-child(2) {
-    border-left-color: #0dcaf0;
-  }
-  .card:nth-child(3) {
-    border-left-color: #28a745;
-  }
-  .card:nth-child(4) {
-    border-left-color: #ff8800;
-  }
+ 
   
   /* Chart Section */
   .chart-section {

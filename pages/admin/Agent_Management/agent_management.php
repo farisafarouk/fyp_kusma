@@ -245,13 +245,13 @@ $result_approved = $conn->query($sql_approved);
             '<?php echo htmlspecialchars($row['email']); ?>',
             '<?php echo htmlspecialchars($row['phone']); ?>',
             '<?php echo htmlspecialchars($row['ic_passport']); ?>'
-        )"><i class="fas fa-edit"></i> Edit</button>
+        )"> Edit</button>
         
         <form method="POST" action="agent_management.php" style="display:inline;">
           <input type="hidden" name="agent_id" value="<?php echo $row['agent_id']; ?>">
           <button type="submit" name="action" value="delete" class="action-btn delete"
             onclick="return confirm('Are you sure you want to delete this agent? This action cannot be undone.');">
-            <i class="fas fa-trash-alt"></i> Delete
+            Delete
           </button>
         </form>
       </td>

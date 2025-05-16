@@ -1,24 +1,38 @@
 <?php
-require_once '../config/database.php'; // Include your database connection
+require_once '../config/database.php';
+
+header('Content-Type: text/plain'); // Important for validate.js to parse properly
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sanitize and retrieve form inputs
-    $name = $conn->real_escape_string($_POST['name']);
-    $email = $conn->real_escape_string($_POST['email']);
-    $subject = $conn->real_escape_string($_POST['subject']);
-    $message = $conn->real_escape_string($_POST['message']);
+    $name = $conn->real_escape_string($_POST['name'] ?? '');
+    $email = $conn->real_escape_string($_POST['email'] ?? '');
+    $subject = $conn->real_escape_string($_POST['subject'] ?? '');
+    $message = $conn->real_escape_string($_POST['message'] ?? '');
 
-    // Insert form data into the database
-    $sql = "INSERT INTO contact_messages (name, email, subject, message) VALUES ('$name', '$email', '$subject', '$message')";
+    if (!$name || !$email || !$subject || !$message) {
+        echo "Missing required fields.";
+        exit();
+    }
 
-    if ($conn->query($sql) === TRUE) {
+    $sql = "INSERT INTO contact_messages (name, email, subject, message) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        echo "Database error: " . $conn->error;
+        exit();
+    }
+
+    $stmt->bind_param("ssss", $name, $email, $subject, $message);
+
+    if ($stmt->execute()) {
         echo "OK";
     } else {
-        echo "Error: " . $conn->error;
+        echo "Error saving message.";
     }
-    
 
-    // Close the database connection
+    $stmt->close();
     $conn->close();
+} else {
+    echo "Invalid request method.";
 }
 ?>
