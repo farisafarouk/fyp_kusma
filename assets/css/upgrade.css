@@ -145,3 +145,148 @@ body {
 .upgrade-action .btn:hover {
     background-color: #574fcf;
 }
+.upgrade-container {
+  max-width: 1000px;
+  margin: 60px auto;
+  padding: 30px 20px;
+  text-align: center;
+  background: #f9faff;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.upgrade-container h2 {
+  font-size: 32px;
+  color: #2e2e2e;
+  font-weight: 600;
+}
+
+.upgrade-container .subtitle {
+  font-size: 16px;
+  color: #666;
+  margin-top: 10px;
+  margin-bottom: 35px;
+}
+
+.plans-wrapper {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.plan-card {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 20px;
+  width: 300px;
+  padding: 30px 25px;
+  text-align: left;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+  position: relative;
+}
+
+.plan-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.plan-card h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+  font-weight: 600;
+}
+
+.plan-card ul {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 20px;
+}
+
+.plan-card ul li {
+  margin-bottom: 12px;
+  padding-left: 22px;
+  font-size: 15px;
+  position: relative;
+  color: #444;
+}
+
+.plan-card ul li::before {
+  content: '✔';
+  position: absolute;
+  left: 0;
+  color: #4CAF50;
+  font-size: 16px;
+}
+
+.plan-card ul li:has(span.cross)::before {
+  content: '✖';
+  color: #e74c3c;
+}
+
+.plan-card ul li span.cross {
+  display: none;
+}
+
+.plan-card .dashboard-btn {
+  display: block;
+  background: linear-gradient(135deg, #5e72e4, #3f51b5);
+  color: white;
+  padding: 10px 16px;
+  font-size: 15px;
+  text-align: center;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.plan-card .dashboard-btn:hover {
+  background: #3541b1;
+}
+
+.plan-card.current {
+  border: 2px solid #5e72e4;
+  background: #f0f4ff;
+  box-shadow: 0 0 12px rgba(94,114,228,0.3);
+}
+
+.badge-current {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  background: #5e72e4;
+  color: white;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.plan-price {
+  font-size: 22px;
+  font-weight: bold;
+  color: #ff5722;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.plan-price span {
+  font-size: 14px;
+  font-weight: 400;
+  color: #777;
+  margin-left: 4px;
+}
+.tick {
+  color: #2ecc71;
+  margin-right: 6px;
+}
+
+.cross {
+  color: #e74c3c;
+  margin-right: 6px;
+}

@@ -1,3 +1,4 @@
+<button class="sidebar-toggle"><i class="fas fa-bars"></i></button>
 <aside class="sidebar">
   <h2>KUSMA CONSULTANT</h2>
   <ul>
@@ -10,3 +11,14 @@
     <li><a href="../login/login.php"><i class="fas fa-sign-out-alt"></i> Log Out</a></li>
   </ul>
 </aside>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const toggleBtn = document.querySelector(".sidebar-toggle");
+    const sidebar = document.querySelector(".sidebar");
+
+    toggleBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("open");
+    });
+  });
+</script>
+

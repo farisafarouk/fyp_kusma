@@ -186,4 +186,53 @@
       transform: scale(1);
     }
   }
+  @media (max-width: 480px) {
+  .container {
+    margin: 12px;
+    border-radius: 12px;
+  }
+
+  .login-left {
+    padding: 24px 16px;
+  }
+
+  .login-form h1 {
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+
+  .login-form p {
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  .input-group label {
+    font-size: 13px;
+  }
+
+  .input-group input {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .login-btn {
+    font-size: 16px;
+    padding: 13px 0;
+  }
+
+  .signup-link,
+  .redirect-home {
+    font-size: 14px;
+  }
+
+  .login-right {
+    padding: 20px;
+  }
+
+  .login-right img {
+    width: 90%;
+    max-width: 280px;
+  }
+}
+
   

@@ -7,7 +7,28 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$user_id = $_SESSION['user_id'];
+function formatCurrencyShort($number) {
+  if ($number >= 1000000) return 'RM' . round($number / 1000000, 1) . 'M';
+  if ($number >= 1000) return 'RM' . round($number / 1000, 1) . 'K';
+  return 'RM' . number_format($number);
+}
+
+function formatLoanRange($min, $max) {
+    return formatCurrencyShort($min) . ' - ' . formatCurrencyShort($max);
+}
+
+function renderTypeBadge($type) {
+  $type = strtolower($type);
+  $colors = [
+    'loan' => 'badge-loan',
+    'grant' => 'badge-grant',
+    'training' => 'badge-training',
+    'premises' => 'badge-mentorship',
+    'other' => 'badge-other'
+  ];
+  $class = $colors[$type] ?? 'badge-other';
+  return "<span class='badge-type {$class}'>" . ucfirst($type) . "</span>";
+}
 
 function ageMatches($age, $criteria) {
     if (empty($criteria['age'])) return true;
@@ -20,23 +41,33 @@ function ageMatches($age, $criteria) {
     return false;
 }
 
-function formatLoanRange($min, $max) {
-    return "RM " . number_format($min / 1000) . "k - RM " . number_format($max / 1000) . "k";
-}
-
-function explainMatch($criteria, $user, $age) {
+function explainMatch($criteria, $user, $age, $types) {
     $explanations = [];
-    if (!empty($criteria['gender']) && in_array($user['gender'], $criteria['gender'])) $explanations[] = "✅ You're a " . $user['gender'];
-    if (!empty($criteria['bumiputera_status']) && in_array($user['bumiputera_status'], $criteria['bumiputera_status'])) $explanations[] = "✅ You're a " . $user['bumiputera_status'];
-    if (isset($criteria['oku_status']) && $user['oku_status'] == $criteria['oku_status']) $explanations[] = "✅ OKU status matched";
-    if (!empty($criteria['business_type']) && in_array($user['business_type'], $criteria['business_type'])) $explanations[] = "✅ Your business type qualifies";
-    if (!empty($criteria['business_experience']) && in_array($user['business_experience'], $criteria['business_experience'])) $explanations[] = "✅ Your business experience qualifies";
-    if (!empty($criteria['education_type']) && in_array($user['education_type'], $criteria['education_type'])) $explanations[] = "✅ Education background matches";
-    if (!empty($criteria['certification_level']) && in_array($user['certification_level'], $criteria['certification_level'])) $explanations[] = "✅ Certification level matches";
-    if (ageMatches($age, $criteria)) $explanations[] = "✅ You're aged $age";
-    if (!empty($user['preferred_loan_range'])) $explanations[] = "✅ You prefer loans of " . $user['preferred_loan_range'];
+    if (!empty($criteria['gender']) && in_array($user['gender'], $criteria['gender'])) $explanations[] = " You're a " . $user['gender'];
+    if (!empty($criteria['bumiputera_status']) && in_array($user['bumiputera_status'], $criteria['bumiputera_status'])) $explanations[] = " You're a " . $user['bumiputera_status'];
+    if (isset($criteria['oku_status']) && $user['oku_status'] == 1 && $criteria['oku_status'] == true) $explanations[] = " OKU status matched";
+    if (!empty($criteria['business_type']) && in_array($user['business_type'], $criteria['business_type'])) $explanations[] = " Your business type qualifies";
+    if (!empty($criteria['business_experience']) && in_array($user['business_experience'], $criteria['business_experience'])) $explanations[] = " Your business experience qualifies";
+    if (!empty($criteria['education_type']) && in_array($user['education_type'], $criteria['education_type'])) $explanations[] = " Education background matches";
+    if (!empty($criteria['certification_level']) && in_array($user['certification_level'], $criteria['certification_level'])) $explanations[] = " Certification level matches";
+    if (ageMatches($age, $criteria)) $explanations[] = " You're aged $age";
+
+    // Show loan range preference only for loan/grant
+    $typesLower = array_map('strtolower', $types);
+    if (!empty($user['preferred_loan_range']) && (in_array('loan', $typesLower) || in_array('grant', $typesLower))) {
+      $range = explode("-", $user['preferred_loan_range']);
+      if (count($range) == 2) {
+        $formattedRange = formatCurrencyShort((int)$range[0]) . " - " . formatCurrencyShort((int)$range[1]);
+        $explanations[] = " You prefer resource of " . $formattedRange;
+      } else {
+        $explanations[] = " You prefer loans of " . $user['preferred_loan_range'];
+      }
+    }
+
     return $explanations;
 }
+
+$user_id = $_SESSION['user_id'];
 
 $sqlUser = "SELECT u.subscription_status, pd.*, bd.*, er.*
             FROM users u
@@ -60,13 +91,19 @@ if ($userProfile) {
     $result = $conn->query($sqlPrograms);
 
     if ($result) {
+        $count = 0;
         while ($program = $result->fetch_assoc()) {
             $criteria = json_decode($program['eligibility_criteria'], true);
-            $program['score'] = 0;
-            $program['explanation'] = explainMatch($criteria, $userProfile, $age);
+            $types = explode(',', $program['resource_types']);
+            $program['explanation'] = explainMatch($criteria, $userProfile, $age, $types);
             $program['score'] = count($program['explanation']);
+
+            $program['show_amount'] = in_array('Loan', $types) || in_array('Grant', $types);
+            $program['locked'] = ($subscription === 'free' && $count >= 2);
+
             if ($program['score'] > 0) {
                 $programs[] = $program;
+                $count++;
             }
         }
         usort($programs, fn($a, $b) => $b['score'] <=> $a['score']);
@@ -74,9 +111,11 @@ if ($userProfile) {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Recommendations - KUSMA</title>
@@ -93,6 +132,8 @@ $current_page = basename($_SERVER['SCRIPT_NAME']);
 ?>
 <nav class="navbar">
   <div class="navbar-container">
+    <button class="navbar-toggle"><i class="fas fa-bars"></i></button>
+    <div class="navbar-content">
     <ul class="navbar-menu">
       <li>
         <a href="/fyp_kusma/pages/customer/profile/customer_dashboard.php" class="<?= $current_page === 'customer_dashboard.php' ? 'active' : '' ?>">
@@ -163,16 +204,27 @@ $current_page = basename($_SERVER['SCRIPT_NAME']);
     <?php else: ?>
       <?php foreach ($programs as $index => $program): ?>
         <div class="dashboard-card">
+  <div class="card-top-bar">
+    <?php
+  $types = explode(',', $program["resource_types"]);
+  foreach ($types as $type) {
+    echo renderTypeBadge(trim($type)) . ' ';
+  }
+?>
+    
+  </div>
           <div class="recommendation-content <?= ($userProfile['subscription_status'] === 'free' && $index >= 2) ? 'blurred' : '' ?>">
             <div class="card-icon" style="margin-bottom: 10px;">
               <img src="/fyp_kusma/<?= htmlspecialchars($program['agency_logo']) ?>" alt="Agency Logo" style="width: 40px; height: 40px;">
             </div>
             <h2 style="margin-bottom: 10px; font-size: 18px;"><?= htmlspecialchars($program['name']) ?></h2>
             <p style="font-size: 14px; color: #555;"><?= htmlspecialchars($program['description']) ?></p>
-            <div style="font-size: 14px; margin: 10px 0;">
-              <strong>Type:</strong> <?= htmlspecialchars($program['resource_types']) ?><br>
-              <strong>Loan Range:</strong> <?= formatLoanRange($program['min_loan_amount'], $program['max_loan_amount']) ?>
-            </div>
+           <?php if ($program['show_amount']): ?>
+  <div style="font-size: 14px; margin: 10px 0;">
+    <strong>Resource Range:</strong> <?= formatLoanRange($program['min_loan_amount'], $program['max_loan_amount']) ?>
+  </div>
+<?php endif; ?>
+
             <div class="explanation-box" style="background: #f8f8ff; border-radius: 10px; padding: 10px; margin-top: 10px;">
               <strong>🔍 You qualify for this program because:</strong>
               <ul style="text-align: left; margin-top: 8px;">
@@ -214,6 +266,19 @@ $current_page = basename($_SERVER['SCRIPT_NAME']);
       });
     }
   });
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const toggle = document.querySelector(".navbar-toggle");
+    const content = document.querySelector(".navbar-content");
+    if (toggle && content) {
+      toggle.addEventListener("click", () => {
+        content.classList.toggle("open");
+      });
+    }
+  });
+
+
 </script>
 </body>
 </html>

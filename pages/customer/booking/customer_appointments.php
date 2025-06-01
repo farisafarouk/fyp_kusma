@@ -79,8 +79,10 @@ $appointments = $result->fetch_all(MYSQLI_ASSOC);
     <textarea id="rescheduleReason" placeholder="Please explain why you want to reschedule..." rows="3" style="width: 100%; margin-bottom: 15px;"></textarea>
 
     <label><strong>Select a New Time Slot</strong></label>
-    <div id="slotContainer" style="margin-bottom: 20px;">
-      <div class="loading-spinner"></div>
+    <div class="slot-scrollable">
+      <div id="slotContainer">
+        <div class="loading-spinner"></div>
+      </div>
     </div>
 
     <div class="modal-actions">
@@ -89,6 +91,7 @@ $appointments = $result->fetch_all(MYSQLI_ASSOC);
     </div>
   </div>
 </div>
+
 
 <!-- Toast -->
 <div id="toast" class="toast"></div>
@@ -163,24 +166,21 @@ function openRescheduleModal(id, consultant_id) {
   document.getElementById('rescheduleModal').style.display = 'flex';
   document.getElementById('slotContainer').innerHTML = '<div class="loading-spinner"></div>';
 
-  fetch('../booking/fetch_consultant_slots.php?consultant_id=' + consultant_id)
+  fetch('../booking/fetch_available_slots.php?consultant_id=' + consultant_id + '&appointment_id=' + selectedRescheduleId)
     .then(res => res.text())
     .then(html => {
       document.getElementById('slotContainer').innerHTML = html;
     });
 }
+
 function confirmBooking(slotId) {
   selectedScheduleId = slotId;
 
-  // Remove 'selected' class from all slot buttons
-  document.querySelectorAll('.slot-btn').forEach(btn => btn.classList.remove('selected'));
-
-  // Add 'selected' class to the clicked one
-  const selectedBtn = document.querySelector(`.slot-btn[data-slot-id="${slotId}"]`);
-  if (selectedBtn) {
-    selectedBtn.classList.add('selected');
+ document.querySelectorAll('.slot-option').forEach(btn => btn.classList.remove('selected'));
+const selectedBtn = document.querySelector(`.slot-option[data-slot-id="${slotId}"]`);
+if (selectedBtn) selectedBtn.classList.add('selected');
   }
-}
+
 
 
 document.getElementById('confirmReschedule').onclick = () => {

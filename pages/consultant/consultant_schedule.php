@@ -9,8 +9,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'consultant') {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Consultant Schedule - KUSMA</title>
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
@@ -30,9 +30,11 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'consultant') {
     </div>
   </header>
 
+ <div class="calendar-scroll">
   <div id="inlineAlert" class="inline-success d-none"></div>
   <div id="calendar"></div>
 </div>
+
 
 <!-- Slot Modal -->
 <div id="slotModal" class="modal">
@@ -207,17 +209,20 @@ document.addEventListener('DOMContentLoaded', function () {
     },
 
     eventContent(arg) {
-      const { mode, recurring, pattern } = arg.event.extendedProps;
-      const wrapper = document.createElement('div');
-      wrapper.className = "event-card";
-      wrapper.innerHTML = `
-        <div class="event-title">Available</div>
-        <div class="event-badges">
-          ${recurring && pattern !== 'none' ? `<span class="badge badge-${pattern}">${pattern}</span>` : ''}
-          ${mode ? `<span class="badge badge-${mode}">${mode}</span>` : ''}
-        </div>`;
-      return { domNodes: [wrapper] };
-    }
+  const { mode, recurring, pattern } = arg.event.extendedProps;
+  const duration = (arg.event.end - arg.event.start) / 60000;
+  const wrapper = document.createElement('div');
+  wrapper.className = "event-card" + (duration <= 60 ? " short-slot" : "");
+
+  wrapper.innerHTML = `
+    <div class="event-title">Available</div>
+    <div class="event-badges">
+      ${recurring && pattern !== 'none' ? `<span class="badge badge-${pattern}">${pattern}</span>` : ''}
+      ${mode ? `<span class="badge badge-${mode}">${mode}</span>` : ''}
+    </div>`;
+  return { domNodes: [wrapper] };
+}
+
   });
 
   calendar.render();

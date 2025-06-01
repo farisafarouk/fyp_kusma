@@ -10,8 +10,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'consultant') {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Consultant Reports</title>
   <link rel="stylesheet" href="../../assets/css/consultantsidebar.css" />
   <link rel="stylesheet" href="../../assets/css/consultant_reports.css" />
@@ -46,24 +46,30 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'consultant') {
       </div>
 
       <div class="charts">
-        <div class="chart-box">
-          <h4>Monthly Appointment Trends</h4>
-          <canvas id="appointmentsChart"></canvas>
-        </div>
-        <div class="chart-box">
-          <div class="chart-header">
-            <h4>Ratings Distribution</h4>
-            <div class="rating-summary">
-              <span id="averageScore">-</span>
-              <div id="averageStars" class="star-display"></div>
-            </div>
-          </div>
-          <canvas id="ratingsChart"></canvas>
-        </div>
+  <div class="chart-box">
+    <h4>Monthly Appointment Trends</h4>
+    <div class="chart-wrapper">
+      <canvas id="appointmentsChart"></canvas>
+    </div>
+  </div>
+
+  <div class="chart-box">
+    <div class="chart-header">
+      <h4>Ratings Distribution</h4>
+      <div class="rating-summary">
+        <span id="averageScore">-</span>
+        <div id="averageStars" class="star-display"></div>
       </div>
-    </section>
+    </div>
+    <div class="chart-wrapper">
+      <canvas id="ratingsChart"></canvas>
+    </div>
   </div>
 </div>
+</section>
+</div>
+</div>
+
 
 <script>
 function loadReportData() {

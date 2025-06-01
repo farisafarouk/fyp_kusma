@@ -1,122 +1,274 @@
-:root {
-  --primary: #6c63ff;
-  --hover: #584be0;
-  --success: #2ecc71;
-  --danger: #e74c3c;
-  --light: #f4f6fb;
-  --white: #ffffff;
-  --muted: #7f8c8d;
-  --shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-  --dark: #2c3e50;
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-  margin: 0;
   font-family: 'Poppins', sans-serif;
-  background: var(--light);
-  color: var(--dark);
+  background: linear-gradient(to right, #f8f9ff, #ffffff);
+  color: #333;
+  line-height: 1.6;
 }
 
 .dashboard-container {
-  display: flex;
-  justify-content: center;
-  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
 }
 
-.dashboard-content {
-  width: 100%;
-  max-width: 1100px;
-  background: var(--white);
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.dashboard-header h1 {
+  font-size: 32px;
+  color: #6610f2;
+  font-weight: 700;
+}
+
+.dashboard-header p {
+  font-size: 16px;
+  color: #555;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+.dashboard-card {
+  background: #fff;
   border-radius: 15px;
-  box-shadow: var(--shadow);
-  padding: 40px 30px;
+  box-shadow: 0 6px 20px rgba(102, 16, 242, 0.08);
+  padding: 25px;
+  text-align: center;
+  transition: transform 0.3s ease;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  justify-content: space-between;
 }
 
-.dashboard-section header h1 {
-  font-size: 28px;
-  margin-bottom: 8px;
+.dashboard-card:hover {
+  transform: translateY(-5px);
 }
 
-.dashboard-section .muted {
-  font-size: 0.95rem;
-  color: var(--muted);
+.card-icon {
+  font-size: 30px;
+  color: #6610f2;
+  margin-bottom: 15px;
 }
 
-.summary-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
-}
-
-.summary-box {
-  background: var(--light);
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  transition: all 0.3s ease;
-}
-
-.summary-box:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-}
-
-.summary-box h3 {
+.dashboard-card h2 {
+  font-size: 20px;
   margin-bottom: 10px;
-  font-size: 1rem;
-  color: var(--dark);
 }
 
-.big-number {
-  font-size: 2rem;
+.dashboard-card p {
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.dashboard-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 14px;
+  background-color: #6610f2;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+
+.dashboard-btn:hover {
+  background-color: #5200d1;
+}
+
+.dashboard-btn.small {
+  padding: 6px 14px;
+  font-size: 13px;
+  margin-left: 10px;
+}
+
+.badge {
+  padding: 4px 10px;
+  font-size: 13px;
   font-weight: bold;
-  color: var(--primary);
-  margin-bottom: 6px;
+  border-radius: 20px;
+  display: inline-block;
 }
 
-.caption {
-  font-size: 0.9rem;
-  color: var(--muted);
+.badge-premium {
+  background: #6610f2;
+  color: white;
 }
 
-.progress-section {
-  margin-top: 10px;
+.badge-free {
+  background: #e74c3c;
+  color: white;
 }
 
-.progress-grid {
-  display: flex;
-  gap: 15px;
-  margin-top: 10px;
-  flex-wrap: wrap;
-}
-
-.progress-tile {
-  flex: 1 1 180px;
-  background: #eef0fa;
-  padding: 14px 20px;
-  border-radius: 10px;
-  font-weight: 500;
-  color: var(--dark);
-  box-shadow: var(--shadow);
+.highlight-card,
+.suggestion-card,
+.chart-section {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  padding: 30px;
+  margin-top: 30px;
   text-align: center;
 }
 
-.tip-section {
-  background: #fffbea;
-  padding: 16px;
-  border-left: 4px solid #f1c40f;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  color: #a27c00;
+.highlight-card h2,
+.suggestion-card h2,
+.chart-section h2 {
+  font-size: 20px;
+  color: #6610f2;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.top-agency-logo {
+  max-height: 50px;
+  margin: 10px 0;
+}
+
+.explanation {
+  margin: 10px 0 20px;
+  font-size: 14px;
+  color: #444;
+}
+
+.suggestion-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.suggestion-item {
+  font-size: 15px;
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: var(--shadow);
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-.tip-section i {
-  color: #f39c12;
+canvas#activityChart {
+  margin-top: 20px;
+  width: 100% !important;
+  max-width: 600px;
+  height: auto !important;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
+
+.chart-section .chart-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+@media (max-width: 768px) {
+  .dashboard-header h1 {
+    font-size: 22px;
+    padding: 0 10px;
+  }
+
+  .dashboard-header p {
+    font-size: 14px;
+    padding: 0 10px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .dashboard-card {
+    padding: 20px 15px;
+    font-size: 14px;
+  }
+
+  .dashboard-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    margin: 10px 0 0;
+  }
+
+  .highlight-card,
+  .suggestion-card,
+  .chart-section {
+    padding: 20px 15px;
+    margin: 20px 0;
+    text-align: left;
+  }
+
+  .suggestion-item {
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 14px;
+  }
+
+  canvas#activityChart {
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 8px 12px;
+  }
+
+  .navbar-menu {
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .navbar-menu li a {
+    font-size: 13px;
+    padding: 6px 8px;
+    flex-direction: row;
+    gap: 6px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 20px;
+  }
+
+  .dashboard-card h2 {
+    font-size: 16px;
+  }
+
+  .dashboard-card p {
+    font-size: 13px;
+  }
+
+  .dashboard-btn {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  .highlight-card h2,
+  .suggestion-card h2,
+  .chart-section h2 {
+    font-size: 16px;
+  }
+
+  .explanation {
+    font-size: 13px;
+  }
+}
+

@@ -1,55 +1,115 @@
-/* Sidebar */
+/*======================
+  Global Variables
+=======================*/
+:root {
+  --primary: #6610f2;
+  --hover: #5a54d6;
+  --white: #ffffff;
+  --text: #fff;
+  --transition: 0.3s ease-in-out;
+}
+
+/*======================
+  Sidebar (Desktop Default)
+=======================*/
 .sidebar {
-    width: 25%;
-    background: #6610f2; /* Consistent primary color */
-    color: #fff;
-    padding: 20px;
-    min-height: 100vh; /* Full-page height */
+  width: 25%;
+  background: #6610f2 !important; 
+  color: var(--text);
+  padding: 20px;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
 }
 
 .sidebar h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    text-align: center;
-    font-weight: bold;
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
 }
 
 .sidebar ul {
-    list-style: none;
-    padding: 0;
+  list-style: none;
+  padding: 0;
 }
 
 .sidebar ul li {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .sidebar ul li a {
-    text-decoration: none;
-    color: #fff;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px;
-    border-radius: 8px;
-    transition: background 0.3s, transform 0.2s;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 8px;
+  transition: background var(--transition), transform 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sidebar ul li a.active,
 .sidebar ul li a:hover {
-    background: #5a54d6;
-    transform: scale(1.05);
+  background: var(--hover);
+  transform: scale(1.05);
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 100%;
-        text-align: center;
-        min-height: auto;
-    }
+/*======================
+  Hamburger Toggle (Hidden on Desktop)
+=======================*/
+.sidebar-toggle {
+  display: none;
+}
 
-    .sidebar ul li a {
-        justify-content: center;
-    }
+/*======================
+  Mobile Styles
+=======================*/
+@media (max-width: 768px) {
+  .sidebar-toggle {
+    display: block;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 1100;
+    background: var(--primary);
+    border: none;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 20px;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 80%;
+    height: 100vh;
+    background: var(--primary);
+    z-index: 1000;
+    padding: 30px 20px;
+    transition: left var(--transition);
+    overflow-y: auto;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .sidebar h2 {
+    font-size: 20px;
+    margin-top: 60px;
+  }
+
+  .sidebar ul li a {
+    font-size: 15px;
+    padding: 12px;
+    justify-content: flex-start;
+  }
 }

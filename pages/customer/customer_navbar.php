@@ -3,6 +3,8 @@ $current_page = basename($_SERVER['SCRIPT_NAME']);
 ?>
 <nav class="navbar">
   <div class="navbar-container">
+    <button class="navbar-toggle"><i class="fas fa-bars"></i></button>
+    <div class="navbar-content">
     <ul class="navbar-menu">
       <li>
         <a href="../profile/customer_dashboard.php" class="<?= $current_page === 'customer_dashboard.php' ? 'active' : '' ?>">
@@ -47,3 +49,14 @@ $current_page = basename($_SERVER['SCRIPT_NAME']);
     </ul>
   </div>
 </nav>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const toggle = document.querySelector(".navbar-toggle");
+    const content = document.querySelector(".navbar-content");
+
+    toggle.addEventListener("click", () => {
+      content.classList.toggle("open");
+    });
+  });
+</script>
+

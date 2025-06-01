@@ -42,30 +42,27 @@ if ($status === 'subscribed' && $expiry && $expiry < $today) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <title>Manage Subscription - KUSMA</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../../assets/css/customer_subscription.css">
-</head>
-<body>
-    <?php if (isset($_GET['status']) && $_GET['status'] === 'downgraded'): ?>
-        <div class="status-banner">Your subscription has been downgraded successfully.</div>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const toast = document.createElement('div');
-                toast.textContent = 'Your subscription has been downgraded successfully.';
-                toast.className = 'toast-message';
-                document.body.appendChild(toast);
-                setTimeout(() => toast.remove(), 4000);
-            });
-        </script>
-    <?php endif; ?>
+      <link rel="stylesheet" href="../../../assets/css/customer_navbar.css">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
-    <div class="container">
-        <div class="nav-links">
-            <a href="../profile/customer_dashboard.php">&larr; Back to Dashboard</a>
-            <a href="../recommendations.php">Explore Recommendations &rarr;</a>
-        </div>
+
+</head>
+
+<body>
+<?php include '../customer_navbar.php'; ?>
+
+<div class="dashboard-container">
+  <div class="dashboard-content">
+    <section class="dashboard-section">
+<?php if (isset($_GET['status']) && $_GET['status'] === 'downgraded'): ?>
+        <div class="status-banner">Your subscription has been downgraded successfully.</div>
+        
+    <?php endif; ?>
 
         <h1>Manage Your Subscription</h1>
 

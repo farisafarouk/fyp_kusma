@@ -247,6 +247,8 @@ button.slot-btn.selected {
 
 /* Individual Slot Option */
 .slot-option {
+    margin-right: 8px;
+  margin-bottom: 10px;
   padding: 10px 16px;
   background-color: var(--light);
   border: 2px solid var(--primary);
@@ -269,6 +271,16 @@ button.slot-btn.selected {
   color: #fff;
   font-weight: bold;
   border-color: var(--hover);
+}
+/* Scrollable container just for the slot list */
+.slot-scrollable {
+  max-height: 260px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  padding-right: 4px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #fefefe;
 }
 
 .toast {
@@ -313,4 +325,132 @@ button.slot-btn.selected {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 768px) {
+  .container {
+    padding: 0 12px;
+    margin-top: 20px;
+  }
+
+  .page-title {
+    font-size: 22px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .top-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .btn-primary {
+    width: 100%;
+    text-align: center;
+    font-size: 0.95rem;
+    padding: 12px 0;
+  }
+
+  .filter-buttons {
+    justify-content: center;
+    gap: 10px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-buttons button {
+    font-size: 0.9rem;
+    padding: 12px 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  .appointment-card {
+    padding: 16px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .card-body p {
+    font-size: 0.9rem;
+  }
+
+  .card-actions {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+    margin-top: 16px;
+  }
+
+  .btn-cancel,
+  .btn-reschedule,
+  .btn-feedback {
+    width: 100%;
+    text-align: center;
+    font-size: 0.95rem;
+    padding: 12px 0;
+    border-radius: 10px;
+  }
+
+  .btn-cancel {
+    margin-bottom: 6px;
+  }
+
+  .slot-option {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+
+  .modal-content {
+    padding: 20px;
+    max-width: 90%;
+  }
+
+  .modal-content textarea {
+    font-size: 0.9rem;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .toast {
+    font-size: 0.85rem;
+    padding: 10px 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 20px;
+  }
+
+  .btn-primary {
+    font-size: 0.9rem;
+  }
+
+  .filter-buttons button {
+    font-size: 0.85rem;
+  }
+
+  .btn-cancel,
+  .btn-reschedule,
+  .btn-feedback {
+    font-size: 0.9rem;
+  }
+
+  .slot-option {
+    font-size: 0.85rem;
+  }
+
+  .toast {
+    font-size: 0.8rem;
+    padding: 8px 12px;
+  }
 }

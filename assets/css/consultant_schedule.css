@@ -334,3 +334,232 @@ body {
     flex-direction: column;
   }
 }
+
+/* --- Enhanced Short Slot Rendering --- */
+.fc-event .short-slot {
+  min-height: 38px;
+  font-size: 10px;
+  line-height: 1.1;
+  overflow: hidden;
+  padding: 2px 4px;
+}
+
+.short-slot .event-title {
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.short-slot .event-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin-top: 2px;
+  font-size: 9px;
+}
+
+
+/* --- Responsive Calendar Adjustments --- */
+@media (max-width: 768px) {
+  .calendar-wrapper {
+    overflow-x: auto;
+    padding: 10px;
+  }
+
+  .calendar-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .calendar-controls {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-dashboard,
+  .btn-add-slot {
+    width: 100%;
+    font-size: 0.85rem;
+    padding: 8px 12px;
+  }
+
+  .fc-event {
+    font-size: 10px;
+    padding: 4px;
+  }
+
+  .badge {
+    font-size: 9px;
+    padding: 2px 5px;
+  }
+
+  .event-title {
+    font-size: 12px;
+  }
+
+  .fc-view-container {
+    overflow-x: auto;
+  }
+}
+.calendar-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+@media (max-width: 768px) {
+  body {
+    padding: 20px 12px;
+  }
+
+  .calendar-wrapper {
+    padding: 12px;
+    overflow-x: auto;
+    border-radius: 16px;
+  }
+
+  .calendar-header h1 {
+    font-size: 18px;
+  }
+
+  .calendar-controls {
+    gap: 8px;
+  }
+
+  .btn-dashboard,
+  .btn-add-slot {
+    font-size: 0.85rem;
+    padding: 10px;
+    width: 100%;
+  }
+
+    #calendar {
+    min-width: 700px;
+    font-size: 0.85rem;
+  }
+
+  .fc-toolbar-title {
+    font-size: 1rem !important;
+  }
+
+  .fc-button {
+    font-size: 0.85rem !important;
+    padding: 6px 10px !important;
+  }
+
+  .fc-col-header-cell,
+  .fc-timegrid-slot-label {
+    font-size: 0.75rem !important;
+  }
+
+  .fc-daygrid-day-number {
+    font-size: 0.75rem;
+  }
+
+
+  .fc-event {
+    font-size: 0.75rem;
+    padding: 4px 6px;
+  }
+
+  .event-title {
+    font-size: 0.8rem;
+  }
+
+  .event-badges {
+    gap: 2px;
+  }
+
+  .badge {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+  }
+
+  .floating-menu {
+    width: 90%;
+    max-width: 300px;
+    right: 5%;
+    left: 5%;
+  }
+
+  .floating-menu button {
+    font-size: 0.85rem;
+  }
+
+  .modal-content {
+    padding: 20px;
+    max-width: 90%;
+    font-size: 0.95rem;
+  }
+
+  .modal-content h3 {
+    font-size: 18px;
+  }
+
+  .modal-content p,
+  .modal-content label {
+    font-size: 0.9rem;
+  }
+
+  .modal-content input,
+  .modal-content select {
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+
+  .btn-submit,
+  .btn-cancel {
+    width: 100%;
+    font-size: 0.95rem;
+  }
+
+  .inline-success,
+  .inline-alert.error {
+    font-size: 0.85rem;
+    padding: 10px 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-header h1 {
+    font-size: 16px;
+  }
+
+  .event-title {
+    font-size: 0.75rem;
+  }
+
+  .modal-content h3 {
+    font-size: 1rem;
+  }
+
+  .modal-content input,
+  .modal-content select {
+    font-size: 0.85rem;
+  }
+
+  .badge {
+    font-size: 0.65rem;
+  }
+
+  .fc-event {
+    font-size: 10px;
+  }
+
+  .btn-dashboard,
+  .btn-add-slot {
+    font-size: 0.8rem;
+  }
+
+  .btn-submit,
+  .btn-cancel {
+    font-size: 0.85rem;
+  }
+}
+

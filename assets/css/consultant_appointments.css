@@ -45,27 +45,34 @@ body {
 
 .search-filter-bar {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 16px;
-  align-items: center;
-  justify-content: space-between;
+  align-items: stretch;
+  justify-content: flex-start;
   margin-bottom: 20px;
 }
 
+
 .search-bar {
-  padding: 10px 16px;
+  padding: 12px 16px;
   border: 1px solid #ccc;
-  border-radius: 10px;
-  font-size: 0.95rem;
+  border-radius: 12px;
+  font-size: 1rem;
   width: 100%;
-  max-width: 400px;
+  max-width: 100%;
+  box-sizing: border-box;
+  background: #fff;
+  outline: none;
 }
+
 
 .filter-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
+  justify-content: flex-start;
 }
+
 
 .filter-buttons button {
   padding: 8px 14px;
@@ -375,11 +382,116 @@ body {
 }
 
 @media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
   .main-content {
     padding: 20px;
   }
 
+  .search-filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .search-bar {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .filter-buttons {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
   .appointments-grid {
     grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .appointment-card {
+    padding: 16px;
+  }
+
+  .card-header h3 {
+    font-size: 16px;
+  }
+
+  .card-body {
+    font-size: 0.9rem;
+  }
+
+  .card-actions {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .card-actions button {
+    width: 100%;
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+
+  .modal-content {
+    padding: 20px;
+    max-width: 95%;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form-group label {
+    font-size: 0.95rem;
+  }
+
+  .form-select,
+  .form-textarea {
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+
+  .form-textarea {
+    width: 100%;
+  }
+
+  .toast {
+    font-size: 0.85rem;
+    padding: 10px 16px;
+    bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content h1 {
+    font-size: 20px;
+  }
+
+  .card-header h3 {
+    font-size: 15px;
+  }
+
+  .card-body {
+    font-size: 0.85rem;
+  }
+
+  .btn-confirm,
+  .btn-cancel,
+  .btn-complete {
+    font-size: 0.85rem;
+  }
+
+  .form-select,
+  .form-textarea {
+    font-size: 0.9rem;
+  }
+
+  .toast {
+    font-size: 0.8rem;
   }
 }

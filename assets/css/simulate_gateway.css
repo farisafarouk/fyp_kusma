@@ -74,6 +74,24 @@ form .row {
   border-color: #6c63ff;
   outline: none;
 }
+.input-box select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #fafafa;
+  transition: border-color 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.input-box select:focus {
+  border-color: #6c63ff;
+  outline: none;
+}
+
 
 .column .flex {
   display: flex;
@@ -134,3 +152,109 @@ form .btn:hover {
     color: #333;
   }
   
+  .loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loading-overlay .spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid #ddd;
+  border-top: 6px solid #6c63ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-overlay p {
+  font-size: 1rem;
+  color: #444;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 20px 12px;
+    align-items: flex-start;
+  }
+
+  form {
+    padding: 24px 16px;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  }
+
+  form .row {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .column .title {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+  }
+
+  .input-box input,
+  .input-box select {
+    font-size: 0.95rem;
+    padding: 12px;
+  }
+
+  .btn {
+    font-size: 0.95rem;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 20px;
+  }
+
+  .back-icon {
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+  }
+
+  .loading-overlay p {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .form {
+    padding: 20px 12px;
+  }
+
+  .column .title {
+    font-size: 1rem;
+  }
+
+  .btn {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+
+  .input-box input,
+  .input-box select {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+
+  .alert-danger {
+    font-size: 0.85rem;
+    padding: 10px;
+  }
+}

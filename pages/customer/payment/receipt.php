@@ -30,6 +30,7 @@ if (!$payment) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <title>Receipt - KUSMA</title>
     <link rel="stylesheet" href="../../../assets/css/receipt.css">
@@ -86,7 +87,8 @@ if (!$payment) {
             <div class="ripped-paper bottom"></div>
 
             <div class="receipt-footer">
-                <p>This is a simulated receipt for demonstration purposes only.</p>
+                <p>Thank you for subscribing to KUSMA Premium.</p>
+                <p>Need help? Contact us at support@kusma.my </p>
                 <div class="receipt-actions">
                     <a href="generate_receipt_pdf.php?payment_id=<?= $payment_id ?>" class="btn-download">⬇ Download PDF</a>
                     <a href="../recommendations.php" class="btn-view">→ Access Full Recommendations</a>

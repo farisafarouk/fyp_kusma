@@ -39,40 +39,48 @@ body {
 .dashboard-sections {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 25px;
+  gap: 30px;
+  justify-content: center;
+  padding-top: 20px;
 }
 
 /* Card Style */
 .dashboard-card {
-  background: #fff;
-  border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(102, 16, 242, 0.1);
-  padding: 25px;
-  transition: transform 0.2s ease;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 25px rgba(102, 16, 242, 0.1);
+  transition: all 0.3s ease-in-out;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: auto;
 }
 
+
 .dashboard-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
 }
 
 /* Icon Style */
 .card-icon {
-  font-size: 30px;
+  font-size: 48px;
   color: #6610f2;
-  margin-bottom: 15px;
+  margin-bottom: 18px;
 }
 
-/* Card Content */
 .card-content h2 {
-  font-size: 20px;
+  font-size: 22px;
+  margin-bottom: 12px;
   color: #333;
-  margin-bottom: 10px;
 }
 
 .card-content p {
   font-size: 15px;
   color: #444;
-  line-height: 1.6;
+  margin-bottom: 10px;
 }
 
 /* Edit Button */
@@ -283,5 +291,238 @@ body {
 @media (max-width: 768px) {
   .dashboard-sections {
       grid-template-columns: 1fr;
+  }
+}
+
+
+/* Enhanced Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.4);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  overflow-y: auto;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.modal-content label {
+  font-weight: 600;
+  margin-top: 10px;
+  display: block;
+  color: #333;
+}
+
+.modal-content input,
+.modal-content select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 4px;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.modal-content input[type="checkbox"] {
+  width: auto;
+  margin-right: 8px;
+}
+
+.modal-content .dashboard-btn {
+  margin-top: 12px;
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  background: #6c63ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.modal-content .dashboard-btn:hover {
+  background: #5146e0;
+}
+.toast {
+  visibility: hidden;
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  z-index: 9999;
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+
+.toast.show {
+  visibility: visible;
+  opacity: 1;
+  bottom: 50px;
+}
+
+.toast.success { background-color: #2ecc71; }
+.toast.error { background-color: #e74c3c; }
+.toast.warning { background-color: #f39c12; }
+
+.close-btn {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #aaa;
+}
+
+.close-btn:hover {
+  color: #333;
+}
+
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 20px 12px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 24px;
+  }
+
+  .dashboard-header p {
+    font-size: 14px;
+    padding: 0 10px;
+  }
+
+  .dashboard-sections {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .dashboard-card {
+    padding: 18px;
+  }
+
+  .card-icon {
+    font-size: 36px;
+  }
+
+  .card-content h2 {
+    font-size: 18px;
+  }
+
+  .card-content p {
+    font-size: 14px;
+  }
+
+  .dashboard-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .modal-content {
+    padding: 24px 16px;
+    max-width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+
+  .modal-content h2 {
+    font-size: 20px;
+  }
+
+  .modal-content label {
+    font-size: 14px;
+  }
+
+  .modal-content input,
+  .modal-content select,
+  .modal-content textarea {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .modal-content .dashboard-btn {
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .close-btn {
+    font-size: 20px;
+    top: 12px;
+    right: 14px;
+  }
+
+  .toast {
+    font-size: 0.9rem;
+    padding: 12px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header h1 {
+    font-size: 20px;
+  }
+
+  .dashboard-card {
+    padding: 16px;
+  }
+
+  .card-content h2 {
+    font-size: 16px;
+  }
+
+  .dashboard-btn {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  .modal-content {
+    padding: 20px 12px;
+  }
+
+  .modal-content .dashboard-btn {
+    font-size: 14px;
+  }
+
+  .toast {
+    font-size: 0.85rem;
   }
 }
