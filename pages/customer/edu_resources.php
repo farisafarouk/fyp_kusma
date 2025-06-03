@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css/forms.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <div class="container mt-5">
@@ -17,7 +19,8 @@
             Step 3 of 3: Education & Resources Preferences
         </div>
     </div>
-    <form action="process_edu_resources.php" method="POST">
+
+    <form id="eduForm" action="process_edu_resources.php" method="POST">
         <div class="mb-3">
             <label for="educationType" class="form-label">Education Type</label>
             <select class="form-select" id="educationType" name="educationType" required>
@@ -91,6 +94,36 @@
         <button type="submit" class="btn btn-primary w-100">Submit</button>
     </form>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.getElementById('eduForm').addEventListener('submit', function(e) {
+    const educationType = document.getElementById('educationType').value;
+    const certificationLevel = document.getElementById('certificationLevel').value;
+    const employmentStatus = document.getElementById('employmentStatus').value;
+    const urgency = document.getElementById('urgency').value;
+    const resourcesChecked = document.querySelectorAll('input[name="resourceType[]"]:checked').length;
+
+    if (!educationType || !certificationLevel || !employmentStatus || !urgency) {
+        e.preventDefault();
+        Swal.fire({
+            icon: 'error',
+            title: 'Missing Fields',
+            text: 'Please fill in all required fields.',
+            confirmButtonColor: '#7B1FA2'
+        });
+        return;
+    }
+
+    if (resourcesChecked === 0) {
+        e.preventDefault();
+        Swal.fire({
+            icon: 'warning',
+            title: 'No Resource Type Selected',
+            text: 'Please select at least one type of resource.',
+            confirmButtonColor: '#7B1FA2'
+        });
+    }
+});
+</script>
 </body>
 </html>

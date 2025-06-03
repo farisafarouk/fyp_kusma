@@ -15,22 +15,55 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title = $_POST['title'];
-    $first_name = $_POST['first-name'];
-    $last_name = $_POST['last-name'];
-    $gender = $_POST['gender'];
-    $email = $_POST['email']; 
-    $phone_number = $_POST['phone'];
-    $birthdate = $_POST['birthdate'];
-    $mykad_number = $_POST['mykad'];
-    $bumiputera_status = $_POST['bumiputera_status'];
-    $address = $_POST['address'];
-    $city = $_POST['city'];
-    $state = $_POST['state'];
-    $postcode = $_POST['postcode'];
+    // Safely extract POST values with null coalescing
+    $title = $_POST['title'] ?? null;
+    $first_name = $_POST['first-name'] ?? null;
+    $last_name = $_POST['last-name'] ?? null;
+    $gender = $_POST['gender'] ?? null;
+    $email = $_POST['email'] ?? null;
+    $phone_number = $_POST['phone'] ?? null;
+    $birthdate = $_POST['birthdate'] ?? null;
+    $mykad_number = $_POST['mykad'] ?? null;
+    $bumiputera_status = $_POST['bumiputera_status'] ?? null;
+    $address = $_POST['address'] ?? null;
+    $city = $_POST['city'] ?? null;
+    $state = $_POST['state'] ?? null;
+    $postcode = $_POST['postcode'] ?? null;
     $oku_status = isset($_POST['oku']) ? 1 : 0;
 
-    // Calculate age
+    // Simple required validation
+    $required_fields = [
+        'Title' => $title,
+        'First Name' => $first_name,
+        'Last Name' => $last_name,
+        'Gender' => $gender,
+        'Email' => $email,
+        'Phone Number' => $phone_number,
+        'Birthdate' => $birthdate,
+        'MyKad Number' => $mykad_number,
+        'Bumiputera Status' => $bumiputera_status,
+        'Address' => $address,
+        'City' => $city,
+        'State' => $state,
+        'Postcode' => $postcode
+    ];
+
+    foreach ($required_fields as $label => $value) {
+        if (empty($value)) {
+            die("Error: $label is required.");
+        }
+    }
+
+    // Format validation
+    if (!preg_match('/^\d{10,11}$/', $phone_number)) {
+        die("Error: Phone number must be 10 or 11 digits.");
+    }
+
+    if (!preg_match('/^\d{6}-?\d{2}-?\d{4}$/', $mykad_number)) {
+        die("Error: Invalid MyKad format.");
+    }
+
+    // Calculate age (optional use)
     $birth_date = new DateTime($birthdate);
     $current_date = new DateTime();
     $age = $current_date->diff($birth_date)->y;
